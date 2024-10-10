@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { BurgerMenu, CrossMenu } from "./BurgerCrossMenu";
-import logo from "../assets/logo.png";
+import logo from "../assets/Logo.png";
 import { AvatarIcon, AvatarIconSkeleton } from "./AvatarIcon";
 import ItemNavBar from "./ItemNavBar";
 import { useState } from "react";
