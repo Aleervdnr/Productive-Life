@@ -14,7 +14,7 @@ function App() {
     <BrowserRouter>
       <main
         className={`${
-          isAuthenticated ? `grid grid-rows-[55px,calc(100vh-55px)] lg:grid-cols-[250px_1fr]` : ""
+          isAuthenticated ? `grid grid-rows-[55px,calc(100vh-55px)] lg:grid-cols-[220px_1fr]` : ""
         } `}
       >
         <Routes>
