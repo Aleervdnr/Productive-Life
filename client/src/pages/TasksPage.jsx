@@ -53,7 +53,7 @@ export default function TasksPage({ setActiveItem }) {
           tabActive == "semana" && "max-lg:translate-x-[calc(-100vw)]"
         } ${
           tabActive == "mes" && "max-lg:translate-x-[calc(-200vw)]"
-        } lg:w-full lg:h-screen lg:grid-cols-4 lg:grid-rows-[38vh,17vh,calc(45vh-56px)] lg:p-5 lg:justify-items-center lg:gap-2`}
+        } lg:w-full lg:h-screen lg:grid-cols-4 lg:grid-rows-[38vh,14vh,calc(48vh-40px)] lg:p-3 lg:justify-items-center lg:gap-2`}
       >
         <TodayTasks />
         <WeekTasks />
