@@ -4,7 +4,7 @@ import logo from "../assets/logo.png";
 import { AvatarIcon, AvatarIconSkeleton } from "./AvatarIcon";
 import ItemNavBar from "./ItemNavBar";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //import icons
 import { FaHome } from "react-icons/fa";
@@ -16,6 +16,13 @@ import { FaArrowRightFromBracket } from "react-icons/fa6";
 function NavBar({ activeItem }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const { isAuthenticated, logout, user } = useAuth();
+  const navigate = useNavigate()
+
+
+  const handleLogout = () => {
+    logout()
+    navigate(0)
+  }
 
   const handleMenuOpenClose = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -58,10 +65,14 @@ function NavBar({ activeItem }) {
           </ItemNavBar>
         </ul>
         <ul>
-          <ItemNavBar name={"logout"} activeItem={activeItem}>
-            <FaArrowRightFromBracket className="text-xl" />
-            <span>Cerrar sesion</span>
-          </ItemNavBar>
+          <li className="w-full max-w-[272px] cursor-pointer" onClick={handleLogout}>
+            <span
+              className={` capitalize relative flex gap-4 w-full h-[50px] pl-[30%] items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden`}
+            >
+              <FaArrowRightFromBracket className="text-xl" />
+              Cerrar sesion
+            </span>
+          </li>
         </ul>
       </nav>
     </div>
