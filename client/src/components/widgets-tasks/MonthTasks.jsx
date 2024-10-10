@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  format,
-  formatISO,
   getDate,
   getDay,
   getDaysInMonth,
@@ -10,15 +8,18 @@ import {
 } from "date-fns";
 import { months } from "../../libs/Dates.js";
 import MonthDayItem from "./MonthDayItem";
+import { useDate } from "../../context/DateContext.jsx";
 
 export default function MonthTasks() {
   const [days, setDays] = useState([]);
+  const {nowDateTime} = useDate()
 
-  const now = new Date();
-  const month = getMonth(now) + 1;
-  const year = getYear(now);
-  const daysInMonth = getDaysInMonth(now);
+  const month = getMonth(nowDateTime) + 1;
+  const year = getYear(nowDateTime);
+  const daysInMonth = getDaysInMonth(nowDateTime);
+
   useEffect(() => {
+    //Creamos un array nuevo donde luego mediante una iteracion vamos a tener todos los dias del mes actual en un formato yyyy-MM-dd
     const newDays = [];
 
     for (var i = 1; i <= daysInMonth; i++) {
@@ -45,6 +46,7 @@ export default function MonthTasks() {
         <span>S</span>
         <span>D</span>
       </div>
+      {/* Si el dia empieza en lunes, martes, miercoles o el dia que sea, mediante esta logica se acomoda el primer dia del mes en el dia que es mediante unos espacios vacios, ejemplo: si la semana empieza en martes en el lunes va haber un espacio vacio, sin esto todos los meses se mostrarian como primer dia el lunes*/}
       <div
         className={
           getDay(new Date(days[0])) > 1 || getDay(new Date(days[0])) == 0
@@ -87,7 +89,6 @@ export default function MonthTasks() {
             : "hidden"
         }
       ></div>
-      {/* getDay(new Date(days[0])) */}
 
       {days.map((day) => (
         <MonthDayItem key={day} day={day}>

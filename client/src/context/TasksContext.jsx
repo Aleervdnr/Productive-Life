@@ -40,21 +40,24 @@ export function TasksProvider({ children }) {
 
   //Crear tareas
   const createTask = async (task) => {
-    const res = await createTaskRequest(task);
+    const session = { token: localStorage.getItem("token") };
+    const res = await createTaskRequest(task,session.token);
     if (res.status == 200) setTasks([...tasks, res.data]);
     console.log(res);
   };
 
   //Obtener tareas
   const getTasks = async () => {
-    const res = await getTasksRequest();
+    const session = { token: localStorage.getItem("token") };
+    const res = await getTasksRequest(session.token);
     setTasks(res.data);
   };
 
   //Actualizar tareas
   const updateTask = async (task) => {
     try {
-      await updateTasksRequest(task);
+      const session = { token: localStorage.getItem("token") };
+      await updateTasksRequest(task,session.token);
       setTasks(
         tasks.map((TaskMap) => (TaskMap._id == task._id ? task : TaskMap))
       );

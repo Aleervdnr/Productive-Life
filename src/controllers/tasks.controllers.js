@@ -11,15 +11,29 @@ export const getTasks = async (req, res) => {
 
 export const createTask = async (req, res) => {
   try {
-    const { title, description, date } = req.body;
+    const {
+      title,
+      description,
+      taskDate,
+      startTime,
+      recurringDays,
+      endTime,
+      recurringEndDate,
+    } = req.body;
+
     const newTask = new Task({
       title,
       description,
-      date,
+      taskDate,
+      startTime,
+      endTime,
+      recurringDays,
+      recurringEndDate,
       user: req.user.id,
     });
-    await newTask.save();
-    res.json(newTask);
+
+    const savedTask = await newTask.save();
+    res.json(savedTask);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -40,7 +54,7 @@ export const deleteTask = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const taskUpdated = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true
+      new: true,
     });
     if (!taskUpdated)
       return res.status(404).json({ mensaje: "Tarea no encontrada" });

@@ -1,7 +1,19 @@
 import axios from "./axios"
 
-export const getTasksRequest = () => axios.get("/tasks")
+export const getTasksRequest = (token) => axios.get("/tasks", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 export const getTaskRequest = (id) => axios.get(`/tasks/${id}`)
-export const createTaskRequest = (task) => axios.post("/tasks", task)
-export const updateTasksRequest = (task) => axios.put(`/tasks/${task._id}`, task)
+export const createTaskRequest = (task,token) => axios.post("/tasks", task, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+export const updateTasksRequest = (task,token) => axios.put(`/tasks/${task._id}`, task, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 export const deleteTasksRequest = (id) => axios.delete(`/tasks/${id}`)
