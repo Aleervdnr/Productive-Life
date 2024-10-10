@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginRegisterpage from "./pages/LoginRegisterpage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -14,7 +14,9 @@ function App() {
     <BrowserRouter>
       <main
         className={`${
-          isAuthenticated ? `grid grid-rows-[55px,calc(100vh-55px)] lg:grid-cols-[220px_1fr]` : ""
+          isAuthenticated
+            ? `grid grid-rows-[55px,calc(100vh-55px)] lg:grid-cols-[220px_1fr]`
+            : ""
         } `}
       >
         <Routes>
@@ -30,6 +32,7 @@ function App() {
             />
             <Route path="/gastos" element={<h1>Gastos</h1>} />
             <Route path="/compras" element={<h1>Compras</h1>} />
+            <Route path="/*" element={<Navigate to="/"></Navigate>} />
           </Route>
         </Routes>
         <NavBar activeItem={activeItem} />
