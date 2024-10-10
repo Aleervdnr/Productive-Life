@@ -28,12 +28,12 @@ function NavBar({ activeItem }) {
     setMenuIsOpen(!menuIsOpen);
   };
   return (
-    <div className={`p-5 lg:p-0 lg:w-[220px] row-start-1 ${!isAuthenticated && `hidden`}`}>
+    <div className={`p-5 lg:p-0 lg:w-[250px] row-start-1 ${!isAuthenticated && `hidden`}`}>
       <BurgerMenu setMenu={handleMenuOpenClose} />
       <nav
         className={`w-full p-5 h-screen absolute top-0 left-0 bg-dark-400  transition-transform duration-300 ease-in-out max-lg:max-w-[375px] lg:static lg:translate-x-0  lg:px-0  ${
           menuIsOpen ? `translate-x-0` : `translate-x-[-100%]`
-        } grid content-between lg:pb-6`}
+        }`}
       >
         <CrossMenu setMenu={handleMenuOpenClose} />
         <ul className="w-full grid justify-items-center">
@@ -64,12 +64,12 @@ function NavBar({ activeItem }) {
             <span>Compras</span>
           </ItemNavBar>
         </ul>
-        <ul className="w-full flex justify-center ">
-          <li className="w-3/4 cursor-pointer bg-dark-500 rounded-lg" onClick={handleLogout}>
+        <ul>
+          <li className="w-full max-w-[272px] cursor-pointer" onClick={handleLogout}>
             <span
-              className={` capitalize relative flex gap-4 w-full px-4 py-2 items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden lg:text-sm`}
+              className={` capitalize relative flex gap-4 w-full h-[50px] pl-[30%] items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden`}
             >
-              <FaArrowRightFromBracket className="text-sm" />
+              <FaArrowRightFromBracket className="text-xl" />
               Cerrar sesion
             </span>
           </li>
