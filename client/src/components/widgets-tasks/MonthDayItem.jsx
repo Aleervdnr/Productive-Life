@@ -20,7 +20,7 @@ export default function MonthDayItem({ children, day }) {
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
       <button
-        className="w-full h-full border-[3px] border-dark-100 rounded-full flex items-center justify-center text-sm"
+        className="w-full h-full border-[3px] border-dark-100 rounded-full flex items-center justify-center text-sm lg:text-xs"
         onClick={() =>
           document
             .getElementById(`my_modal_${getDate(new Date(day))}`)

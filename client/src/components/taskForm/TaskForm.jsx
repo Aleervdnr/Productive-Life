@@ -5,17 +5,16 @@ import { useTasks } from "../../context/TasksContext";
 import { todayDate, getHour } from "../../libs/Dates.js";
 import { useEffect, useState } from "react";
 
-export default function TaskForm() {
+export default function TaskForm({styles}) {
   const { register, handleSubmit, resetField, setValue } = useForm();
-  const {createTask} = useTasks()
-  const [hourAndMinutes, setHourAndMinutes] = useState("00:00")
+  const { createTask } = useTasks();
+  const [hourAndMinutes, setHourAndMinutes] = useState("00:00");
 
   useEffect(() => {
-     const {hour, minutes} = getHour()
-     setHourAndMinutes(`${hour <= 9 ? `0${hour}` : hour }:${minutes}`)
-  }, [])
-  
-  
+    const { hour, minutes } = getHour();
+    setHourAndMinutes(`${hour <= 9 ? `0${hour}` : hour}:${minutes}`);
+  }, []);
+
   const onSubmit = (data) => {
     const {
       title,
@@ -31,29 +30,30 @@ export default function TaskForm() {
       title,
       description,
       taskDate,
-      startTime: `${startTime}:00` ,
+      startTime: `${startTime}:00`,
       endTime: `${endTime}:00`,
       isRecurring: recurringDays.length >= 1 && true,
       recurringDays: recurringDays == false ? [] : recurringDays,
-      recurringEndDate : !recurringEndDate ? taskDate : recurringEndDate,
+      recurringEndDate: !recurringEndDate ? taskDate : recurringEndDate,
     };
-    createTask(newTask)
-    resetField("title")
-    resetField("description")
-    setValue("taskDate", todayDate)
-    setValue("recurringEndDate", todayDate)
-    resetField("startTime")
-    resetField("endTime")
+    createTask(newTask);
+    resetField("title");
+    resetField("description");
+    setValue("taskDate", todayDate);
+    setValue("recurringEndDate", todayDate);
+    resetField("startTime");
+    resetField("endTime");
   };
 
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
       <button
-        className="bg-violet-main w-11 h-11 rounded-full text-2xl absolute bottom-5 right-5"
+        className={`bg-violet-main w-11 h-11 rounded-full text-2xl absolute bottom-5 right-5 lg:bottom-0 lg:right-0 lg:relative lg:w-fit lg:h-fit lg:py-[10px] lg:px-4 lg:text-xs lg:flex lg:m-0 lg:my-auto lg:justify-self-end ${styles} `}
         onClick={() => document.getElementById("my_modal_50").showModal()}
       >
-        +
+        <span className="hidden lg:block lg:font-semibold">Agregar Tarea</span>
+        <span className="lg:text-md lg:leading-3 lg:font-medium lg:pl-1 ">+</span>
       </button>
       <dialog id="my_modal_50" className="modal">
         <div className="modal-box bg-dark-400">
@@ -85,7 +85,7 @@ export default function TaskForm() {
                 <label className="text-xs">Fecha Inicio</label>
                 <input
                   type="date"
-                  {...register("taskDate", {value:todayDate})}
+                  {...register("taskDate", { value: todayDate })}
                   required
                   min={todayDate}
                   // defaultValue={todayDate}
@@ -97,7 +97,7 @@ export default function TaskForm() {
                 <input
                   type="date"
                   min={todayDate}
-                  {...register("recurringEndDate", {value:todayDate})}
+                  {...register("recurringEndDate", { value: todayDate })}
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
                 />
               </div>
@@ -107,7 +107,7 @@ export default function TaskForm() {
                 <label>Hora Inicio</label>
                 <input
                   type="time"
-                  {...register("startTime", {value:hourAndMinutes})}
+                  {...register("startTime", { value: hourAndMinutes })}
                   min={hourAndMinutes}
                   required
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
@@ -117,7 +117,7 @@ export default function TaskForm() {
                 <label>Hora Fin</label>
                 <input
                   type="time"
-                  {...register("endTime", {value:hourAndMinutes})}
+                  {...register("endTime", { value: hourAndMinutes })}
                   required
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
                 />
