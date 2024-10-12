@@ -21,7 +21,7 @@ export default function TasksPage({ setActiveItem }) {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-55px)] lg:h-screen  overflow-hidden">
+    <div className="w-full h-[calc(100vh-55px)] lg:h-screen  overflow-hidden relative">
       <div className="font-medium flex gap-2 px-5 mb-3 lg:hidden">
         <div
           className={`px-[5px] py-[3px] rounded ${
@@ -53,31 +53,32 @@ export default function TasksPage({ setActiveItem }) {
           tabActive == "semana" && "max-lg:translate-x-[calc(-100vw)]"
         } ${
           tabActive == "mes" && "max-lg:translate-x-[calc(-200vw)]"
-        } lg:w-full lg:h-screen lg:grid-cols-4 lg:grid-rows-[38vh,14vh,calc(48vh-40px)] lg:p-3 lg:justify-items-center lg:gap-2`}
+        } lg:w-full lg:h-screen lg:grid-cols-[repeat(3 , 33.33%)] lg:grid-rows-[38vh,14vh,calc(48vh-40px)] lg:p-3 lg:justify-items-center lg:gap-2`}
       >
         <TodayTasks />
         <WeekTasks />
         <MonthTasks />
-        <div className="max-lg:hidden w-full flex justify-between row-start-2 col-start-2 col-end-5">
-          <div className="h-full border-[2px] border-dark-400 grid place-content-center rounded-lg px-4">
-            <span className="text-2xl">{tasks.length}</span>
-            <span>Tareas Completadas</span>
+        <div className="w-full h-full hidden lg:block lg:border-[2px] lg:border-dark-400 lg:rounded-lg">asd</div>
+        <div className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
+          <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+            <span className="text-xl font-bold leading-7">{tasks.length}/{tasks.length}</span>
+            <span className="text-sm">Tareas Completadas</span>
           </div>
-          <div className="h-full border-[2px] border-dark-400 grid place-content-center rounded-lg px-4">
-            <span className="text-2xl">{tasks.length}</span>
-            <span>Tareas Para Hacer</span>
+          <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+            <span className="text-xl font-bold leading-7">{tasks.length}/{tasks.length}</span>
+            <span className="text-sm">Tareas Para Hacer</span>
           </div>
-          <div className="h-full border-[2px] border-dark-400 grid place-content-center rounded-lg px-4">
-            <span className="text-2xl">{tasks.length}</span>
-            <span>Tareas Atrasadas</span>
+          <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+            <span className="text-xl font-bold leading-7">{tasks.length}/{tasks.length}</span>
+            <span className="text-sm">Tareas Atrasadas</span>
           </div>
-          <div className="h-full border-[2px] border-dark-400 grid place-content-center rounded-lg px-4">
-            <span className="text-2xl">{tasks.length}</span>
-            <span>Tareas Totales</span>
+          <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+            <span className="text-xl font-bold leading-7">{tasks.length}</span>
+            <span className="text-sm">Tareas Totales</span>
           </div>
         </div>
       </div>
-      <TaskForm />
+      <TaskForm styles={"lg:hidden"}/>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar";
 import { useState } from "react";
 import Homepage from "./pages/Homepage";
 import TasksPage from "./pages/TasksPage";
+import "./app.css"
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");

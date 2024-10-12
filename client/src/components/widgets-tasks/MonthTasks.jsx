@@ -33,9 +33,9 @@ export default function MonthTasks() {
   }, []);
 
   return (
-    <div className="w-[100vw] px-5 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[48px,repeat(5,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,30px)] lg:grid-rows-[48px,repeat(auto-fit,30px)] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
-      <div className="w-full grid grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[26px,22px] col-span-7 lg:grid-cols-[repeat(7,30px)] lg:gap-x-1 justify-items-center">
-        <span className="text-xl font-semibold col-span-7 w-full">
+    <div className="w-[100vw] px-5 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[48px,repeat(5,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[48px,repeat(auto-fit,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
+      <div className="w-full grid grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[26px,22px] col-span-7 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:gap-x-1 justify-items-center">
+        <span className="text-md font-semibold col-span-7 w-full">
           {months[month - 1]}, {year}
         </span>
         <span>L</span>

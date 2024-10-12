@@ -48,19 +48,19 @@ function NavBar({ activeItem }) {
             {user ? <AvatarIcon name={user.name} /> : <AvatarIconSkeleton />}
           </li>
           <ItemNavBar name={"home"} activeItem={activeItem}>
-            <FaHome className="text-xl" />
+            <FaHome className="text-[18px]" />
             <span>Inicio</span>
           </ItemNavBar>
           <ItemNavBar name={"tasks"} activeItem={activeItem}>
-            <FaTasks className="text-xl" />
+            <FaTasks className="text-[18px]" />
             <span>Tareas</span>
           </ItemNavBar>
           <ItemNavBar name={"gastos"} activeItem={activeItem}>
-            <FaWallet className="text-xl" />
+            <FaWallet className="text-[18px]" />
             <span>Gastos</span>
           </ItemNavBar>
           <ItemNavBar name={"compras"} activeItem={activeItem}>
-            <FaCartShopping className="text-xl" />
+            <FaCartShopping className="text-[18px]" />
             <span>Compras</span>
           </ItemNavBar>
         </ul>
