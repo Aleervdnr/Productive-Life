@@ -1,5 +1,5 @@
 import { getISODay } from "date-fns";
-import useWindowSize from "../hooks/UseWindowSize";
+import useWindowSize from "../hooks/useWindowSize.jsx";
 
 export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
   const {width} = useWindowSize()
