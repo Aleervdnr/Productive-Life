@@ -21,7 +21,7 @@ function NavBar({ activeItem }) {
 
   const handleLogout = () => {
     logout()
-    navigate(0)
+    navigate('/')
   }
 
   const handleMenuOpenClose = () => {
