@@ -48,13 +48,13 @@ export default function WeekTasks() {
       </div>
       <TabMenu
         items={[
-          { name: "Lun", isoDay: 1 },
-          { name: "Mar", isoDay: 2 },
-          { name: "Mier", isoDay: 3 },
-          { name: "Jue", isoDay: 4 },
-          { name: "Vier", isoDay: 5 },
-          { name: "Sab", isoDay: 6 },
-          { name: "Dom", isoDay: 7 },
+          { name: "Lunes", isoDay: 1 },
+          { name: "Martes", isoDay: 2 },
+          { name: "Miercoles", isoDay: 3 },
+          { name: "Jueves", isoDay: 4 },
+          { name: "Viernes", isoDay: 5 },
+          { name: "Sabado", isoDay: 6 },
+          { name: "Domingo", isoDay: 7 },
         ]}
         tabActive={tabActive}
         handleChangeTab={handleChangeTab}

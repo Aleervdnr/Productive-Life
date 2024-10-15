@@ -1,6 +1,8 @@
 import { getISODay } from "date-fns";
+import useWindowSize from "../hooks/UseWindowSize";
 
 export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
+  const {width} = useWindowSize()
   return (
     <div className="relative font-medium flex justify-between gap-2 lg:max-h-[180px]">
       {items.map((item, i) => (
@@ -11,7 +13,9 @@ export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
           } lg:rounded-lg lg:py-2 lg:bg-dark-500`}
           onClick={() => handleChangeTab(item)}
         >
-          {item.name}
+          {width <= 425 && item.name.charAt(0)}
+          {width > 425 & width < 1024 ? item.name.slice(0,3) : null}
+          {width >= 1024 && item.name}
           <div className={`w-full absolute top-[28px] left-0 bg-dark-400 rounded lg:w-full px-2 py-2 ${tabActive.name !== item.name && `max-lg:hidden`} lg:static lg:p-0 lg:bg-transparent lg:overflow-auto`}>
             {weeklyTasks.map(
               (task) =>
