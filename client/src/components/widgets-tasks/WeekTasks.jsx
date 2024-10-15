@@ -44,7 +44,7 @@ export default function WeekTasks() {
         <h2 className="text-center hidden lg:block font-bold text-lg my-2 lg:col-start-2">
           Mi Semana
         </h2>
-        <TaskForm styles={"max-lg:hidden"} />
+        <TaskForm styles={"max-lg:hidden text-xxs"} />
       </div>
       <TabMenu
         items={[

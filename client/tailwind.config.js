@@ -15,22 +15,15 @@ export default {
         'green-complete': '#20692C',// Verde task completed
       },
       fontSize: {
-        xs:"clamp(0.4rem, 0.71vi + 0.23rem, 0.6rem)",
-        sm: 'clamp(0.6rem, 0.35vi + 0.52rem, 0.8rem)',
-        base: 'clamp(0.75rem, 0.44vi + 0.65rem, 1rem)',
-        md:'clamp(0.94rem, 0.55vi + 0.81rem, 1.25rem)',
-        lg:'clamp(1.17rem, 0.69vi + 1.01rem, 1.56rem);',
-        xl: 'clamp(1.46rem, 0.86vi + 1.26rem, 1.95rem)',
-        '2xl': 'clamp(1.83rem, 1.08vi + 1.58rem, 2.44rem)',
-        '3xl': 'clamp(2.29rem, 1.35vi + 1.97rem, 3.05rem)',
-      }
-      // --fs-sm: clamp(0.6rem, 0.35vi + 0.52rem, 0.8rem);
-      // --fs-base: clamp(0.75rem, 0.44vi + 0.65rem, 1rem);
-      // --fs-md: clamp(0.94rem, 0.55vi + 0.81rem, 1.25rem);
-      // --fs-lg: clamp(1.17rem, 0.69vi + 1.01rem, 1.56rem);
-      // --fs-xl: clamp(1.46rem, 0.86vi + 1.26rem, 1.95rem);
-      // --fs-xxl: clamp(1.83rem, 1.08vi + 1.58rem, 2.44rem);
-      // --fs-xxxl: clamp(2.29rem, 1.35vi + 1.97rem, 3.05rem);
+        'xxs': 'clamp(0.625rem, 1.2vw, 0.75rem)',  // Mín: 10px, Máx: 12px
+        'xs': 'clamp(0.75rem, 1.5vw, 0.875rem)',  // Mín: 12px, Máx: 14px
+        'sm': 'clamp(0.875rem, 1.6vw, 1rem)',  // Mín: 14px, Máx: 16px
+        'base': 'clamp(1rem, 1.8vw, 1.125rem)',  // Mín: 16px, Máx: 18px
+        'lg': 'clamp(1.125rem, 2vw, 1.25rem)',  // Mín: 18px, Máx: 20px
+        'xl': 'clamp(1.25rem, 2.2vw, 1.5rem)',  // Mín: 20px, Máx: 24px
+        '2xl': 'clamp(1.5rem, 2.5vw, 1.75rem)',  // Mín: 24px, Máx: 28px
+        '3xl': 'clamp(1.75rem, 3vw, 2rem)',  // Mín: 28px, Máx: 32px
+      },
     }
   },
   plugins: [
