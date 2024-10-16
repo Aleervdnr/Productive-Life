@@ -31,12 +31,12 @@ function NavBar({ activeItem }) {
     <div className={`p-5 lg:p-0 lg:w-[220px] row-start-1 ${!isAuthenticated && `hidden`}`}>
       <BurgerMenu setMenu={handleMenuOpenClose} />
       <nav
-        className={`w-full p-5 h-screen absolute top-0 left-0 bg-dark-400  transition-transform duration-300 ease-in-out max-lg:max-w-[375px] lg:static lg:translate-x-0  lg:px-0  ${
+        className={`w-full p-5 h-dvh absolute top-0 left-0 bg-dark-400  transition-transform duration-300 ease-in-out max-lg:max-w-[375px] lg:static lg:translate-x-0  lg:px-0  ${
           menuIsOpen ? `translate-x-0` : `translate-x-[-100%]`
-        } grid content-between lg:pb-6`}
+        } grid content-start lg:pb-6`}
       >
         <CrossMenu setMenu={handleMenuOpenClose} />
-        <ul className="w-full grid justify-items-center">
+        <ul className="w-full grid justify-items-center mb-10">
           <Link to={"/home"} className="hidden lg:block">
             <img
               src={logo}
@@ -67,7 +67,7 @@ function NavBar({ activeItem }) {
         <ul className="w-full flex justify-center ">
           <li className="cursor-pointer bg-dark-500 rounded-lg w-fit" onClick={handleLogout}>
             <span
-              className={` capitalize relative flex gap-4  px-4 py-2 items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden lg:text-xs`}
+              className={` capitalize relative flex gap-4  px-4 py-2 items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden lg:text-sm`}
             >
               <FaArrowRightFromBracket className="text-sm" />
               Cerrar sesion

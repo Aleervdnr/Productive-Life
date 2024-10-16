@@ -14,12 +14,12 @@ function LoginRegisterpage() {
 
   return (
     <div className="flex">
-      <div className="w-full lg:w-2/4 h-screen flex flex-col justify-center gap-4 overflow-hidden">
+      <div className="w-full lg:w-2/4 h-dvh flex flex-col justify-center gap-4 overflow-hidden">
         <div className="text-center">
           <h1 className="text-4xl font-semibold">
             Productive<span className="text-violet-main">Life</span>
           </h1>
-          <span className="text-xl font-semibold">Bienvenido</span>
+          <span className="text-2xl font-semibold">Bienvenido</span>
         </div>
         {errors.map((error, i) => (
           <p className="text-center bg-red-500" key={i}>
@@ -35,7 +35,7 @@ function LoginRegisterpage() {
           <RegisterForm handleSetIsLogin={handleSetIsLogin} />
         </div>
       </div>
-      <div className="hidden lg:flex w-2/4 h-screen bg-violet-main lg:items-center lg:justify-center ">
+      <div className="hidden lg:flex w-2/4 h-dvh bg-violet-main lg:items-center lg:justify-center ">
         <EmblaCarousel />
       </div>
     </div>

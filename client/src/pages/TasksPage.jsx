@@ -21,7 +21,7 @@ export default function TasksPage({ setActiveItem }) {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-55px)] lg:h-screen  overflow-hidden relative">
+    <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative">
       <div className="font-medium flex gap-2 px-5 mb-3 lg:hidden">
         <div
           className={`px-[5px] py-[3px] rounded ${
