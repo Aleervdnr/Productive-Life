@@ -19,7 +19,7 @@ function LoginRegisterpage() {
           <h1 className="text-4xl font-semibold">
             Productive<span className="text-violet-main">Life</span>
           </h1>
-          <span className="text-xl font-semibold">Bienvenido</span>
+          <span className="text-2xl font-semibold">Bienvenido</span>
         </div>
         {errors.map((error, i) => (
           <p className="text-center bg-red-500" key={i}>

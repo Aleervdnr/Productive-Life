@@ -67,7 +67,7 @@ function NavBar({ activeItem }) {
         <ul className="w-full flex justify-center ">
           <li className="cursor-pointer bg-dark-500 rounded-lg w-fit" onClick={handleLogout}>
             <span
-              className={` capitalize relative flex gap-4  px-4 py-2 items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden lg:text-xs`}
+              className={` capitalize relative flex gap-4  px-4 py-2 items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden lg:text-sm`}
             >
               <FaArrowRightFromBracket className="text-sm" />
               Cerrar sesion

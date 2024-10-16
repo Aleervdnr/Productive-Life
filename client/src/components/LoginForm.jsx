@@ -24,7 +24,7 @@ export default function LoginForm({ handleSetIsLogin }) {
         </p>
       )}
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold">Email</label>
+        <label className="text-sm font-semibold">Email</label>
         <InputForm
           typeInput={"email"}
           placeholder={"Ingrese su email"}
@@ -38,7 +38,7 @@ export default function LoginForm({ handleSetIsLogin }) {
         </p>
       )}
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold">Contraseña</label>{" "}
+        <label className="text-sm font-semibold">Contraseña</label>{" "}
         <InputForm
           typeInput={"password"}
           placeholder={"Ingrese su contraseña"}
@@ -47,7 +47,7 @@ export default function LoginForm({ handleSetIsLogin }) {
         />
       </div>
       <div className="flex justify-between items-center">
-        <p className="text-xxs font-semibold text-dark-100">
+        <p className="text-xs font-semibold text-dark-100">
           No tienes cuenta?{" "}
           <span
             onClick={handleSetIsLogin}
@@ -56,7 +56,7 @@ export default function LoginForm({ handleSetIsLogin }) {
             Registrate
           </span>
         </p>
-        <button className="bg-violet-main text-white text-xs px-4 py-[6px] rounded w-fit font-semibold">
+        <button className="bg-violet-main text-white text-sm px-4 py-[6px] rounded w-fit font-semibold">
           Ingresar
         </button>
       </div>
