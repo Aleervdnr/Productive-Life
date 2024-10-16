@@ -2,18 +2,35 @@ import { useForm } from "react-hook-form";
 import InputTaskForm from "./InputTaskForm";
 import TextAreaTaskForm from "./TextAreaTaskForm";
 import { useTasks } from "../../context/TasksContext";
-import { todayDate, getHour } from "../../libs/Dates.js";
-import { useEffect, useState } from "react";
+import { useDate } from "../../context/DateContext.jsx";
+import { isBefore } from "date-fns";
 
-export default function TaskForm({styles}) {
-  const { register, handleSubmit, resetField, setValue } = useForm();
+export default function TaskForm({ styles }) {
+  const { register, handleSubmit, resetField, setValue, watch } = useForm();
+  const { nowDate } = useDate();
   const { createTask } = useTasks();
-  const [hourAndMinutes, setHourAndMinutes] = useState("00:00");
 
-  useEffect(() => {
-    const { hour, minutes } = getHour();
-    setHourAndMinutes(`${hour <= 9 ? `0${hour}` : hour}:${minutes}`);
-  }, []);
+  const selectedTaskDate = watch("taskDate");
+  const selectedTaskEndDate = watch("recurringEndDate");
+
+  const handleSelectedDate = (e) => {
+    const selectedDate = e.target.value;
+
+    // Actualizamos el valor de react-hook-form
+    setValue("taskDate", selectedDate);
+
+    // Verificamos si la fecha de fin es válida
+    if (
+      selectedTaskEndDate &&
+      isBefore(new Date(selectedTaskEndDate), new Date(selectedDate))
+    ) {
+      setValue("recurringEndDate", ""); // Resetear la fecha de fin si es inválida
+    }
+  };
+
+  const handleSelectedEndDate = (e) => {
+    setValue("recurringEndDate", e.target.value); // Actualizar la fecha de fin
+  };
 
   const onSubmit = (data) => {
     const {
@@ -39,8 +56,8 @@ export default function TaskForm({styles}) {
     createTask(newTask);
     resetField("title");
     resetField("description");
-    setValue("taskDate", todayDate);
-    setValue("recurringEndDate", todayDate);
+    setValue("taskDate", nowDate);
+    setValue("recurringEndDate", nowDate);
     resetField("startTime");
     resetField("endTime");
   };
@@ -53,7 +70,9 @@ export default function TaskForm({styles}) {
         onClick={() => document.getElementById("my_modal_50").showModal()}
       >
         <span className="hidden lg:block lg:font-semibold">Agregar Tarea</span>
-        <span className="lg:text-md lg:leading-3 lg:font-medium lg:pl-1 ">+</span>
+        <span className="lg:text-md lg:leading-3 lg:font-medium lg:pl-1 ">
+          +
+        </span>
       </button>
       <dialog id="my_modal_50" className="modal">
         <div className="modal-box bg-dark-400">
@@ -85,10 +104,10 @@ export default function TaskForm({styles}) {
                 <label className="text-xs">Fecha Inicio</label>
                 <input
                   type="date"
-                  {...register("taskDate", { value: todayDate })}
+                  {...register("taskDate", { value: selectedTaskDate })}
+                  min={nowDate}
+                  onChange={(e) => handleSelectedDate(e)}
                   required
-                  min={todayDate}
-                  // defaultValue={todayDate}
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
                 />
               </div>
@@ -96,8 +115,10 @@ export default function TaskForm({styles}) {
                 <label className="text-xs">Fecha Fin</label>
                 <input
                   type="date"
-                  min={todayDate}
-                  {...register("recurringEndDate", { value: todayDate })}
+                  min={selectedTaskDate}
+                  value={selectedTaskEndDate}
+                  onChange={(e) => handleSelectedEndDate(e)}
+                  {...register("recurringEndDate")}
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
                 />
               </div>
@@ -107,8 +128,7 @@ export default function TaskForm({styles}) {
                 <label>Hora Inicio</label>
                 <input
                   type="time"
-                  {...register("startTime", { value: hourAndMinutes })}
-                  min={hourAndMinutes}
+                  {...register("startTime")}
                   required
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
                 />
@@ -117,7 +137,7 @@ export default function TaskForm({styles}) {
                 <label>Hora Fin</label>
                 <input
                   type="time"
-                  {...register("endTime", { value: hourAndMinutes })}
+                  {...register("endTime")}
                   required
                   className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
                 />
