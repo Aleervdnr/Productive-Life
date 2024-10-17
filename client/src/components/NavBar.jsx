@@ -26,6 +26,7 @@ function NavBar({ activeItem }) {
   const handleMenuOpenClose = () => {
     setMenuIsOpen(!menuIsOpen);
   };
+
   return (
     <div
       className={`p-5 lg:p-0 lg:w-[220px] row-start-1 ${
@@ -51,19 +52,19 @@ function NavBar({ activeItem }) {
             <li className="grid justify-items-center my-4">
               {user ? <AvatarIcon name={user.name} /> : <AvatarIconSkeleton />}
             </li>
-            <ItemNavBar name={"home"} activeItem={activeItem}>
+            <ItemNavBar name={"home"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose} >
               <FaHome className="text-[18px]" />
               <span>Inicio</span>
             </ItemNavBar>
-            <ItemNavBar name={"tasks"} activeItem={activeItem}>
+            <ItemNavBar name={"tasks"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaTasks className="text-[18px]" />
               <span>Tareas</span>
             </ItemNavBar>
-            <ItemNavBar name={"gastos"} activeItem={activeItem}>
+            <ItemNavBar name={"gastos"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaWallet className="text-[18px]" />
               <span>Gastos</span>
             </ItemNavBar>
-            <ItemNavBar name={"compras"} activeItem={activeItem}>
+            <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaCartShopping className="text-[18px]" />
               <span>Compras</span>
             </ItemNavBar>

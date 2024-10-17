@@ -45,7 +45,7 @@ export default function TaskForm({ styles }) {
 
     const newTask = {
       title,
-      description,
+      description: description ? description : "",
       taskDate,
       startTime: `${startTime}:00`,
       endTime: `${endTime}:00`,
@@ -60,7 +60,9 @@ export default function TaskForm({ styles }) {
     setValue("recurringEndDate", nowDate);
     resetField("startTime");
     resetField("endTime");
+    dialog.close()
   };
+  const dialog = document.getElementById("my_modal_50");
 
   return (
     <>
