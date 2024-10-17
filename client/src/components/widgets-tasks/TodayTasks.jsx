@@ -3,17 +3,21 @@ import ItemTodayTask from "./ItemTodayTask";
 import { todayDate } from "../../libs/Dates.js";
 
 export default function TodayTasks() {
-  const {tasks} = useTasks()
+  const { tasks } = useTasks();
   return (
-    <div className='max-lg:w-[100vw] max-lg:h-[calc(100dvh-85px)] px-5 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll'>
+    <div className="max-lg:w-[100vw] max-lg:h-[calc(100dvh-85px)] px-5 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll">
       <span className="text-md font-semibold">Tareas del dia</span>
       <div className="flex flex-col gap-2 mt-2">
-        {tasks? 
-          tasks.map(task => task.taskDate == todayDate ? <ItemTodayTask task={task} key={task._id}/> : null)
-          :
+        {tasks.length ? (
+          tasks.map((task) =>
+            task.taskDate == todayDate ? (
+              <ItemTodayTask task={task} key={task._id} />
+            ) : null
+          )
+        ) : (
           <div>No hay tareas para hoy</div>
-          }
+        )}
       </div>
     </div>
-  )
+  );
 }
