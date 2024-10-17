@@ -6,7 +6,8 @@ import NavBar from "./components/NavBar";
 import { useState } from "react";
 import Homepage from "./pages/Homepage";
 import TasksPage from "./pages/TasksPage";
-import "./App.css"
+import { Toaster } from "sonner";
+import "./App.css";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
@@ -36,6 +37,7 @@ function App() {
             <Route path="/*" element={<Navigate to="/"></Navigate>} />
           </Route>
         </Routes>
+        <Toaster theme="dark" richColors />
         <NavBar activeItem={activeItem} />
       </main>
     </BrowserRouter>

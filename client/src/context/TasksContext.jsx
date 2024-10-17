@@ -5,6 +5,7 @@ import {
   updateTasksRequest,
 } from "../api/tasks";
 import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
+import { toast } from "sonner";
 
 const TasksContext = createContext();
 
@@ -20,11 +21,9 @@ export const useTasks = () => {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
-  const [tasksIsLoading, setTasksIsLoading] = useState(true)
+  const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
   const [dailyTasks, setDailyTasks] = useState([]);
-
-  
 
   // Filtrar tareas del día actual
   const filterDailyTasks = () => {
@@ -40,10 +39,17 @@ export function TasksProvider({ children }) {
 
   //Crear tareas
   const createTask = async (task) => {
-    const session = { token: localStorage.getItem("token") };
-    const res = await createTaskRequest(task,session.token);
-    if (res.status == 200) setTasks([...tasks, res.data]);
-    console.log(res);
+    try {
+      const session = { token: localStorage.getItem("token") };
+      const res = await createTaskRequest(task, session.token);
+      setTasks([...tasks, res.data]);
+      toast.success("Tarea creada con exito");
+      console.log(res)
+    }catch(err){
+      toast.error("Ocurrio un error")
+      console.log(err);
+    }
+
   };
 
   //Obtener tareas
@@ -57,7 +63,7 @@ export function TasksProvider({ children }) {
   const updateTask = async (task) => {
     try {
       const session = { token: localStorage.getItem("token") };
-      await updateTasksRequest(task,session.token);
+      await updateTasksRequest(task, session.token);
       setTasks(
         tasks.map((TaskMap) => (TaskMap._id == task._id ? task : TaskMap))
       );
@@ -68,7 +74,16 @@ export function TasksProvider({ children }) {
 
   return (
     <TasksContext.Provider
-      value={{ tasks, createTask, getTasks, updateTask, weeklyTasks , setWeeklyTasks, tasksIsLoading, setTasksIsLoading}}
+      value={{
+        tasks,
+        createTask,
+        getTasks,
+        updateTask,
+        weeklyTasks,
+        setWeeklyTasks,
+        tasksIsLoading,
+        setTasksIsLoading,
+      }}
     >
       {children}
     </TasksContext.Provider>

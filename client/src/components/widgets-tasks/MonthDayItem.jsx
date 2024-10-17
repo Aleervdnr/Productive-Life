@@ -23,13 +23,13 @@ export default function MonthDayItem({ children, day }) {
         className="w-full h-full border-[3px] border-dark-100 rounded-full flex items-center justify-center text-sm lg:text-xs"
         onClick={() =>
           document
-            .getElementById(`my_modal_${getDate(new Date(day))}`)
+            .getElementById(`modal_month_${getDate(new Date(day))}`)
             .showModal()
         }
       >
         {children}
       </button>
-      <dialog id={`my_modal_${getDate(new Date(day))}`} className="modal">
+      <dialog id={`modal_month_${getDate(new Date(day))}`} className="modal">
         <div className="modal-box">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
