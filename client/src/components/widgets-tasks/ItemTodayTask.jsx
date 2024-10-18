@@ -6,7 +6,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { RiPencilFill } from "react-icons/ri";
 import { useState } from "react";
 import { format } from "date-fns";
-import { deleteTasksRequest } from "../../api/tasks.js";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
@@ -17,7 +16,7 @@ export default function ItemTodayTask({ task }) {
 
   const dialog = document.getElementById(`modal_day_${task._id}`);
 
-  const handleChangeStatus = (e) => {
+  const handleChangeStatus = () => {
     const newTask = task;
     if (status == "completed") newTask.status = "pending";
     if (status == "pending") newTask.status = "completed";
@@ -160,11 +159,11 @@ export default function ItemTodayTask({ task }) {
               </div>
               <div>
                 <span className="font-bold">Creado el</span>
-                <p>{format(new Date(task.createdAt), "yyyy-MM-dd")}</p>
+                <p>{task.createdAt ? format(new Date(task.createdAt), "yyyy-MM-dd") : "cargando..."}</p>
               </div>
               <div>
                 <span className="font-bold">Actualizado el</span>
-                <p>{format(new Date(task.updatedAt), "yyyy-MM-dd")}</p>
+                <p>{task.updatedAt ? format(new Date(task.updatedAt), "yyyy-MM-dd") : "cargando..."}</p>
               </div>
               <div className="flex mt-4 gap-2 justify-end col-span-3">
                 <button
