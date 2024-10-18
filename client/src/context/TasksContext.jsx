@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   createTaskRequest,
+  deleteTasksRequest,
   getTasksRequest,
   updateTasksRequest,
 } from "../api/tasks";
@@ -44,12 +45,11 @@ export function TasksProvider({ children }) {
       const res = await createTaskRequest(task, session.token);
       setTasks([...tasks, res.data]);
       toast.success("Tarea creada con exito");
-      console.log(res)
-    }catch(err){
-      toast.error("Ocurrio un error")
+      console.log(res);
+    } catch (err) {
+      toast.error("Ocurrio un error");
       console.log(err);
     }
-
   };
 
   //Obtener tareas
@@ -60,17 +60,28 @@ export function TasksProvider({ children }) {
   };
 
   //Actualizar tareas
-  const updateTask = async (task) => {
+  const updateTask = async (task, isStatus) => {
     try {
       const session = { token: localStorage.getItem("token") };
       await updateTasksRequest(task, session.token);
       setTasks(
         tasks.map((TaskMap) => (TaskMap._id == task._id ? task : TaskMap))
       );
+      if(!isStatus) toast.success("Tarea actualizada con exito");
     } catch (error) {
       console.log(error);
     }
   };
+
+  const deleteTask = async (id) => {
+    try{
+      const session = {token: localStorage.getItem("token")}
+      await deleteTasksRequest(id,session.token)
+      setTasks(tasks.filter(taskMap => (taskMap._id !== id)))
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <TasksContext.Provider
@@ -79,6 +90,7 @@ export function TasksProvider({ children }) {
         createTask,
         getTasks,
         updateTask,
+        deleteTask,
         weeklyTasks,
         setWeeklyTasks,
         tasksIsLoading,

@@ -39,9 +39,9 @@ export default function WeekTasks() {
     setTabActive(name);
   };
   return (
-    <div className="w-[100vw]  px-5 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full">
-      <div className="lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center">
-        <h2 className="text-center hidden lg:block font-bold text-lg my-2 lg:col-start-2">
+    <div className="w-[100vw] max-h-72  px-5 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full">
+      <div className="lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center lg:py-1">
+        <h2 className="text-center hidden lg:block font-bold text-2xl my-2 lg:col-start-2">
           Mi Semana
         </h2>
         <TaskForm styles={"max-lg:hidden text-xxs"} />
