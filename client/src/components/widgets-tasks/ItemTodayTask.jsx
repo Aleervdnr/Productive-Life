@@ -62,6 +62,9 @@ export default function ItemTodayTask({ task }) {
       recurringDays: task.recurringDays,
       isRecurring: task.isRecurring,
       status: task.status,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+      user:task.user
     };
 
     updateTask(updatedTask, false);
