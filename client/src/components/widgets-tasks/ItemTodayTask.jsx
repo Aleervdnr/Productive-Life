@@ -150,11 +150,11 @@ export default function ItemTodayTask({ task }) {
               </div>
               <div className="col-start-1">
                 <span className="font-bold">Hora de Inicio</span>
-                <p>{task.recurringEndDate}</p>
+                <p>{task.startTime}</p>
               </div>
               <div className="col-start-2">
-                <span className="font-bold">Hora de Inicio</span>
-                <p>{task.recurringEndDate}</p>
+                <span className="font-bold">Hora de Fin</span>
+                <p>{task.endTime}</p>
               </div>
               <div>
                 <span className="font-bold">Estado</span>
