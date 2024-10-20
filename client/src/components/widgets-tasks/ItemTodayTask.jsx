@@ -6,6 +6,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { RiPencilFill } from "react-icons/ri";
 import { useState } from "react";
 import { format } from "date-fns";
+import { constructFromSymbol } from "date-fns/constants";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
@@ -50,6 +51,7 @@ export default function ItemTodayTask({ task }) {
       startTime,
       endTime,
     } = data;
+    console.log(data)
 
     const updatedTask = {
       _id: task._id,
@@ -57,8 +59,8 @@ export default function ItemTodayTask({ task }) {
       description,
       taskDate,
       recurringEndDate,
-      startTime: `${startTime}:00`,
-      endTime: `${endTime}:00`,
+      startTime: startTime.length == 8 ? startTime : `${startTime}:00`,
+      endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
       recurringDays: task.recurringDays,
       isRecurring: task.isRecurring,
       status: task.status,
@@ -66,6 +68,8 @@ export default function ItemTodayTask({ task }) {
       updatedAt: task.updatedAt,
       user:task.user
     };
+
+    console.log(updatedTask)
 
     updateTask(updatedTask, false);
     dialog.close();
