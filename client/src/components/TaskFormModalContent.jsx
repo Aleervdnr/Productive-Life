@@ -11,7 +11,7 @@ import { RiArrowRightSLine } from "react-icons/ri";
 import { RiSave3Line } from "react-icons/ri";
 import ItemRecurrent from "./ItemRecurrent.jsx";
 
-export default function TaskFormModalContent() {
+export default function TaskFormModalContent({step, setStep}) {
   // Day Picker
   const pastMonth = new Date();
 
@@ -52,9 +52,6 @@ export default function TaskFormModalContent() {
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
-
-  //Handle Steps
-  const [step, setStep] = useState(1);
 
   //Handle Submit
   const onSubmit = (data) => {

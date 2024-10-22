@@ -3,9 +3,11 @@ import { useTasks } from "../context/TasksContext.jsx";
 import { useDate } from "../context/DateContext.jsx";
 import { isBefore } from "date-fns";
 import TaskFormModalContent from "./TaskFormModalContent.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function TaskFormButton({ styles }) {
+    //Handle Steps
+    const [step, setStep] = useState(1);
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
@@ -20,13 +22,13 @@ export default function TaskFormButton({ styles }) {
       </button>
       <dialog id="my_modal_50" className="modal">
         <div className="modal-box bg-dark-400 overflow-hidden">
-          <form method="dialog">
+          <form method="dialog" onSubmit={()=> setStep(1)}>
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
             </button>
           </form>      
-          <TaskFormModalContent/>  
+          <TaskFormModalContent step={step} setStep={setStep} />  
         </div>
       </dialog>
     </>
