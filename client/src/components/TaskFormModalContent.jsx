@@ -43,7 +43,7 @@ export default function TaskFormModalContent({step, setStep}) {
   }
 
   //React-Hook-Form
-  const { register, handleSubmit, resetField, setValue, watch } = useForm();
+  const { register, handleSubmit, resetField, watch } = useForm();
 
   const titleText = watch("title");
 
@@ -222,9 +222,9 @@ export default function TaskFormModalContent({step, setStep}) {
             />
           </div>
         </div>
-        <div className="grid gap-1">
+        <div className="grid gap-1 ">
           <label className="text-sm">Repetir todos los</label>
-          <div className="flex gap-1 justify-between">
+          <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between">
             {recurringDaysArray.map((item) => (
               <ItemRecurrent
                 register={register}

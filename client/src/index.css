@@ -8,8 +8,8 @@
     font-family: "Poppins", sans-serif;
   }
 }
-html{
-  min-width: 100vw
+html {
+  min-width: 100vw;
 }
 body {
   background-color: #232429;
@@ -28,13 +28,33 @@ body {
 }
 
 .rdp-root {
-  --rdp-accent-color: #7E73FF; /* Change the accent color to indigo. */
+  --rdp-accent-color: #7e73ff; /* Change the accent color to indigo. */
   --rdp-accent-background-color: #7f73ff8f; /* Change the accent background color. */
   display: grid;
   justify-content: center;
 }
 
-.modal-box{
+@media screen and (width <= 375px) {
+  .rdp-root {
+    --rdp-day-height:32px;
+    --rdp-day-width:32px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (width <= 400px) {
+  .rdp-root {
+    --rdp-day-height:32.5px;
+    --rdp-day-width:32.5px;
+    font-size: 16px;
+  }
+}
+
+.rdp-selected {
+  font-size: 16px;
+}
+
+.modal-box {
   max-height: none;
   max-width: 400px;
 }
