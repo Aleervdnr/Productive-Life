@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import TodayTasks from "../components/widgets-tasks/TodayTasks";
 import WeekTasks from "../components/widgets-tasks/WeekTasks";
 import MonthTasks from "../components/widgets-tasks/MonthTasks";
-import TaskForm from "../components/taskForm/TaskForm.jsx";
 import { useTasks } from "../context/TasksContext.jsx";
+import TaskFormButton from "../components/TaskFormButton.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading } = useTasks();
@@ -78,7 +78,7 @@ export default function TasksPage({ setActiveItem }) {
           </div>
         </div>
       </div>
-      <TaskForm styles={"lg:hidden"}/>
+      <TaskFormButton styles={"lg:hidden"}/>
     </div>
   );
 }
