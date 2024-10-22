@@ -28,7 +28,7 @@ export default function TaskFormModalContent({step, setStep}) {
       footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
     } else if (selected.to) {
       footer = (
-        <p className="text-sm mt-2">
+        <p className="text-xs md:text-sm text-center mt-2">
           <span>Desde el </span>
           <span className="text-violet-main font-medium">
             {format(selected.from, "dd/MM/yyyy")}{" "}
@@ -170,10 +170,11 @@ export default function TaskFormModalContent({step, setStep}) {
         <div className="w-full flex justify-end mt-3">
           <button
             onClick={(e) => handleSteps(e,step,"next")}
-            className="px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
+            className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
             disabled={titleText?.length > 0 ? false : true}
           >
             Siguiente
+            <RiArrowRightSLine className="text-2xl" />
           </button>
         </div>
       </div>
@@ -224,7 +225,7 @@ export default function TaskFormModalContent({step, setStep}) {
         </div>
         <div className="grid gap-1 ">
           <label className="text-sm">Repetir todos los</label>
-          <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between">
+          <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between justify-self-center">
             {recurringDaysArray.map((item) => (
               <ItemRecurrent
                 register={register}
