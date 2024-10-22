@@ -9,7 +9,7 @@ export default function TextAreaTaskForm({
     <textarea
       rows={rows}
       placeholder={placeholder}
-      className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-56 text-xs font-semibold transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
+      className="border border-dark-200 bg-transparent w-full rounded px-[10px] py-[5px] text-xs font-medium transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
       {...register(name)}
     ></textarea>
   );

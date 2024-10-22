@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TabMenu } from "../TabMenu";
 import { useTasks } from "../../context/TasksContext";
-import {
-  startOfWeek,
-  endOfWeek,
-  isWithinInterval,
-  getISODay,
-  isMonday,
-} from "date-fns";
-import TaskForm from "../taskForm/TaskForm";
+import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
+import TaskFormButton from "../TaskFormButton";
 
 export default function WeekTasks() {
   const [tabActive, setTabActive] = useState({ name: "Lun", isoDay: 1 });
@@ -44,7 +38,7 @@ export default function WeekTasks() {
         <h2 className="text-center hidden lg:block font-bold text-2xl my-2 lg:col-start-2">
           Mi Semana
         </h2>
-        <TaskForm styles={"max-lg:hidden text-xxs"} />
+        <TaskFormButton styles={"max-lg:hidden text-xxs"} />
       </div>
       <TabMenu
         items={[

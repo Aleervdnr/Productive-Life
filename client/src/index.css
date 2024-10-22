@@ -26,3 +26,13 @@ body {
   flex: 0 0 100%;
   min-width: 0;
 }
+
+.rdp-root {
+  --rdp-accent-color: #7E73FF; /* Change the accent color to indigo. */
+  --rdp-accent-background-color: #7f73ff8f; /* Change the accent background color. */
+  
+}
+
+.modal-box{
+  max-height: none;
+}

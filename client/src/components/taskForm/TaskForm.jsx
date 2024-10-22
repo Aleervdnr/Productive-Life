@@ -1,15 +1,16 @@
 import { useForm } from "react-hook-form";
-import InputTaskForm from "./InputTaskForm";
-import TextAreaTaskForm from "./TextAreaTaskForm";
+
 import { useTasks } from "../../context/TasksContext";
 import { useDate } from "../../context/DateContext.jsx";
 import { isBefore } from "date-fns";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
 
 export default function TaskForm({ styles }) {
   const { register, handleSubmit, resetField, setValue, watch } = useForm();
   const { nowDate } = useDate();
   const { createTask } = useTasks();
-
+  const dialog = document.getElementById("my_modal_50");
   const selectedTaskDate = watch("taskDate");
   const selectedTaskEndDate = watch("recurringEndDate");
 
@@ -60,10 +61,8 @@ export default function TaskForm({ styles }) {
     setValue("recurringEndDate", nowDate);
     resetField("startTime");
     resetField("endTime");
-    dialog.close()
+    dialog.close();
   };
-  const dialog = document.getElementById("my_modal_50");
-
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
@@ -84,9 +83,13 @@ export default function TaskForm({ styles }) {
               ✕
             </button>
           </form>
-          <h3 className=" text-lg">Nueva Tarea</h3>
-          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2">
-            <div className="grid gap-2 mt-3">
+          <h3 className="text-lg mb-2">Nueva Tarea</h3>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="grid grid-cols-[repeat(2,fit-content)] gap-2"
+          >
+            <div className="grid grid-rows-[16px,30px] col-span-2 lg:col-span-1 ">
+              <label className="text-xs w-fit">Titulo</label>
               <InputTaskForm
                 typeInput={"text"}
                 placeholder={"Titulo"}
@@ -94,114 +97,116 @@ export default function TaskForm({ styles }) {
                 required={true}
                 register={register}
               />
+            </div>
+            <div className="grid col-span-2 lg:col-span-1">
+              <label className="text-xs">Descripcion</label>
               <TextAreaTaskForm
-                rows={1}
+                rows={3}
                 placeholder={"Descripcion"}
                 name={"description"}
                 register={register}
               />
             </div>
-            <div className="flex">
-              <div className="grid w-2/4">
-                <label className="text-xs">Fecha Inicio</label>
-                <input
-                  type="date"
-                  {...register("taskDate", { value: selectedTaskDate })}
-                  min={nowDate}
-                  onChange={(e) => handleSelectedDate(e)}
-                  required
-                  className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
-                />
-              </div>
-              <div className="grid w-2/4">
-                <label className="text-xs">Fecha Fin</label>
-                <input
-                  type="date"
-                  min={selectedTaskDate}
-                  value={selectedTaskEndDate}
-                  onChange={(e) => handleSelectedEndDate(e)}
-                  {...register("recurringEndDate")}
-                  className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
-                />
-              </div>
+            <div className="grid w-2/4">
+              <label className="text-xs">Fecha Inicio</label>
+              <input
+                type="date"
+                {...register("taskDate", { value: selectedTaskDate })}
+                min={nowDate}
+                onChange={(e) => handleSelectedDate(e)}
+                required
+                className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
+              />
             </div>
-            <div className="flex">
-              <div className="grid w-2/4">
-                <label>Hora Inicio</label>
-                <input
-                  type="time"
-                  {...register("startTime")}
-                  required
-                  className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
-                />
-              </div>
-              <div className="grid w-2/4">
-                <label>Hora Fin</label>
-                <input
-                  type="time"
-                  {...register("endTime")}
-                  required
-                  className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
-                />
-              </div>
+            <div className="grid w-2/4">
+              <label className="text-xs">Fecha Fin</label>
+              <input
+                type="date"
+                min={selectedTaskDate}
+                value={selectedTaskEndDate}
+                onChange={(e) => handleSelectedEndDate(e)}
+                {...register("recurringEndDate")}
+                className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
+              />
             </div>
-            <span>Repetir todos los</span>
-            <div className="flex gap-2">
-              <div>
-                <input
-                  type="checkbox"
-                  value={1}
-                  {...register("recurringDays")}
-                />{" "}
-                L
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  value={2}
-                  {...register("recurringDays")}
-                />{" "}
-                M
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  value={3}
-                  {...register("recurringDays")}
-                />{" "}
-                X
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  value={4}
-                  {...register("recurringDays")}
-                />{" "}
-                J
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  value={5}
-                  {...register("recurringDays")}
-                />{" "}
-                V
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  value={6}
-                  {...register("recurringDays")}
-                />{" "}
-                S
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  value={0}
-                  {...register("recurringDays")}
-                />{" "}
-                D
+
+            <div className="grid w-2/4">
+              <label className="text-xs">Hora Inicio</label>
+              <input
+                type="time"
+                {...register("startTime")}
+                required
+                className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
+              />
+            </div>
+            <div className="grid w-2/4">
+              <label className="text-xs">Hora Fin</label>
+              <input
+                type="time"
+                {...register("endTime")}
+                required
+                className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold"
+              />
+            </div>
+            <div className="col-span-2">
+              <span>Repetir todos los</span>
+              <div className="flex gap-2">
+                <div>
+                  <input
+                    type="checkbox"
+                    value={1}
+                    {...register("recurringDays")}
+                  />{" "}
+                  L
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    value={2}
+                    {...register("recurringDays")}
+                  />{" "}
+                  M
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    value={3}
+                    {...register("recurringDays")}
+                  />{" "}
+                  X
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    value={4}
+                    {...register("recurringDays")}
+                  />{" "}
+                  J
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    value={5}
+                    {...register("recurringDays")}
+                  />{" "}
+                  V
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    value={6}
+                    {...register("recurringDays")}
+                  />{" "}
+                  S
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    value={0}
+                    {...register("recurringDays")}
+                  />{" "}
+                  D
+                </div>
               </div>
             </div>
             <button>Guardar</button>
