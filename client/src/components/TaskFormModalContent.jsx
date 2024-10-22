@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useForm } from "react-hook-form";
@@ -46,7 +46,6 @@ export default function TaskFormModalContent() {
   const { register, handleSubmit, resetField, setValue, watch } = useForm();
 
   const titleText = watch("title");
-  const recurringDaysWatch = watch("recurringDays");
 
   //Context Tasks
   const { createTask } = useTasks();
@@ -114,18 +113,38 @@ export default function TaskFormModalContent() {
     setRecurringDaysArray(newArray);
   };
 
-  const formNextFirst = (e) => {
+  const handleSteps = (e,step,data) => {
     e.preventDefault();
-    setStep(2);
+    if(step == 1 && data == "next"){
+      setStep(2);
+      setHeightModal(500)
+    }
+
+    if(step == 2  && data == "back"){
+      setStep(1);
+      setHeightModal(252)
+    }
+
+    if(step == 2  && data == "next"){
+      setStep(3)
+      setHeightModal(252)
+    }
+
+    if(step == 3  && data == "back"){
+      setStep(2)
+      setHeightModal(500)
+    }
   };
+
+  const [heightModal, setHeightModal] = useState(252)
 
   return (
     <form
-      className={`grid grid-cols-[repeat(3,100%)] gap-6 place-content-center transition-transform duration-500  ${
-        step == 1 && "translate-x-[calc(100%+24px)]"
-      } ${step == 2 && "translate-x-[0]"} ${
-        step == 3 && "translate-x-[calc(-100%-24px)]"
-      }`}
+      className={`grid grid-cols-[repeat(3,100%)] gap-6  transition-transform duration-500  ${
+        step == 1 && "translate-x-[0]"
+      } ${step == 2 && "translate-x-[calc(-100%-24px)]"} ${
+        step == 3 && "translate-x-[calc(-200%-48px)]"
+      } transition-height duration-500 ease-in-out ${step == 1 && "h-[230px]"} ${step == 2 && "h-[412px]"} ${step == 3 && "h-[218px]"} `}
       onSubmit={handleSubmit(onSubmit)}
     >
       <div>
@@ -153,7 +172,7 @@ export default function TaskFormModalContent() {
         </div>
         <div className="w-full flex justify-end mt-3">
           <button
-            onClick={(e) => formNextFirst(e)}
+            onClick={(e) => handleSteps(e,step,"next")}
             className="px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
             disabled={titleText?.length > 0 ? false : true}
           >
@@ -171,12 +190,12 @@ export default function TaskFormModalContent() {
           footer={footer}
         />
         <div className="w-full flex justify-between mt-4 text-sm">
-          <div onClick={() => setStep(1)} className="flex items-center">
+          <div onClick={(e) => handleSteps(e,step,"back")} className="flex items-center">
             <RiArrowLeftSLine className="text-xl" />
             Volver
           </div>
           <div
-            onClick={() => setStep(3)}
+            onClick={(e) => handleSteps(e,step,"next")}
             className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded"
           >
             Siguiente
@@ -222,7 +241,7 @@ export default function TaskFormModalContent() {
           </div>
         </div>
         <div className="text-sm flex justify-between mt-4">
-          <div onClick={() => setStep(2)} className="flex items-center">
+          <div onClick={(e) => handleSteps(e,step,"back")} className="flex items-center">
             <RiArrowLeftSLine className="text-xl" />
             Volver
           </div>
