@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useForm } from "react-hook-form";
@@ -11,7 +11,7 @@ import { RiArrowRightSLine } from "react-icons/ri";
 import { RiSave3Line } from "react-icons/ri";
 import ItemRecurrent from "./ItemRecurrent.jsx";
 
-export default function TaskFormModalContent() {
+export default function TaskFormModalContent({step, setStep}) {
   // Day Picker
   const pastMonth = new Date();
 
@@ -43,19 +43,15 @@ export default function TaskFormModalContent() {
   }
 
   //React-Hook-Form
-  const { register, handleSubmit, resetField, setValue, watch } = useForm();
+  const { register, handleSubmit, resetField, watch } = useForm();
 
   const titleText = watch("title");
-  const recurringDaysWatch = watch("recurringDays");
 
   //Context Tasks
   const { createTask } = useTasks();
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
-
-  //Handle Steps
-  const [step, setStep] = useState(1);
 
   //Handle Submit
   const onSubmit = (data) => {
@@ -114,18 +110,38 @@ export default function TaskFormModalContent() {
     setRecurringDaysArray(newArray);
   };
 
-  const formNextFirst = (e) => {
+  const handleSteps = (e,step,data) => {
     e.preventDefault();
-    setStep(2);
+    if(step == 1 && data == "next"){
+      setStep(2);
+      setHeightModal(500)
+    }
+
+    if(step == 2  && data == "back"){
+      setStep(1);
+      setHeightModal(252)
+    }
+
+    if(step == 2  && data == "next"){
+      setStep(3)
+      setHeightModal(252)
+    }
+
+    if(step == 3  && data == "back"){
+      setStep(2)
+      setHeightModal(500)
+    }
   };
+
+  const [heightModal, setHeightModal] = useState(252)
 
   return (
     <form
-      className={`grid grid-cols-[repeat(3,100%)] gap-6 place-content-center transition-transform duration-500  ${
-        step == 1 && "translate-x-[calc(100%+24px)]"
-      } ${step == 2 && "translate-x-[0]"} ${
-        step == 3 && "translate-x-[calc(-100%-24px)]"
-      }`}
+      className={`grid grid-cols-[repeat(3,100%)] gap-6  transition-transform duration-500  ${
+        step == 1 && "translate-x-[0]"
+      } ${step == 2 && "translate-x-[calc(-100%-24px)]"} ${
+        step == 3 && "translate-x-[calc(-200%-48px)]"
+      } transition-height duration-500 ease-in-out ${step == 1 && "h-[230px]"} ${step == 2 && "h-[412px]"} ${step == 3 && "h-[218px]"} `}
       onSubmit={handleSubmit(onSubmit)}
     >
       <div>
@@ -153,7 +169,7 @@ export default function TaskFormModalContent() {
         </div>
         <div className="w-full flex justify-end mt-3">
           <button
-            onClick={(e) => formNextFirst(e)}
+            onClick={(e) => handleSteps(e,step,"next")}
             className="px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
             disabled={titleText?.length > 0 ? false : true}
           >
@@ -171,12 +187,12 @@ export default function TaskFormModalContent() {
           footer={footer}
         />
         <div className="w-full flex justify-between mt-4 text-sm">
-          <div onClick={() => setStep(1)} className="flex items-center">
+          <div onClick={(e) => handleSteps(e,step,"back")} className="flex items-center">
             <RiArrowLeftSLine className="text-xl" />
             Volver
           </div>
           <div
-            onClick={() => setStep(3)}
+            onClick={(e) => handleSteps(e,step,"next")}
             className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded"
           >
             Siguiente
@@ -206,9 +222,9 @@ export default function TaskFormModalContent() {
             />
           </div>
         </div>
-        <div className="grid gap-1">
+        <div className="grid gap-1 ">
           <label className="text-sm">Repetir todos los</label>
-          <div className="flex gap-1 justify-between">
+          <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between">
             {recurringDaysArray.map((item) => (
               <ItemRecurrent
                 register={register}
@@ -222,7 +238,7 @@ export default function TaskFormModalContent() {
           </div>
         </div>
         <div className="text-sm flex justify-between mt-4">
-          <div onClick={() => setStep(2)} className="flex items-center">
+          <div onClick={(e) => handleSteps(e,step,"back")} className="flex items-center">
             <RiArrowLeftSLine className="text-xl" />
             Volver
           </div>
