@@ -14,12 +14,22 @@ import ItemRecurrent from "../ItemRecurrent.jsx";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
-  const { updateTask, deleteTask, recurringDaysArray,setRecurringDaysArray, handleCheckRecurringDays } = useTasks();
+  const { updateTask, deleteTask, handleCheckRecurringDays } = useTasks();
   const { register, setValue, handleSubmit } = useForm();
   const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
 
   const dialog = document.getElementById(`modal_day_${task._id}`);
+
+  const [recurringDays, setRecurringDays] = useState([
+    { name: "Lunes", isoDay: "1", status: task.recurringDays.includes(1)},
+    { name: "Martes", isoDay: "2", status: task.recurringDays.includes(2) },
+    { name: "Miercoles", isoDay: "3", status: task.recurringDays.includes(3)},
+    { name: "Jueves", isoDay: "4", status: task.recurringDays.includes(4) },
+    { name: "Viernes", isoDay: "5", status: task.recurringDays.includes(5) },
+    { name: "Sabado", isoDay: "6", status: task.recurringDays.includes(6) },
+    { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
+  ])
 
   const handleChangeStatus = () => {
     const newTask = task;
@@ -44,16 +54,6 @@ export default function ItemTodayTask({ task }) {
       setValue("startTime", task.startTime);
       setValue("endTime", task.endTime);
       console.log(task.recurringDays)
-      const newArray = [
-        { name: "Lunes", isoDay: "1", status: task.recurringDays.includes(1)},
-        { name: "Martes", isoDay: "2", status: task.recurringDays.includes(2) },
-        { name: "Miercoles", isoDay: "3", status: task.recurringDays.includes(3)},
-        { name: "Jueves", isoDay: "4", status: task.recurringDays.includes(4) },
-        { name: "Viernes", isoDay: "5", status: task.recurringDays.includes(5) },
-        { name: "Sabado", isoDay: "6", status: task.recurringDays.includes(6) },
-        { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
-      ]
-      setRecurringDaysArray(newArray)
     }
   };
 
@@ -67,7 +67,7 @@ export default function ItemTodayTask({ task }) {
       endTime,
     } = data;
 
-    const recurringDays = recurringDaysArray
+    const filteredRecurringDays = recurringDays
     .filter((item) => item.status == true)
     .map((item) => item.status == true && item.isoDay);
 
@@ -79,8 +79,8 @@ export default function ItemTodayTask({ task }) {
       recurringEndDate,
       startTime: startTime.length == 8 ? startTime : `${startTime}:00`,
       endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
-      recurringDays: recurringDays ? recurringDays : [],
-      isRecurring: recurringDays.length >= 1 && true,
+      recurringDays: filteredRecurringDays ? filteredRecurringDays : [],
+      isRecurring: filteredRecurringDays.length >= 1 && true,
       status: task.status,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
@@ -90,15 +90,6 @@ export default function ItemTodayTask({ task }) {
     console.log(updatedTask);
 
     updateTask(updatedTask, false);
-    setRecurringDaysArray([
-      { name: "Lunes", isoDay: "1", status: false },
-      { name: "Martes", isoDay: "2", status: false },
-      { name: "Miercoles", isoDay: "3", status: false },
-      { name: "Jueves", isoDay: "4", status: false },
-      { name: "Viernes", isoDay: "5", status: false },
-      { name: "Sabado", isoDay: "6", status: false },
-      { name: "Domingo", isoDay: "0", status: false },
-    ]);
     dialog.close();
     setEditIsActive(false);
   };
@@ -345,10 +336,12 @@ export default function ItemTodayTask({ task }) {
                 <div>
                   <label className="font-medium text-sm"> Repetir los</label>
                   <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between justify-self-center">
-                    {recurringDaysArray.map((item) => (
+                    {recurringDays.map((item) => (
                       <ItemRecurrent
                         register={register}
                         handleCheck={handleCheckRecurringDays}
+                        setRecurringDays={setRecurringDays}
+                        recurringDays={recurringDays}
                         status={item.status}
                         day={item.name}
                         isoDay={item.isoDay}

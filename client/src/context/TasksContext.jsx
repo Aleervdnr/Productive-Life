@@ -92,13 +92,13 @@ export function TasksProvider({ children }) {
     }
   }
 
-  const handleCheckRecurringDays = (data) => {
-    const newArray = recurringDaysArray.map((item) =>
+  const handleCheckRecurringDays = (data,set,array) => {
+    const newArray = array.map((item) =>
       item.isoDay == data
         ? { name: item.name, isoDay: item.isoDay, status: !item.status }
         : item
     );
-    setRecurringDaysArray(newArray);
+    set(newArray);
   };
 
   return (

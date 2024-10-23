@@ -1,13 +1,20 @@
 import { useState } from "react";
 import useWindowSize from "../hooks/useWindowSize";
 
-export default function ItemRecurrent({ handleCheck, register, status, isoDay, day }) {
-
+export default function ItemRecurrent({
+  handleCheck,
+  register,
+  status,
+  isoDay,
+  day,
+  setRecurringDays,
+  recurringDays,
+}) {
   const handleClick = () => {
-    handleCheck(isoDay)
+    handleCheck(isoDay,setRecurringDays, recurringDays);
   };
 
-  const {width} = useWindowSize()
+  const { width } = useWindowSize();
 
   return (
     <div
