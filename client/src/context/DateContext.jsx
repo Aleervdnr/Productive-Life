@@ -16,6 +16,8 @@ export const DateProvider = ({ children }) => {
   const [nowHourAndMinutes, setNowHourAndMinutes] = useState(`${getHours(new Date()) <= 9 ? `0${getHours(new Date())}` : getHours(new Date())}:${getMinutes(new Date())}`);
   const [nowDate, setNowDate] = useState(format(new Date(), "yyyy-MM-dd"))
 
+  const daysOfWeek = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"]
+
   useEffect(() => {
     const intervalDateTime = setInterval(() => {
       setNowDateTime(new Date());
@@ -29,7 +31,7 @@ export const DateProvider = ({ children }) => {
   }, []);
 
   return (
-    <DateContext.Provider value={{ nowDateTime, nowHourAndMinutes, nowDate }}>
+    <DateContext.Provider value={{ nowDateTime, nowHourAndMinutes, nowDate, daysOfWeek }}>
       {children}
     </DateContext.Provider>
   );

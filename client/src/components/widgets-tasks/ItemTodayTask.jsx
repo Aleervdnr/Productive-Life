@@ -6,13 +6,16 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { RiPencilFill } from "react-icons/ri";
 import { useState } from "react";
 import { format } from "date-fns";
-import { constructFromSymbol } from "date-fns/constants";
+import { RiCalendar2Line } from "react-icons/ri";
+import { RiCalendarCheckLine } from "react-icons/ri";
+import { RiCalendarScheduleLine } from "react-icons/ri";
+import { RiTimeLine } from "react-icons/ri";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
   const { updateTask, deleteTask } = useTasks();
   const { register, setValue, handleSubmit } = useForm();
-  const { nowDate } = useDate();
+  const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
 
   const dialog = document.getElementById(`modal_day_${task._id}`);
@@ -51,7 +54,7 @@ export default function ItemTodayTask({ task }) {
       startTime,
       endTime,
     } = data;
-    console.log(data)
+    console.log(data);
 
     const updatedTask = {
       _id: task._id,
@@ -66,10 +69,10 @@ export default function ItemTodayTask({ task }) {
       status: task.status,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
-      user:task.user
+      user: task.user,
     };
 
-    console.log(updatedTask)
+    console.log(updatedTask);
 
     updateTask(updatedTask, false);
     dialog.close();
@@ -77,8 +80,8 @@ export default function ItemTodayTask({ task }) {
   };
 
   const handleDeleteTask = () => {
-    deleteTask(task._id)
-  }
+    deleteTask(task._id);
+  };
 
   return (
     <>
@@ -120,7 +123,7 @@ export default function ItemTodayTask({ task }) {
         </div>
       </div>
       <dialog id={`modal_day_${task._id}`} className="modal">
-        <div className="modal-box overflow-hidden">
+        <div className="modal-box bg-dark-400 overflow-x-hidden">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
             <button
@@ -135,54 +138,103 @@ export default function ItemTodayTask({ task }) {
               editIsActive && "translate-x-[calc(-100%-24px)] "
             }`}
           >
-            <div className="grid grid-cols-3 gap-y-4">
-              <div>
-                <span className="font-bold">Titulo</span>
-                <p>{task.title}</p>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-lg h-fit">Ver Tarea</h3>
+              <div className="grid gap-1">
+                <span className="font-medium text-sm">Titulo</span>
+                <input
+                  className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm"
+                  value={task.title}
+                  disabled
+                />
               </div>
-              <div className="col-span-2">
-                <span className="font-bold">Descripcion</span>
-                <p>{task.description}</p>
+              <div className="grid gap-1">
+                <span className="font-medium text-sm">Descripcion</span>
+                <textarea
+                  className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm"
+                  value={task.description}
+                  disabled
+                />
               </div>
-              <div>
-                <span className="font-bold">Fecha de Inicio</span>
-                <p>{task.taskDate}</p>
+              <div className="flex gap-5">
+                <div>
+                  <span className="font-medium text-sm">Fecha de Inicio</span>
+                  <p className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm flex items-center gap-1">
+                    {task.taskDate}
+                    <RiCalendar2Line />
+                  </p>
+                </div>
+                <div>
+                  <span className="font-medium text-sm">Fecha de Fin</span>
+                  <p className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm flex items-center gap-1">
+                    {task.recurringEndDate} <RiCalendar2Line />
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="font-bold">Fecha de Fin</span>
-                <p>{task.recurringEndDate}</p>
-              </div>
-              <div className="col-start-1">
-                <span className="font-bold">Hora de Inicio</span>
-                <p>{task.startTime.slice(0,-3)}</p>
-              </div>
-              <div className="col-start-2">
-                <span className="font-bold">Hora de Fin</span>
-                <p>{task.endTime.slice(0,-3)}</p>
+              <div className="flex gap-5">
+                <div>
+                  <span className="font-medium text-sm">Hora de Inicio</span>
+                  <p className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm flex items-center gap-1">
+                    {task.startTime.slice(0, -3)}
+                    <RiTimeLine />
+                  </p>
+                </div>
+                <div>
+                  <span className="font-medium text-sm">Hora de Fin</span>
+                  <p className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm flex items-center gap-1">
+                    {task.endTime.slice(0, -3)}
+                    <RiTimeLine />
+                  </p>
+                </div>
               </div>
               <div>
                 <span className="font-bold">Estado</span>
                 <p>{task.status}</p>
               </div>
-              <div>
-                <span className="font-bold">Creado el</span>
-                <p>{task.createdAt ? format(new Date(task.createdAt), "yyyy-MM-dd") : "cargando..."}</p>
+
+              <div className="flex gap-5">
+                <div>
+                  <span className="font-medium text-sm">Creado el</span>
+                  <p className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm flex items-center gap-1">
+                    {task.createdAt
+                      ? format(new Date(task.createdAt), "yyyy-MM-dd")
+                      : "cargando..."}
+                    <RiCalendarCheckLine />
+                  </p>
+                </div>
+                <div>
+                  <span className="font-medium text-sm">Actualizado el</span>
+                  <p className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm flex items-center gap-1">
+                    {task.updatedAt
+                      ? format(new Date(task.updatedAt), "yyyy-MM-dd")
+                      : "cargando..."}
+                    <RiCalendarScheduleLine />
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="font-bold">Actualizado el</span>
-                <p>{task.updatedAt ? format(new Date(task.updatedAt), "yyyy-MM-dd") : "cargando..."}</p>
-              </div>
-              <div className="flex mt-4 gap-2 justify-end col-span-3">
+              {task.isRecurring && (
+                <div>
+                  <span className="font-medium text-sm">
+                    Se repite todos los
+                  </span>
+                  <div className="flex gap-2">
+                    {task.recurringDays.map((day) => (
+                      <p className="border px-2 rounded-full border-violet-main text-sm bg-violet-main capitalize" key={day}>{daysOfWeek[day]}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="flex mt-4 gap-2 justify-between max-w-[310px] self-end col-span-3">
                 <button
                   type="button"
-                  className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 flex items-center gap-1"
-                  onClick={() => handleDeleteTask() }
+                  className="h-[30px] focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-2.5 me-2  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 flex items-center gap-1"
+                  onClick={() => handleDeleteTask()}
                 >
                   <RiDeleteBin6Line className="text-lg font-bold" />
                   Eliminar Tarea
                 </button>
                 <div
-                  className="cursor-pointer bg-violet-main text-white text-sm px-4 py-[6px] rounded-lg w-fit font-semibold flex items-center gap-1"
+                  className="h-[30px] cursor-pointer bg-violet-main text-white text-sm px-2 py-2.5 rounded-lg w-fit font-semibold flex items-center gap-1"
                   onClick={() => setEditIsActive(true)}
                 >
                   <RiPencilFill className="text-lg font-bold" />
@@ -192,62 +244,65 @@ export default function ItemTodayTask({ task }) {
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <h3 className="font-bold text-lg mb-2">Editar Tarea</h3>
-              <div className="grid grid-cols-2 gap-y-4">
+              <div className="grid md:grid-cols-2 gap-y-4">
                 <div className="grid">
-                  <label className="font-semibold"> Titulo</label>
+                  <label className="font-medium text-sm"> Titulo</label>
                   <input
                     type={"text"}
-                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-44 text-xs transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent col-start-1 row-start-2"
+                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-44 text-sm transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent col-start-1 row-start-2"
                     {...register("title")}
                   />
                 </div>
                 <div className="grid">
-                  <label className="font-semibold"> Descripcion</label>
-                  <input
-                    type={"text"}
-                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-44 text-xs  transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
+                  <label className="font-medium text-sm"> Descripcion</label>
+                  <textarea
+                    className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-sm transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
                     {...register("description")}
                   />
                 </div>
-                <div className="grid">
-                  <label className="font-semibold"> Fecha de Inicio</label>
-                  <input
-                    type="date"
-                    {...register("taskDate")}
-                    min={nowDate}
-                    // onChange={(e) => handleSelectedDate(e)}
-                    required
-                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
-                  />
+                <div className="flex gap-5">
+                  <div className="grid">
+                    <label className="font-medium text-sm"> Fecha de Inicio</label>
+                    <input
+                      type="date"
+                      {...register("taskDate")}
+                      min={nowDate}
+                      // onChange={(e) => handleSelectedDate(e)}
+                      required
+                      className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                    />
+                  </div>
+                  <div className="grid">
+                    <label className="font-medium text-sm"> Fecha de Fin</label>
+                    <input
+                      type="date"
+                      {...register("recurringEndDate")}
+                      min={nowDate}
+                      // onChange={(e) => handleSelectedDate(e)}
+                      required
+                      className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                    />
+                  </div>
                 </div>
-                <div className="grid">
-                  <label className="font-semibold"> Fecha de Fin</label>
-                  <input
-                    type="date"
-                    {...register("recurringEndDate")}
-                    min={nowDate}
-                    // onChange={(e) => handleSelectedDate(e)}
-                    required
-                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
-                  />
-                </div>
-                <div className="grid">
-                  <label className="font-semibold"> Hora de Inicio</label>
-                  <input
-                    type="time"
-                    {...register("startTime")}
-                    required
-                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
-                  />
-                </div>
-                <div className="grid">
-                  <label className="font-semibold"> Hora de Fin</label>
-                  <input
-                    type="time"
-                    {...register("endTime")}
-                    required
-                    className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
-                  />
+                <div className="flex gap-5">
+                  <div className="grid">
+                    <label className="font-medium text-sm"> Hora de Inicio</label>
+                    <input
+                      type="time"
+                      {...register("startTime")}
+                      required
+                      className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                    />
+                  </div>
+                  <div className="grid">
+                    <label className="font-medium text-sm"> Hora de Fin</label>
+                    <input
+                      type="time"
+                      {...register("endTime")}
+                      required
+                      className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex mt-4 gap-2 justify-end">
