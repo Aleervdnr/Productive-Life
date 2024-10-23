@@ -28,7 +28,7 @@ export default function TaskFormModalContent({step, setStep}) {
       footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
     } else if (selected.to) {
       footer = (
-        <p className="text-sm mt-2">
+        <p className="text-xs md:text-sm text-center mt-2">
           <span>Desde el </span>
           <span className="text-violet-main font-medium">
             {format(selected.from, "dd/MM/yyyy")}{" "}
@@ -48,7 +48,7 @@ export default function TaskFormModalContent({step, setStep}) {
   const titleText = watch("title");
 
   //Context Tasks
-  const { createTask } = useTasks();
+  const { createTask, recurringDaysArray, setRecurringDaysArray, handleCheckRecurringDays } = useTasks();
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
@@ -88,26 +88,6 @@ export default function TaskFormModalContent({step, setStep}) {
     resetField("endTime");
     dialog.close();
     setStep(1);
-  };
-
-  //Dias recurrentes
-  const [recurringDaysArray, setRecurringDaysArray] = useState([
-    { name: "Lunes", isoDay: "1", status: false },
-    { name: "Martes", isoDay: "2", status: false },
-    { name: "Miercoles", isoDay: "3", status: false },
-    { name: "Jueves", isoDay: "4", status: false },
-    { name: "Viernes", isoDay: "5", status: false },
-    { name: "Sabado", isoDay: "6", status: false },
-    { name: "Domingo", isoDay: "0", status: false },
-  ]);
-
-  const handleCheck = (data, status) => {
-    const newArray = recurringDaysArray.map((item) =>
-      item.isoDay == data
-        ? { name: item.name, isoDay: item.isoDay, status: !item.status }
-        : item
-    );
-    setRecurringDaysArray(newArray);
   };
 
   const handleSteps = (e,step,data) => {
@@ -170,10 +150,11 @@ export default function TaskFormModalContent({step, setStep}) {
         <div className="w-full flex justify-end mt-3">
           <button
             onClick={(e) => handleSteps(e,step,"next")}
-            className="px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
+            className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
             disabled={titleText?.length > 0 ? false : true}
           >
             Siguiente
+            <RiArrowRightSLine className="text-2xl" />
           </button>
         </div>
       </div>
@@ -224,11 +205,11 @@ export default function TaskFormModalContent({step, setStep}) {
         </div>
         <div className="grid gap-1 ">
           <label className="text-sm">Repetir todos los</label>
-          <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between">
+          <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between justify-self-center">
             {recurringDaysArray.map((item) => (
               <ItemRecurrent
                 register={register}
-                handleCheck={handleCheck}
+                handleCheck={handleCheckRecurringDays}
                 status={item.status}
                 day={item.name}
                 isoDay={item.isoDay}

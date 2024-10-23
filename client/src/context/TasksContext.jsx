@@ -25,6 +25,15 @@ export function TasksProvider({ children }) {
   const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
   const [dailyTasks, setDailyTasks] = useState([]);
+  const [recurringDaysArray, setRecurringDaysArray] = useState([
+    { name: "Lunes", isoDay: "1", status: false },
+    { name: "Martes", isoDay: "2", status: false },
+    { name: "Miercoles", isoDay: "3", status: false },
+    { name: "Jueves", isoDay: "4", status: false },
+    { name: "Viernes", isoDay: "5", status: false },
+    { name: "Sabado", isoDay: "6", status: false },
+    { name: "Domingo", isoDay: "0", status: false },
+  ]);
 
   // Filtrar tareas del día actual
   const filterDailyTasks = () => {
@@ -83,6 +92,15 @@ export function TasksProvider({ children }) {
     }
   }
 
+  const handleCheckRecurringDays = (data) => {
+    const newArray = recurringDaysArray.map((item) =>
+      item.isoDay == data
+        ? { name: item.name, isoDay: item.isoDay, status: !item.status }
+        : item
+    );
+    setRecurringDaysArray(newArray);
+  };
+
   return (
     <TasksContext.Provider
       value={{
@@ -95,6 +113,9 @@ export function TasksProvider({ children }) {
         setWeeklyTasks,
         tasksIsLoading,
         setTasksIsLoading,
+        recurringDaysArray,
+        setRecurringDaysArray,
+        handleCheckRecurringDays
       }}
     >
       {children}
