@@ -172,14 +172,17 @@ export default function ItemTodayTask({ task }) {
                   disabled
                 />
               </div>
-              <div className="grid gap-1">
+              {
+                task?.description.length > 1 &&
+(              <div className="grid gap-1">
                 <span className="font-medium text-sm">Descripcion</span>
                 <textarea
                   className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm"
                   value={task.description}
                   disabled
                 />
-              </div>
+              </div>)
+              }
               <div className="flex gap-5">
                 <div>
                   <span className="font-medium text-sm">Fecha de Inicio</span>
@@ -273,7 +276,7 @@ export default function ItemTodayTask({ task }) {
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <h3 className="font-bold text-lg mb-2">Editar Tarea</h3>
-              <div className="grid md:grid-cols-2 gap-y-4">
+              <div className="grid  gap-y-4">
                 <div className="grid">
                   <label className="font-medium text-sm"> Titulo</label>
                   <input
