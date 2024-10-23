@@ -4,7 +4,7 @@ import useWindowSize from "../hooks/useWindowSize";
 export default function ItemRecurrent({ handleCheck, register, status, isoDay, day }) {
 
   const handleClick = () => {
-    handleCheck(isoDay, status)
+    handleCheck(isoDay)
   };
 
   const {width} = useWindowSize()

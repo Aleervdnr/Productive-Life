@@ -10,10 +10,11 @@ import { RiCalendar2Line } from "react-icons/ri";
 import { RiCalendarCheckLine } from "react-icons/ri";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { RiTimeLine } from "react-icons/ri";
+import ItemRecurrent from "../ItemRecurrent.jsx";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
-  const { updateTask, deleteTask } = useTasks();
+  const { updateTask, deleteTask, recurringDaysArray,setRecurringDaysArray, handleCheckRecurringDays } = useTasks();
   const { register, setValue, handleSubmit } = useForm();
   const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
@@ -42,6 +43,17 @@ export default function ItemTodayTask({ task }) {
       setValue("recurringEndDate", task.recurringEndDate);
       setValue("startTime", task.startTime);
       setValue("endTime", task.endTime);
+      console.log(task.recurringDays)
+      const newArray = [
+        { name: "Lunes", isoDay: "1", status: task.recurringDays.includes(1)},
+        { name: "Martes", isoDay: "2", status: task.recurringDays.includes(2) },
+        { name: "Miercoles", isoDay: "3", status: task.recurringDays.includes(3)},
+        { name: "Jueves", isoDay: "4", status: task.recurringDays.includes(4) },
+        { name: "Viernes", isoDay: "5", status: task.recurringDays.includes(5) },
+        { name: "Sabado", isoDay: "6", status: task.recurringDays.includes(6) },
+        { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
+      ]
+      setRecurringDaysArray(newArray)
     }
   };
 
@@ -54,7 +66,10 @@ export default function ItemTodayTask({ task }) {
       startTime,
       endTime,
     } = data;
-    console.log(data);
+
+    const recurringDays = recurringDaysArray
+    .filter((item) => item.status == true)
+    .map((item) => item.status == true && item.isoDay);
 
     const updatedTask = {
       _id: task._id,
@@ -64,8 +79,8 @@ export default function ItemTodayTask({ task }) {
       recurringEndDate,
       startTime: startTime.length == 8 ? startTime : `${startTime}:00`,
       endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
-      recurringDays: task.recurringDays,
-      isRecurring: task.isRecurring,
+      recurringDays: recurringDays ? recurringDays : [],
+      isRecurring: recurringDays.length >= 1 && true,
       status: task.status,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
@@ -75,6 +90,15 @@ export default function ItemTodayTask({ task }) {
     console.log(updatedTask);
 
     updateTask(updatedTask, false);
+    setRecurringDaysArray([
+      { name: "Lunes", isoDay: "1", status: false },
+      { name: "Martes", isoDay: "2", status: false },
+      { name: "Miercoles", isoDay: "3", status: false },
+      { name: "Jueves", isoDay: "4", status: false },
+      { name: "Viernes", isoDay: "5", status: false },
+      { name: "Sabado", isoDay: "6", status: false },
+      { name: "Domingo", isoDay: "0", status: false },
+    ]);
     dialog.close();
     setEditIsActive(false);
   };
@@ -219,7 +243,12 @@ export default function ItemTodayTask({ task }) {
                   </span>
                   <div className="flex gap-2">
                     {task.recurringDays.map((day) => (
-                      <p className="border px-2 rounded-full border-violet-main text-sm bg-violet-main capitalize" key={day}>{daysOfWeek[day]}</p>
+                      <p
+                        className="border px-2 rounded-full border-violet-main text-sm bg-violet-main capitalize"
+                        key={day}
+                      >
+                        {task.recurringDays.length >= 5 ? daysOfWeek[day].slice(0,3) : daysOfWeek[day]}
+                      </p>
                     ))}
                   </div>
                 </div>
@@ -262,7 +291,10 @@ export default function ItemTodayTask({ task }) {
                 </div>
                 <div className="flex gap-5">
                   <div className="grid">
-                    <label className="font-medium text-sm"> Fecha de Inicio</label>
+                    <label className="font-medium text-sm">
+                      {" "}
+                      Fecha de Inicio
+                    </label>
                     <input
                       type="date"
                       {...register("taskDate")}
@@ -286,7 +318,10 @@ export default function ItemTodayTask({ task }) {
                 </div>
                 <div className="flex gap-5">
                   <div className="grid">
-                    <label className="font-medium text-sm"> Hora de Inicio</label>
+                    <label className="font-medium text-sm">
+                      {" "}
+                      Hora de Inicio
+                    </label>
                     <input
                       type="time"
                       {...register("startTime")}
@@ -302,6 +337,21 @@ export default function ItemTodayTask({ task }) {
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
                     />
+                  </div>
+                </div>
+                <div>
+                  <label className="font-medium text-sm"> Repetir los</label>
+                  <div className="flex gap-1 max-[425px]:max-w-[240px] justify-between justify-self-center">
+                    {recurringDaysArray.map((item) => (
+                      <ItemRecurrent
+                        register={register}
+                        handleCheck={handleCheckRecurringDays}
+                        status={item.status}
+                        day={item.name}
+                        isoDay={item.isoDay}
+                        key={item.isoDay}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>

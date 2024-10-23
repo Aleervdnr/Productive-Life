@@ -48,7 +48,7 @@ export default function TaskFormModalContent({step, setStep}) {
   const titleText = watch("title");
 
   //Context Tasks
-  const { createTask } = useTasks();
+  const { createTask, recurringDaysArray, setRecurringDaysArray, handleCheckRecurringDays } = useTasks();
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
@@ -88,26 +88,6 @@ export default function TaskFormModalContent({step, setStep}) {
     resetField("endTime");
     dialog.close();
     setStep(1);
-  };
-
-  //Dias recurrentes
-  const [recurringDaysArray, setRecurringDaysArray] = useState([
-    { name: "Lunes", isoDay: "1", status: false },
-    { name: "Martes", isoDay: "2", status: false },
-    { name: "Miercoles", isoDay: "3", status: false },
-    { name: "Jueves", isoDay: "4", status: false },
-    { name: "Viernes", isoDay: "5", status: false },
-    { name: "Sabado", isoDay: "6", status: false },
-    { name: "Domingo", isoDay: "0", status: false },
-  ]);
-
-  const handleCheck = (data, status) => {
-    const newArray = recurringDaysArray.map((item) =>
-      item.isoDay == data
-        ? { name: item.name, isoDay: item.isoDay, status: !item.status }
-        : item
-    );
-    setRecurringDaysArray(newArray);
   };
 
   const handleSteps = (e,step,data) => {
@@ -229,7 +209,7 @@ export default function TaskFormModalContent({step, setStep}) {
             {recurringDaysArray.map((item) => (
               <ItemRecurrent
                 register={register}
-                handleCheck={handleCheck}
+                handleCheck={handleCheckRecurringDays}
                 status={item.status}
                 day={item.name}
                 isoDay={item.isoDay}
