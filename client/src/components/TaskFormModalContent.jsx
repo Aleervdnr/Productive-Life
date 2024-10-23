@@ -121,7 +121,7 @@ export default function TaskFormModalContent({step, setStep}) {
         step == 1 && "translate-x-[0]"
       } ${step == 2 && "translate-x-[calc(-100%-24px)]"} ${
         step == 3 && "translate-x-[calc(-200%-48px)]"
-      } transition-height duration-500 ease-in-out ${step == 1 && "h-[230px]"} ${step == 2 && "h-[412px]"} ${step == 3 && "h-[218px]"} `}
+      } transition-height duration-500 ease-in-out ${step == 1 && "h-[230px]"} ${step == 2 && "min-h-[412px]"} ${step == 3 && "h-[218px]"} `}
       onSubmit={handleSubmit(onSubmit)}
     >
       <div>
