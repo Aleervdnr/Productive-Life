@@ -3,6 +3,7 @@ import { useTasks } from "../../context/TasksContext";
 import { useEffect } from "react";
 import { es } from "date-fns/locale"
 import MonthTaskItem from "./MonthTaskItem";
+import ItemTodayTask from "./ItemTodayTask";
 
 setDefaultOptions({ locale: es })
 
@@ -43,7 +44,7 @@ export default function MonthDayItem({ children, day }) {
           <div className=" grid gap-2">
             {!tasksIsLoading &&
               filteredTasks.map((task) => (
-                <MonthTaskItem key={task._id} task={task}/>
+                <ItemTodayTask key={task._id} task={task}/>
               ))}
           </div>
         </div>

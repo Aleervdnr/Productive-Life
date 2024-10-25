@@ -292,7 +292,7 @@ export default function ItemTodayTask({ task }) {
                     <input
                       type="date"
                       {...register("taskDate")}
-                      min={nowDate}
+                      
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
@@ -303,7 +303,7 @@ export default function ItemTodayTask({ task }) {
                     <input
                       type="date"
                       {...register("recurringEndDate")}
-                      min={nowDate}
+                      
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
