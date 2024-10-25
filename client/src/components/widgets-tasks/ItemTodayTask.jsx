@@ -105,7 +105,7 @@ export default function ItemTodayTask({ task }) {
           status == "pending" && `bg-dark-400`
         } ${
           status == "completed" && `border-2 border-dark-400`
-        }  rounded-xl px-3 py-[10px] flex items-center justify-between`}
+        }  rounded-xl px-3 py-[10px] flex items-center justify-between cursor-pointer`}
         onClick={(e) => handleShowModal(e)}
       >
         <div className="grid ">
