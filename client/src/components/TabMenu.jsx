@@ -4,11 +4,11 @@ import useWindowSize from "../hooks/UseWindowSize";
 export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
   const {width} = useWindowSize()
   return (
-    <div className="relative font-medium flex justify-between gap-2 lg:max-h-[180px]">
+    <div className="h-screen font-medium flex justify-between gap-2 lg:h-[calc(100%-56px)] lg:relative ">
       {items.map((item, i) => (
         <div
           key={i}
-          className={`px-[5px] py-[3px] rounded-t-lg w-full grid justify-items-center lg:grid-rows-[23px,1fr] ${
+          className={`px-[5px] py-[3px] h-fit lg:h-full rounded-t-lg w-full grid justify-items-center lg:grid-rows-[23px,1fr] ${
             tabActive.name == item.name && `bg-dark-400`
           } lg:rounded-lg lg:py-2 lg:bg-dark-500`}
           onClick={() => handleChangeTab(item)}
@@ -16,7 +16,7 @@ export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
           {width <= 425 && item.name.charAt(0)}
           {width > 425 & width < 1024 ? item.name.slice(0,3) : null}
           {width >= 1024 && item.name}
-          <div className={`w-full absolute top-[28px] left-0 bg-dark-400 rounded lg:w-full px-2 py-2 ${tabActive.name !== item.name && `max-lg:hidden`} lg:static lg:p-0 lg:bg-transparent lg:overflow-auto`}>
+          <div className={`w-[calc(100vw-40px)] h-[calc(100vh-143px)] absolute top-[38px] left-5 bg-dark-400 rounded lg:w-full px-2 py-2 ${tabActive.name !== item.name && `max-lg:hidden`} lg:static lg:h-full lg:p-0 lg:bg-transparent lg:overflow-auto`}>
             {weeklyTasks.map(
               (task) =>
                 getISODay(new Date(`${task.taskDate}T${task.startTime}`)) ==
