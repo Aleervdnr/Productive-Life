@@ -57,3 +57,13 @@ body {
 #my_modal_50 {
   max-height: none;
 }
+
+.circle-progress_center{
+  height: 90%;
+  width: 90%;
+  background-color: #232429;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

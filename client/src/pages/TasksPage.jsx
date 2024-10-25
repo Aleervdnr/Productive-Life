@@ -58,18 +58,28 @@ export default function TasksPage({ setActiveItem }) {
         <TodayTasks />
         <WeekTasks />
         <MonthTasks />
-        <div className="w-full h-full hidden lg:block lg:border-[2px] lg:border-dark-400 lg:rounded-lg">asd</div>
+        <div className="w-full h-full hidden lg:block lg:border-[2px] lg:border-dark-400 lg:rounded-lg">
+        </div>
         <div className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xl font-bold leading-7">{tasks.filter(task => task.status == "completed").length}/{tasks.length}</span>
+            <span className="text-xl font-bold leading-7">
+              {tasks.filter((task) => task.status == "completed").length}/
+              {tasks.length}
+            </span>
             <span className="text-sm">Tareas Completadas</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xl font-bold leading-7">{tasks.filter(task => task.status == "pending").length}/{tasks.length}</span>
+            <span className="text-xl font-bold leading-7">
+              {tasks.filter((task) => task.status == "pending").length}/
+              {tasks.length}
+            </span>
             <span className="text-sm">Tareas Para Hacer</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xl font-bold leading-7">{tasks.filter(task => task.status == "overdue").length}/{tasks.length}</span>
+            <span className="text-xl font-bold leading-7">
+              {tasks.filter((task) => task.status == "overdue").length}/
+              {tasks.length}
+            </span>
             <span className="text-sm">Tareas Atrasadas</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
@@ -78,7 +88,7 @@ export default function TasksPage({ setActiveItem }) {
           </div>
         </div>
       </div>
-      <TaskFormButton styles={"lg:hidden"}/>
+      <TaskFormButton styles={"lg:hidden"} />
     </div>
   );
 }

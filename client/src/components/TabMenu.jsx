@@ -1,5 +1,5 @@
 import { getISODay } from "date-fns";
-import useWindowSize from "../hooks/UseWindowSize";
+import useWindowSize from "../hooks/useWindowSize.jsx";
 
 export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
   const {width} = useWindowSize()
@@ -10,7 +10,7 @@ export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
           key={i}
           className={`px-[5px] py-[3px] h-fit lg:h-full rounded-t-lg w-full grid justify-items-center lg:grid-rows-[23px,1fr] ${
             tabActive.name == item.name && `bg-dark-400`
-          } lg:rounded-lg lg:py-2 lg:bg-dark-500`}
+          } lg:rounded-2xl lg:py-2 lg:bg-dark-500`}
           onClick={() => handleChangeTab(item)}
         >
           {width <= 425 && item.name.charAt(0)}
@@ -37,7 +37,7 @@ export function TabMenuItem({ task }) {
       </span>
       <div className="w-[85%] flex items-center lg:w-full">
         <div className="w-[10px] h-[1px] bg-dark-100 opacity-50 lg:hidden"></div>
-        <div className="font-semibold text-base lg:text-sm w-full text-center bg-violet-main  rounded-full py-2 lg:py-1">
+        <div className="font-medium text-base lg:text-sm w-full text-center bg-violet-main  rounded-lg py-2 lg:py-1">
           {task.title}{" "}
         </div>
         <div className="w-[10px] h-[1px] bg-dark-100 opacity-50 lg:hidden"></div>
