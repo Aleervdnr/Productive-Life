@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -46,6 +46,7 @@ export default function TaskFormModalContent({step, setStep}) {
   const { register, handleSubmit, resetField, watch } = useForm();
 
   const titleText = watch("title");
+  const startTime = watch("startTime")
 
   //Context Tasks
   const { createTask, handleCheckRecurringDays } = useTasks();
@@ -208,6 +209,8 @@ export default function TaskFormModalContent({step, setStep}) {
             <input
               type="time"
               {...register("endTime")}
+              //Si la fecha inicio y de fin son iguales, no se puede elegir una hora menor a la de comienzo
+              min={isSameDay(new Date(selected?.from), new Date (selected?.to)) ? startTime: null}
               required
               className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-fit text-xs font-semibold"
             />
