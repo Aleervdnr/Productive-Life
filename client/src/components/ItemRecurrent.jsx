@@ -39,9 +39,9 @@ export default function ItemRecurrent({
 
   return (
     <div
-      className={`border px-2 rounded-full border-violet-main transition-colors text-sm cursor-pointer ${
+      className={`border px-2 rounded-full  transition-colors text-sm cursor-pointer ${
         status ? `bg-violet-main text-white` : ` text-dark-100`
-      } ${disabled && "text-dark-100 border-dark-100 cursor-default"}`}
+      } ${disabled ? "text-dark-100 border-dark-100 cursor-default" :"border-violet-main" }`}
       onClick={() => handleClick()}
     >
       {width < 425 ? day.charAt(0) : day.slice(0, 3)}

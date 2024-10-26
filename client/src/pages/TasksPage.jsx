@@ -63,28 +63,28 @@ export default function TasksPage({ setActiveItem }) {
         <div className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xl font-bold leading-7">
-              {tasks.filter((task) => task.status == "completed").length}/
+              {tasks.filter((task) => task.status == "completed").length} <span className="text-lg">de</span> {" "}
               {tasks.length}
             </span>
             <span className="text-sm">Tareas Completadas</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xl font-bold leading-7">
-              {tasks.filter((task) => task.status == "pending").length}/
+              {tasks.filter((task) => task.status == "pending").length} <span className="text-lg">de</span> {" "}
               {tasks.length}
             </span>
             <span className="text-sm">Tareas Para Hacer</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xl font-bold leading-7">
-              {tasks.filter((task) => task.status == "overdue").length}/
+              {tasks.filter((task) => task.status == "overdue").length} <span className="text-lg">de</span> {" "}
               {tasks.length}
             </span>
             <span className="text-sm">Tareas Atrasadas</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xl font-bold leading-7">{tasks.length}</span>
-            <span className="text-sm">Tareas Totales</span>
+            <span className="text-xl font-bold leading-7">{(tasks.filter(task => task.status == "completed").length / tasks.length * 100)}%</span>
+            <span className="text-sm">completado</span>
           </div>
         </div>
       </div>
