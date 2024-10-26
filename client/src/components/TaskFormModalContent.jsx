@@ -226,6 +226,7 @@ export default function TaskFormModalContent({step, setStep}) {
                 key={item.isoDay}
                 setRecurringDays={setRecurringDaysArray}
                 recurringDays={recurringDaysArray}
+                disabled = {selected?.from == selected?.to }
               />
             ))}
           </div>

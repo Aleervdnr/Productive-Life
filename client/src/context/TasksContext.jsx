@@ -79,6 +79,7 @@ export function TasksProvider({ children }) {
       const session = { token: localStorage.getItem("token") };
       await deleteTasksRequest(id, session.token);
       setTasks(tasks.filter((taskMap) => taskMap._id !== id));
+      toast.warning("Tarea Eliminada");
     } catch (err) {
       console.log(err);
     }

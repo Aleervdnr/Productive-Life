@@ -15,7 +15,7 @@ import ItemRecurrent from "../ItemRecurrent.jsx";
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
   const { updateTask, deleteTask, handleCheckRecurringDays } = useTasks();
-  const { register, setValue, handleSubmit } = useForm();
+  const { register, setValue, handleSubmit, watch } = useForm();
   const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
 
@@ -38,6 +38,9 @@ export default function ItemTodayTask({ task }) {
 
     updateTask(newTask, true);
   };
+
+  const taskDate = watch("taskDate")
+  const endTaskDate = watch("recurringEndDate")
 
   const handleShowModal = (e) => {
     if (
@@ -346,6 +349,7 @@ export default function ItemTodayTask({ task }) {
                         day={item.name}
                         isoDay={item.isoDay}
                         key={item.isoDay}
+                        disabled={taskDate == endTaskDate}
                       />
                     ))}
                   </div>
