@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -46,9 +46,10 @@ export default function TaskFormModalContent({step, setStep}) {
   const { register, handleSubmit, resetField, watch } = useForm();
 
   const titleText = watch("title");
+  const startTime = watch("startTime")
 
   //Context Tasks
-  const { createTask, recurringDaysArray, setRecurringDaysArray, handleCheckRecurringDays } = useTasks();
+  const { createTask, handleCheckRecurringDays } = useTasks();
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
@@ -114,6 +115,16 @@ export default function TaskFormModalContent({step, setStep}) {
   };
 
   const [heightModal, setHeightModal] = useState(252)
+
+  const [recurringDaysArray, setRecurringDaysArray] = useState([
+    { name: "Lunes", isoDay: "1", status: false },
+    { name: "Martes", isoDay: "2", status: false },
+    { name: "Miercoles", isoDay: "3", status: false },
+    { name: "Jueves", isoDay: "4", status: false },
+    { name: "Viernes", isoDay: "5", status: false },
+    { name: "Sabado", isoDay: "6", status: false },
+    { name: "Domingo", isoDay: "0", status: false },
+  ])
 
   return (
     <form
@@ -198,6 +209,8 @@ export default function TaskFormModalContent({step, setStep}) {
             <input
               type="time"
               {...register("endTime")}
+              //Si la fecha inicio y de fin son iguales, no se puede elegir una hora menor a la de comienzo
+              min={isSameDay(new Date(selected?.from), new Date (selected?.to)) ? startTime: null}
               required
               className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-fit text-xs font-semibold"
             />
@@ -214,6 +227,9 @@ export default function TaskFormModalContent({step, setStep}) {
                 day={item.name}
                 isoDay={item.isoDay}
                 key={item.isoDay}
+                setRecurringDays={setRecurringDaysArray}
+                recurringDays={recurringDaysArray}
+                disabled = {selected?.from == selected?.to }
               />
             ))}
           </div>

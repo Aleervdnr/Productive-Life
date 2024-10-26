@@ -15,7 +15,7 @@ import ItemRecurrent from "../ItemRecurrent.jsx";
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
   const { updateTask, deleteTask, handleCheckRecurringDays } = useTasks();
-  const { register, setValue, handleSubmit } = useForm();
+  const { register, setValue, handleSubmit, watch } = useForm();
   const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
 
@@ -38,6 +38,9 @@ export default function ItemTodayTask({ task }) {
 
     updateTask(newTask, true);
   };
+
+  const taskDate = watch("taskDate")
+  const endTaskDate = watch("recurringEndDate")
 
   const handleShowModal = (e) => {
     if (
@@ -105,7 +108,7 @@ export default function ItemTodayTask({ task }) {
           status == "pending" && `bg-dark-400`
         } ${
           status == "completed" && `border-2 border-dark-400`
-        }  rounded-xl px-3 py-[10px] flex items-center justify-between`}
+        }  rounded-xl px-3 py-[10px] flex items-center justify-between cursor-pointer`}
         onClick={(e) => handleShowModal(e)}
       >
         <div className="grid ">
@@ -292,7 +295,7 @@ export default function ItemTodayTask({ task }) {
                     <input
                       type="date"
                       {...register("taskDate")}
-                      min={nowDate}
+                      
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
@@ -303,7 +306,7 @@ export default function ItemTodayTask({ task }) {
                     <input
                       type="date"
                       {...register("recurringEndDate")}
-                      min={nowDate}
+                      
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
@@ -346,6 +349,7 @@ export default function ItemTodayTask({ task }) {
                         day={item.name}
                         isoDay={item.isoDay}
                         key={item.isoDay}
+                        disabled={taskDate == endTaskDate}
                       />
                     ))}
                   </div>
