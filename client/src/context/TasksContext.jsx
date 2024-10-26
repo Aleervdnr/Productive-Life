@@ -25,23 +25,15 @@ export function TasksProvider({ children }) {
   const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
   const [dailyTasks, setDailyTasks] = useState([]);
-  const [recurringDaysArray, setRecurringDaysArray] = useState([
-    { name: "Lunes", isoDay: "1", status: false },
-    { name: "Martes", isoDay: "2", status: false },
-    { name: "Miercoles", isoDay: "3", status: false },
-    { name: "Jueves", isoDay: "4", status: false },
-    { name: "Viernes", isoDay: "5", status: false },
-    { name: "Sabado", isoDay: "6", status: false },
-    { name: "Domingo", isoDay: "0", status: false },
-  ]);
 
   // Filtrar tareas del día actual
   const filterDailyTasks = () => {
     const today = new Date();
+    console.log(today);
+    console.log(tasks);
 
-    const filteredTasks = tasks.filter((task) => {
-      const taskDate = new Date(task.taskDate);
-      return isSameDay(taskDate, today);
+    const filteredTasks = tasks.map((task) => {
+      console.log(task.taskDate);
     });
 
     setDailyTasks(filteredTasks);
@@ -76,23 +68,23 @@ export function TasksProvider({ children }) {
       setTasks(
         tasks.map((TaskMap) => (TaskMap._id == task._id ? task : TaskMap))
       );
-      if(!isStatus) toast.success("Tarea actualizada con exito");
+      if (!isStatus) toast.success("Tarea actualizada con exito");
     } catch (error) {
       console.log(error);
     }
   };
 
   const deleteTask = async (id) => {
-    try{
-      const session = {token: localStorage.getItem("token")}
-      await deleteTasksRequest(id,session.token)
-      setTasks(tasks.filter(taskMap => (taskMap._id !== id)))
-    }catch(err){
-      console.log(err)
+    try {
+      const session = { token: localStorage.getItem("token") };
+      await deleteTasksRequest(id, session.token);
+      setTasks(tasks.filter((taskMap) => taskMap._id !== id));
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
-  const handleCheckRecurringDays = (data,set,array) => {
+  const handleCheckRecurringDays = (data, set, array) => {
     const newArray = array.map((item) =>
       item.isoDay == data
         ? { name: item.name, isoDay: item.isoDay, status: !item.status }
@@ -113,9 +105,8 @@ export function TasksProvider({ children }) {
         setWeeklyTasks,
         tasksIsLoading,
         setTasksIsLoading,
-        recurringDaysArray,
-        setRecurringDaysArray,
-        handleCheckRecurringDays
+        handleCheckRecurringDays,
+        filterDailyTasks
       }}
     >
       {children}

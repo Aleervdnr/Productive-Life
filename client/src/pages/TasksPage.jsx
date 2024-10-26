@@ -6,7 +6,7 @@ import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/TaskFormButton.jsx";
 
 export default function TasksPage({ setActiveItem }) {
-  const { getTasks, tasks, setTasksIsLoading } = useTasks();
+  const { getTasks, tasks, setTasksIsLoading} = useTasks();
 
   useEffect(() => {
     setActiveItem("tasks");

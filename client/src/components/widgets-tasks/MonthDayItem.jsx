@@ -13,16 +13,8 @@ export default function MonthDayItem({ children, day }) {
   );
   const completedTasks = filteredTasks.filter( task => task.status == "completed")
 
-  useEffect(() => {
-    if(tasks.length && filteredTasks.length > 0){
-      console.log((completedTasks.length / filteredTasks.length)*100)
-    }
-
-  }, []);
-
   return (
     <>
-      {/* You can open the modal using document.getElementById('ID').showModal() method */}
       <button
         className="w-full h-full rounded-full flex items-center justify-center text-sm lg:text-xs transition-colors ease-in"
         style={{

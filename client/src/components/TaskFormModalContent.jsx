@@ -48,7 +48,7 @@ export default function TaskFormModalContent({step, setStep}) {
   const titleText = watch("title");
 
   //Context Tasks
-  const { createTask, recurringDaysArray, setRecurringDaysArray, handleCheckRecurringDays } = useTasks();
+  const { createTask, handleCheckRecurringDays } = useTasks();
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
@@ -114,6 +114,16 @@ export default function TaskFormModalContent({step, setStep}) {
   };
 
   const [heightModal, setHeightModal] = useState(252)
+
+  const [recurringDaysArray, setRecurringDaysArray] = useState([
+    { name: "Lunes", isoDay: "1", status: false },
+    { name: "Martes", isoDay: "2", status: false },
+    { name: "Miercoles", isoDay: "3", status: false },
+    { name: "Jueves", isoDay: "4", status: false },
+    { name: "Viernes", isoDay: "5", status: false },
+    { name: "Sabado", isoDay: "6", status: false },
+    { name: "Domingo", isoDay: "0", status: false },
+  ])
 
   return (
     <form
@@ -214,6 +224,8 @@ export default function TaskFormModalContent({step, setStep}) {
                 day={item.name}
                 isoDay={item.isoDay}
                 key={item.isoDay}
+                setRecurringDays={setRecurringDaysArray}
+                recurringDays={recurringDaysArray}
               />
             ))}
           </div>
