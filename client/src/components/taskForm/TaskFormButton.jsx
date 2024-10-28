@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { useTasks } from "../context/TasksContext.jsx";
-import { useDate } from "../context/DateContext.jsx";
+import { useTasks } from "../../context/TasksContext.jsx";
+import { useDate } from "../../context/DateContext.jsx";
 import { isBefore } from "date-fns";
 import TaskFormModalContent from "./TaskFormModalContent.jsx";
 import { useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export default function TaskFormButton({ styles }) {
               ✕
             </button>
           </form>      
-          <TaskFormModalContent step={step} setStep={setStep} />  
+          <TaskFormModalContent step={step} setStep={setStep} />
         </div>
       </dialog>
     </>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { TabMenu } from "../TabMenu";
 import { useTasks } from "../../context/TasksContext";
 import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
-import TaskFormButton from "../TaskFormButton";
+import TaskFormButton from "../taskForm/TaskFormButton";
 
 export default function WeekTasks() {
   const [tabActive, setTabActive] = useState({ name: "Lun", isoDay: 1 });
