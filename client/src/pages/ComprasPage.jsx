@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import Lottie from "react-lottie-player";
-import lottieJson2 from "../assets/Animation - 1729962365245.json";
+import lottieJson from "../assets/Animation - 1729962365245.json"
 import useWindowSize from "../hooks/useWindowSize";
 
-export default function Homepage({ setActiveItem }) {
+export default function ComprasPage({ setActiveItem }) {
   useEffect(() => {
-    setActiveItem("home");
+    setActiveItem("compras");
   }, []);
   const { width } = useWindowSize();
 
@@ -13,7 +13,7 @@ export default function Homepage({ setActiveItem }) {
     <div className="h-[calc(100vh-55px)] lg:h-screen w-full flex flex-col justify-center items-center font-medium px-5">
       <Lottie
         loop
-        animationData={lottieJson2}
+        animationData={lottieJson}
         play
         style={
           width > 1024
@@ -22,8 +22,8 @@ export default function Homepage({ setActiveItem }) {
         }
       />
       <p className="text-center">
-        ¡Casi listo! 🚀 Estamos terminando esta sección para ti. Pronto estará
-        disponible.
+      Esta área aún está en construcción 🛠️. Pronto podrás disfrutar de nuevas
+      funcionalidades aquí.
       </p>
     </div>
   );

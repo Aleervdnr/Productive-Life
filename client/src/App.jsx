@@ -8,6 +8,8 @@ import Homepage from "./pages/Homepage";
 import TasksPage from "./pages/TasksPage";
 import { Toaster } from "sonner";
 import "./App.css";
+import GastosPage from "./pages/GastosPage";
+import ComprasPage from "./pages/ComprasPage";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
@@ -32,9 +34,12 @@ function App() {
               path="/tasks"
               element={<TasksPage setActiveItem={setActiveItem} />}
             />
-            <Route path="/gastos" element={<h1>Gastos</h1>} />
-            <Route path="/compras" element={<h1>Compras</h1>} />
+
             <Route path="/*" element={<Navigate to="/"></Navigate>} />
+
+            <Route path="/gastos" element={<GastosPage setActiveItem={setActiveItem} />} />
+            <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} />
+
           </Route>
         </Routes>
         <Toaster theme="dark" richColors />

@@ -83,7 +83,7 @@ export default function TasksPage({ setActiveItem }) {
             <span className="text-sm">Tareas Atrasadas</span>
           </div>
           <div className="h-full w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xl font-bold leading-7">{(tasks.filter(task => task.status == "completed").length / tasks.length * 100)}%</span>
+            <span className="text-xl font-bold leading-7">{Math.round(tasks.filter(task => task.status == "completed").length / tasks.length * 100)}%</span>
             <span className="text-sm">completado</span>
           </div>
         </div>
