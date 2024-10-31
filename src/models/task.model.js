@@ -41,6 +41,15 @@ const taskSchema = new mongoose.Schema(
     recurringEndDate: {
       type: String, // Fecha hasta la cual la tarea se seguirá repitiendo
     },
+    recurrenceTasks:{
+      type: [{
+        taskDate: { type: String, required: true },
+        startTime: String,
+        endTime:String,
+        status: { type: String, enum: ["completed", "pending", "overdue"], default: "pending" },
+      }]
+    }
+    ,
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

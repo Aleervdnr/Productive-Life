@@ -6,14 +6,12 @@ import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
 
 export default function TasksPage({ setActiveItem }) {
-  const { getTasks, tasks, setTasksIsLoading} = useTasks();
+  const { getTasks, tasks, setTasksIsLoading, setRecurrentTasks} = useTasks();
 
   useEffect(() => {
     setActiveItem("tasks");
-    getTasks();
-    setTasksIsLoading(false);
   }, []);
-
+  
   const [tabActive, setTabActive] = useState("hoy");
 
   const handleChangeTab = (name) => {

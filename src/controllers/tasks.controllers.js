@@ -20,6 +20,7 @@ export const createTask = async (req, res) => {
       recurringDays,
       endTime,
       recurringEndDate,
+      recurrenceTasks,
     } = req.body;
 
     const newTask = new Task({
@@ -31,6 +32,7 @@ export const createTask = async (req, res) => {
       isRecurring,
       recurringDays,
       recurringEndDate,
+      recurrenceTasks,
       user: req.user.id,
     });
 
