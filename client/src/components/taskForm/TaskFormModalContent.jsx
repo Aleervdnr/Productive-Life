@@ -1,4 +1,4 @@
-import { format, isDate, isSameDay } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -7,9 +7,9 @@ import { useTasks } from "../../context/TasksContext.jsx";
 import InputTaskForm from "./InputTaskForm.jsx";
 import TextAreaTaskForm from "./TextAreaTaskForm.jsx";
 import ItemRecurrent from "../ItemRecurrent.jsx";
-import { BackButton, NextButton, SaveButton } from "./ButtonsTaskForm.jsx";
+import {BackButton, NextButton, SaveButton} from "./ButtonsTaskForm.jsx";
 
-export default function TaskFormModalContent({ step, setStep }) {
+export default function TaskFormModalContent({step, setStep}) {
   // Day Picker
   const pastMonth = new Date();
 
@@ -44,14 +44,10 @@ export default function TaskFormModalContent({ step, setStep }) {
   const { register, handleSubmit, resetField, watch } = useForm();
 
   const titleText = watch("title");
-  const startTime = watch("startTime");
+  const startTime = watch("startTime")
 
   //Context Tasks
-  const {
-    createTask,
-    handleCheckRecurringDays,
-    generateRecurrences
-  } = useTasks();
+  const { createTask, handleCheckRecurringDays } = useTasks();
 
   //Modal
   const dialog = document.getElementById("my_modal_50");
@@ -64,8 +60,6 @@ export default function TaskFormModalContent({ step, setStep }) {
       .filter((item) => item.status == true)
       .map((item) => item.status == true && item.isoDay);
 
-    const recurrentTasks = (generateRecurrences(format(selected.from, "yyyy-MM-dd"),format(selected.to, "yyyy-MM-dd"),recurringDays,`${startTime}:00`,`${endTime}:00`))
-
     const newTask = {
       title,
       description: description ? description : "",
@@ -75,9 +69,8 @@ export default function TaskFormModalContent({ step, setStep }) {
       isRecurring: recurringDays.length >= 1 && true,
       recurringDays: recurringDays ? recurringDays : [],
       recurringEndDate: format(selected.to, "yyyy-MM-dd"),
-      recurrenceTasks: recurringDays.length >= 1 ? recurrentTasks : [],
     };
-    console.log(newTask)
+    console.log(newTask);
     createTask(newTask);
     resetField("title");
     resetField("description");
@@ -96,30 +89,30 @@ export default function TaskFormModalContent({ step, setStep }) {
     setStep(1);
   };
 
-  const handleSteps = (e, step, data) => {
+  const handleSteps = (e,step,data) => {
     e.preventDefault();
-    if (step == 1 && data == "next") {
+    if(step == 1 && data == "next"){
       setStep(2);
-      setHeightModal(500);
+      setHeightModal(500)
     }
 
-    if (step == 2 && data == "back") {
+    if(step == 2  && data == "back"){
       setStep(1);
-      setHeightModal(252);
+      setHeightModal(252)
     }
 
-    if (step == 2 && data == "next") {
-      setStep(3);
-      setHeightModal(252);
+    if(step == 2  && data == "next"){
+      setStep(3)
+      setHeightModal(252)
     }
 
-    if (step == 3 && data == "back") {
-      setStep(2);
-      setHeightModal(500);
+    if(step == 3  && data == "back"){
+      setStep(2)
+      setHeightModal(500)
     }
   };
 
-  const [heightModal, setHeightModal] = useState(252);
+  const [heightModal, setHeightModal] = useState(252)
 
   const [recurringDaysArray, setRecurringDaysArray] = useState([
     { name: "Lunes", isoDay: "1", status: false },
@@ -129,7 +122,7 @@ export default function TaskFormModalContent({ step, setStep }) {
     { name: "Viernes", isoDay: "5", status: false },
     { name: "Sabado", isoDay: "6", status: false },
     { name: "Domingo", isoDay: "0", status: false },
-  ]);
+  ])
 
   return (
     <form
@@ -137,9 +130,7 @@ export default function TaskFormModalContent({ step, setStep }) {
         step == 1 && "translate-x-[0]"
       } ${step == 2 && "translate-x-[calc(-100%-24px)]"} ${
         step == 3 && "translate-x-[calc(-200%-48px)]"
-      } transition-height duration-500 ease-in-out ${
-        step == 1 && "h-[230px]"
-      } ${step == 2 && "min-h-[412px]"} ${step == 3 && "h-[218px]"} `}
+      } transition-height duration-500 ease-in-out ${step == 1 && "h-[230px]"} ${step == 2 && "min-h-[412px]"} ${step == 3 && "h-[218px]"} `}
       onSubmit={handleSubmit(onSubmit)}
     >
       <div>
@@ -166,10 +157,7 @@ export default function TaskFormModalContent({ step, setStep }) {
           </div>
         </div>
         <div className="w-full flex justify-end mt-3">
-          <NextButton
-            disabled={titleText?.length > 0 ? false : true}
-            onClick={(e) => handleSteps(e, step, "next")}
-          />
+          <NextButton disabled={titleText?.length > 0 ? false : true} onClick={(e) => handleSteps(e,step,"next")} />
         </div>
       </div>
       <div>
@@ -182,11 +170,8 @@ export default function TaskFormModalContent({ step, setStep }) {
           footer={footer}
         />
         <div className="w-full flex justify-between mt-4 text-sm">
-          <BackButton onClick={(e) => handleSteps(e, step, "back")} />
-          <NextButton
-            disabled={isDate(selected?.from) ? false : true}
-            onClick={(e) => handleSteps(e, step, "next")}
-          />
+          <BackButton onClick={(e) => handleSteps(e, step, "back")}/>
+          <NextButton disabled={titleText?.length > 0 ? false : true} onClick={(e) => handleSteps(e,step,"next")}/>
         </div>
       </div>
       <div>
@@ -207,11 +192,7 @@ export default function TaskFormModalContent({ step, setStep }) {
               type="time"
               {...register("endTime")}
               //Si la fecha inicio y de fin son iguales, no se puede elegir una hora menor a la de comienzo
-              min={
-                isSameDay(new Date(selected?.from), new Date(selected?.to))
-                  ? startTime
-                  : null
-              }
+              min={isSameDay(new Date(selected?.from), new Date (selected?.to)) ? startTime: null}
               required
               className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-fit text-xs font-semibold"
             />
@@ -230,14 +211,14 @@ export default function TaskFormModalContent({ step, setStep }) {
                 key={item.isoDay}
                 setRecurringDays={setRecurringDaysArray}
                 recurringDays={recurringDaysArray}
-                disabled={selected?.from == selected?.to}
+                disabled = {selected?.from == selected?.to }
               />
             ))}
           </div>
         </div>
         <div className="w-full flex justify-between mt-4 text-sm">
-          <BackButton onClick={(e) => handleSteps(e, step, "back")} />
-          <SaveButton />
+          <BackButton onClick={(e) => handleSteps(e, step, "back")}/>
+          <SaveButton/>
         </div>
       </div>
     </form>

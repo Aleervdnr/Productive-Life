@@ -5,7 +5,7 @@ import {
   getTasksRequest,
   updateTasksRequest,
 } from "../api/tasks";
-import { startOfWeek, endOfWeek, isWithinInterval, addDays, format, isBefore, parseISO } from "date-fns";
+import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
 import { toast } from "sonner";
 
 const TasksContext = createContext();
@@ -22,16 +22,9 @@ export const useTasks = () => {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
-  const [recurrentTasks, setRecurrentTasks] = useState([]);
   const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
   const [dailyTasks, setDailyTasks] = useState([]);
-
-  useEffect(() => {
-    getTasks()
-    setTasksIsLoading(false)
-  }, [])
-  
 
   // Filtrar tareas del día actual
   const filterDailyTasks = () => {
@@ -59,34 +52,6 @@ export function TasksProvider({ children }) {
       console.log(err);
     }
   };
-
-  function generateRecurrences(taskDate, taskEndDate,recurringDays,startTime,endTime) {
-
-    const start = parseISO(taskDate);
-    const end = parseISO(taskEndDate);
-    const recurrenceDates = [];
-  
-    // Iniciamos desde la fecha de inicio
-    let currentDate = start;
-  
-    // Iterar hasta alcanzar o superar la fecha de fin
-    while (isBefore(currentDate, end) || currentDate.getTime() === end.getTime()) {
-      const dayOfWeek = currentDate.getDay(); // Obtener el día de la semana
-      // Si el día actual está en los días de recurrencia, lo agregamos al array
-      if (recurringDays.includes(dayOfWeek.toString())) {
-        recurrenceDates.push({
-          taskDate: format(currentDate, "yyyy-MM-dd"),
-          startTime: startTime,
-          endTime: endTime
-        });
-      }
-      console.log(recurrenceDates)
-  
-      // Avanzar al siguiente día
-      currentDate = addDays(currentDate, 1);
-    }
-    return recurrenceDates;
-  }
 
   //Obtener tareas
   const getTasks = async () => {
@@ -142,9 +107,7 @@ export function TasksProvider({ children }) {
         tasksIsLoading,
         setTasksIsLoading,
         handleCheckRecurringDays,
-        filterDailyTasks,
-        setRecurrentTasks,
-        generateRecurrences
+        filterDailyTasks
       }}
     >
       {children}
