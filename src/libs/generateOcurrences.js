@@ -26,7 +26,6 @@ function generateOccurrences(task) {
                 startTime,
                 endTime,
                 status: "pending",
-                id: uuidv4(),
             });
         }
         currentDate = addDays(currentDate, 1);
