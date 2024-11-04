@@ -1,4 +1,5 @@
 import Task from "../models/task.model.js";
+import generateOccurrences from "../libs/generateOcurrences.js";
 
 export const getTasks = async (req, res) => {
   try {
@@ -22,6 +23,9 @@ export const createTask = async (req, res) => {
       recurringEndDate,
     } = req.body;
 
+    const generatedOcurrences = generateOccurrences(req.body)
+    console.log(generatedOcurrences)
+
     const newTask = new Task({
       title,
       description,
@@ -31,6 +35,7 @@ export const createTask = async (req, res) => {
       isRecurring,
       recurringDays,
       recurringEndDate,
+      recurrences: generatedOcurrences,
       user: req.user.id,
     });
 
