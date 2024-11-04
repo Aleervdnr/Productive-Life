@@ -1,15 +1,13 @@
 import { format, isSameDay } from "date-fns";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useForm } from "react-hook-form";
-import { useTasks } from "../context/TasksContext";
+import { useTasks } from "../../context/TasksContext.jsx";
 import InputTaskForm from "./InputTaskForm.jsx";
 import TextAreaTaskForm from "./TextAreaTaskForm.jsx";
-import { RiArrowLeftSLine } from "react-icons/ri";
-import { RiArrowRightSLine } from "react-icons/ri";
-import { RiSave3Line } from "react-icons/ri";
-import ItemRecurrent from "./ItemRecurrent.jsx";
+import ItemRecurrent from "../ItemRecurrent.jsx";
+import {BackButton, NextButton, SaveButton} from "./ButtonsTaskForm.jsx";
 
 export default function TaskFormModalContent({step, setStep}) {
   // Day Picker
@@ -159,14 +157,7 @@ export default function TaskFormModalContent({step, setStep}) {
           </div>
         </div>
         <div className="w-full flex justify-end mt-3">
-          <button
-            onClick={(e) => handleSteps(e,step,"next")}
-            className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded disabled:opacity-50"
-            disabled={titleText?.length > 0 ? false : true}
-          >
-            Siguiente
-            <RiArrowRightSLine className="text-2xl" />
-          </button>
+          <NextButton disabled={titleText?.length > 0 ? false : true} onClick={(e) => handleSteps(e,step,"next")} />
         </div>
       </div>
       <div>
@@ -179,17 +170,8 @@ export default function TaskFormModalContent({step, setStep}) {
           footer={footer}
         />
         <div className="w-full flex justify-between mt-4 text-sm">
-          <div onClick={(e) => handleSteps(e,step,"back")} className="flex items-center">
-            <RiArrowLeftSLine className="text-xl" />
-            Volver
-          </div>
-          <div
-            onClick={(e) => handleSteps(e,step,"next")}
-            className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded"
-          >
-            Siguiente
-            <RiArrowRightSLine className="text-2xl" />
-          </div>
+          <BackButton onClick={(e) => handleSteps(e, step, "back")}/>
+          <NextButton disabled={titleText?.length > 0 ? false : true} onClick={(e) => handleSteps(e,step,"next")}/>
         </div>
       </div>
       <div>
@@ -234,16 +216,9 @@ export default function TaskFormModalContent({step, setStep}) {
             ))}
           </div>
         </div>
-        <div className="text-sm flex justify-between mt-4">
-          <div onClick={(e) => handleSteps(e,step,"back")} className="flex items-center">
-            <RiArrowLeftSLine className="text-xl" />
-            Volver
-          </div>
-
-          <button className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded">
-            <RiSave3Line className="text-xl pr-1" />
-            Guardar
-          </button>
+        <div className="w-full flex justify-between mt-4 text-sm">
+          <BackButton onClick={(e) => handleSteps(e, step, "back")}/>
+          <SaveButton/>
         </div>
       </div>
     </form>

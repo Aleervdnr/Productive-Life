@@ -1,22 +1,19 @@
 import { useEffect, useState } from "react";
-import {
-  getDate,
-  getDay,
-  getDaysInMonth,
-  getMonth,
-  getYear,
-} from "date-fns";
+import { getDate, getDay, getDaysInMonth, getMonth, getYear } from "date-fns";
 import { months } from "../../libs/Dates.js";
 import MonthDayItem from "./MonthDayItem";
 import { useDate } from "../../context/DateContext.jsx";
+import { RiArrowRightSLine } from "react-icons/ri";
+import { RiArrowLeftSLine } from "react-icons/ri";
 
 export default function MonthTasks() {
   const [days, setDays] = useState([]);
-  const {nowDateTime} = useDate()
+  const { nowDateTime } = useDate();
 
-  const month = getMonth(nowDateTime) + 1;
-  const year = getYear(nowDateTime);
-  const daysInMonth = getDaysInMonth(nowDateTime);
+  const [month, setMonth] = useState(getMonth(nowDateTime) + 1)
+  const [year, setYear] = useState(getYear(nowDateTime))
+
+  const daysInMonth = getDaysInMonth(new Date(`${year}-${month < 10 ? `0${month}` : month}-01T00:00:00`));
 
   useEffect(() => {
     //Creamos un array nuevo donde luego mediante una iteracion vamos a tener todos los dias del mes actual en un formato yyyy-MM-dd
@@ -30,14 +27,37 @@ export default function MonthTasks() {
     }
     console.log(newDays[0]);
     setDays(newDays);
-  }, []);
+  }, [month]);
+
+  const addMonth = () => {
+    if(month == 12){
+      setYear(year + 1)
+      setMonth(1)
+    }else{
+      setMonth(month + 1)
+    }
+  }
+
+  const subtractMonth = () => {
+    if(month == 1){
+      setYear(year - 1)
+      setMonth(12)
+    }else{
+      setMonth(month - 1)
+    }
+  }
 
   return (
-    <div className="w-[100vw] px-5 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[48px,repeat(5,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[48px,repeat(auto-fit,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
-      <div className="w-full grid grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[26px,22px] col-span-7 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:gap-x-1 justify-items-center">
-        <span className="text-md font-semibold col-span-7 w-full">
-          {months[month - 1]}, {year}
-        </span>
+    <div className="w-[100vw] px-5 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[24px,24px,repeat(auto-fill,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[24px,24px,repeat(auto-fill,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
+        <div className="col-span-7 w-full flex justify-between">
+          <span className="text-md font-semibold">
+            {months[month - 1]}, {year}
+          </span>
+          <div className="w-fit flex">
+            <RiArrowLeftSLine className="text-2xl text-violet-main cursor-pointer" onClick={()=> subtractMonth()}/>
+            <RiArrowRightSLine className="text-2xl text-violet-main cursor-pointer" onClick={()=> addMonth()}/>
+          </div>
+        </div>
         <span>L</span>
         <span>M</span>
         <span>X</span>
@@ -45,7 +65,8 @@ export default function MonthTasks() {
         <span>V</span>
         <span>S</span>
         <span>D</span>
-      </div>
+      {/* <div className="w-full grid grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[26px,22px] col-span-7 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:gap-x-1 justify-items-center"> */}
+      {/* </div> */}
       {/* Si el dia empieza en lunes, martes, miercoles o el dia que sea, mediante esta logica se acomoda el primer dia del mes en el dia que es mediante unos espacios vacios, ejemplo: si la semana empieza en martes en el lunes va haber un espacio vacio, sin esto todos los meses se mostrarian como primer dia el lunes*/}
       <div
         className={

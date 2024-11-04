@@ -46,7 +46,24 @@ export function TasksProvider({ children }) {
       const res = await createTaskRequest(task, session.token);
       setTasks([...tasks, res.data]);
       toast.success("Tarea creada con exito");
-      console.log(res);
+
+      if(res.data.isRecurring){
+        const recurrences = [];
+        res.data.recurrences.forEach(task => 
+          recurrences.push({
+            title: res.data.title,
+            description: res.data.description,
+            recurringDays: res.data.recurringDays,
+            taskDate: task.taskDate,
+            recurringEndDate: res.data.recurringEndDate,
+            startTime: task.startTime,
+            endTime: task.endTime,
+            status: task.status,
+            _id: task._id
+          })
+        );
+        setTasks((prevTasks) => [...prevTasks, ...recurrences ] );
+      }
     } catch (err) {
       toast.error("Ocurrio un error");
       console.log(err);
@@ -55,9 +72,36 @@ export function TasksProvider({ children }) {
 
   //Obtener tareas
   const getTasks = async () => {
-    const session = { token: localStorage.getItem("token") };
-    const res = await getTasksRequest(session.token);
-    setTasks(res.data);
+    try {
+      const session = { token: localStorage.getItem("token") };
+      const res = await getTasksRequest(session.token);
+  
+      const filteredRecurringTasks = res.data.filter(task => task.isRecurring === true);
+      const recurrences = [];
+    
+      // Iterar solo hasta el último índice del array
+      for (let i = 0; i < filteredRecurringTasks.length; i++) {
+        if (filteredRecurringTasks[i].recurrences) { // Verificar que 'recurrences' exista
+          filteredRecurringTasks[i].recurrences.forEach(task => 
+            recurrences.push({
+              title: filteredRecurringTasks[i].title,
+              description: filteredRecurringTasks[i].description,
+              recurringDays: filteredRecurringTasks[i].recurringDays,
+              taskDate: task.taskDate,
+              recurringEndDate: filteredRecurringTasks[i].recurringEndDate,
+              startTime: task.startTime,
+              endTime: task.endTime,
+              status: task.status,
+              _id: task._id
+            })
+          );
+        }
+      }
+  
+      setTasks([...res.data, ...recurrences]);
+    } catch (error) {
+      console.error("Error obteniendo tareas:", error);
+    }
   };
 
   //Actualizar tareas
@@ -98,6 +142,7 @@ export function TasksProvider({ children }) {
     <TasksContext.Provider
       value={{
         tasks,
+        setTasks,
         createTask,
         getTasks,
         updateTask,

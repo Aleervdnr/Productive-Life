@@ -3,7 +3,7 @@ import TodayTasks from "../components/widgets-tasks/TodayTasks";
 import WeekTasks from "../components/widgets-tasks/WeekTasks";
 import MonthTasks from "../components/widgets-tasks/MonthTasks";
 import { useTasks } from "../context/TasksContext.jsx";
-import TaskFormButton from "../components/TaskFormButton.jsx";
+import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading} = useTasks();
