@@ -48,6 +48,9 @@ const taskSchema = new mongoose.Schema(
           startTime: String,
           endTime: String,
           status: { type: String, enum: ["completed", "pending", "overdue"], default: "pending" },
+          recurrenceOf: {
+            type: String,
+          },
           id: {
             type: String,
           },

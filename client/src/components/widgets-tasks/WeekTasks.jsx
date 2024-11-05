@@ -20,6 +20,11 @@ export default function WeekTasks() {
         start: startOfCurrentWeek,
         end: endOfCurrentWeek,
       });
+    }).sort((a, b) => {
+      // Convertir el tiempo de "HH:mm:ss" a un timestamp para ordenarlos
+      const timeA = new Date(`1970-01-01T${a.startTime}`).getTime();
+      const timeB = new Date(`1970-01-01T${b.startTime}`).getTime();
+      return timeA - timeB; // Orden ascendente
     });
 
     setWeeklyTasks(filteredTasks);

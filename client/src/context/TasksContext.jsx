@@ -59,7 +59,8 @@ export function TasksProvider({ children }) {
             startTime: task.startTime,
             endTime: task.endTime,
             status: task.status,
-            _id: task._id
+            recurrenceOf:res.data._id,
+            id: task._id
           })
         );
         setTasks((prevTasks) => [...prevTasks, ...recurrences ] );
@@ -92,6 +93,7 @@ export function TasksProvider({ children }) {
               startTime: task.startTime,
               endTime: task.endTime,
               status: task.status,
+              recurrenceOf:filteredRecurringTasks[i]._id,
               _id: task._id
             })
           );
@@ -108,10 +110,36 @@ export function TasksProvider({ children }) {
   const updateTask = async (task, isStatus) => {
     try {
       const session = { token: localStorage.getItem("token") };
-      await updateTasksRequest(task, session.token);
-      setTasks(
-        tasks.map((TaskMap) => (TaskMap._id == task._id ? task : TaskMap))
-      );
+      const res = await updateTasksRequest(task, session.token);
+      console.log(res.data)
+
+      if(res.data.isRecurring){
+        const recurrences = [];
+        res.data.recurrences.forEach(task => 
+          recurrences.push({
+            title: res.data.title,
+            description: res.data.description,
+            recurringDays: res.data.recurringDays,
+            taskDate: task.taskDate,
+            recurringEndDate: res.data.recurringEndDate,
+            startTime: task.startTime,
+            endTime: task.endTime,
+            status: task.status,
+            recurrenceOf:res.data._id,
+            _id: task._id
+          })
+        );
+        const mapTasks = tasks.map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
+        console.log(mapTasks)
+        const deletedOldRecurrencesTasks =  mapTasks.filter((task) => task.recurrenceOf != res.data._id )
+        console.log(deletedOldRecurrencesTasks)
+        console.log(deletedOldRecurrencesTasks, recurrences)
+        setTasks([...deletedOldRecurrencesTasks, ...recurrences]);
+      }else{
+        setTasks(
+          tasks.map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
+        );
+      }
       if (!isStatus) toast.success("Tarea actualizada con exito");
     } catch (error) {
       console.log(error);

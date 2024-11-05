@@ -11,6 +11,7 @@ import { RiCalendarCheckLine } from "react-icons/ri";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { RiTimeLine } from "react-icons/ri";
 import ItemRecurrent from "../ItemRecurrent.jsx";
+import generateOccurrences from "../../libs/generateOcurrences.js";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
@@ -22,14 +23,14 @@ export default function ItemTodayTask({ task }) {
   const dialog = document.getElementById(`modal_day_${task._id}`);
 
   const [recurringDays, setRecurringDays] = useState([
-    { name: "Lunes", isoDay: "1", status: task.recurringDays.includes(1)},
+    { name: "Lunes", isoDay: "1", status: task.recurringDays.includes(1) },
     { name: "Martes", isoDay: "2", status: task.recurringDays.includes(2) },
-    { name: "Miercoles", isoDay: "3", status: task.recurringDays.includes(3)},
+    { name: "Miercoles", isoDay: "3", status: task.recurringDays.includes(3) },
     { name: "Jueves", isoDay: "4", status: task.recurringDays.includes(4) },
     { name: "Viernes", isoDay: "5", status: task.recurringDays.includes(5) },
     { name: "Sabado", isoDay: "6", status: task.recurringDays.includes(6) },
     { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
-  ])
+  ]);
 
   const handleChangeStatus = () => {
     const newTask = task;
@@ -39,8 +40,8 @@ export default function ItemTodayTask({ task }) {
     updateTask(newTask, true);
   };
 
-  const taskDate = watch("taskDate")
-  const endTaskDate = watch("recurringEndDate")
+  const taskDate = watch("taskDate");
+  const endTaskDate = watch("recurringEndDate");
 
   const handleShowModal = (e) => {
     if (
@@ -56,7 +57,7 @@ export default function ItemTodayTask({ task }) {
       setValue("recurringEndDate", task.recurringEndDate);
       setValue("startTime", task.startTime);
       setValue("endTime", task.endTime);
-      console.log(task.recurringDays)
+      console.log(task.recurringDays);
     }
   };
 
@@ -71,8 +72,16 @@ export default function ItemTodayTask({ task }) {
     } = data;
 
     const filteredRecurringDays = recurringDays
-    .filter((item) => item.status == true)
-    .map((item) => item.status == true && item.isoDay);
+      .filter((item) => item.status == true)
+      .map((item) => item.status == true && item.isoDay);
+
+    const forRecurrences = {
+      taskDate,
+      recurringEndDate,
+      startTime,
+      endTime,
+      recurringDays: filteredRecurringDays,
+    };
 
     const updatedTask = {
       _id: task._id,
@@ -84,14 +93,12 @@ export default function ItemTodayTask({ task }) {
       endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
       recurringDays: filteredRecurringDays ? filteredRecurringDays : [],
       isRecurring: filteredRecurringDays.length >= 1 && true,
+      recurrences: generateOccurrences(forRecurrences),
       status: task.status,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
       user: task.user,
     };
-
-    console.log(updatedTask);
-
     updateTask(updatedTask, false);
     dialog.close();
     setEditIsActive(false);
@@ -166,17 +173,16 @@ export default function ItemTodayTask({ task }) {
                   disabled
                 />
               </div>
-              {
-                task?.description.length > 1 &&
-(              <div className="grid gap-1">
-                <span className="font-medium text-sm">Descripcion</span>
-                <textarea
-                  className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm"
-                  value={task.description}
-                  disabled
-                />
-              </div>)
-              }
+              {task?.description.length > 1 && (
+                <div className="grid gap-1">
+                  <span className="font-medium text-sm">Descripcion</span>
+                  <textarea
+                    className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-dark-100 text-sm"
+                    value={task.description}
+                    disabled
+                  />
+                </div>
+              )}
               <div className="flex gap-5">
                 <div>
                   <span className="font-medium text-sm">Fecha de Inicio</span>
@@ -244,7 +250,9 @@ export default function ItemTodayTask({ task }) {
                         className="border px-2 rounded-full border-violet-main text-sm bg-violet-main capitalize"
                         key={day}
                       >
-                        {task.recurringDays.length >= 5 ? daysOfWeek[day].slice(0,3) : daysOfWeek[day]}
+                        {task.recurringDays.length >= 5
+                          ? daysOfWeek[day].slice(0, 3)
+                          : daysOfWeek[day]}
                       </p>
                     ))}
                   </div>
@@ -295,7 +303,6 @@ export default function ItemTodayTask({ task }) {
                     <input
                       type="date"
                       {...register("taskDate")}
-                      
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
@@ -306,7 +313,6 @@ export default function ItemTodayTask({ task }) {
                     <input
                       type="date"
                       {...register("recurringEndDate")}
-                      
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
@@ -350,6 +356,7 @@ export default function ItemTodayTask({ task }) {
                         isoDay={item.isoDay}
                         key={item.isoDay}
                         disabled={taskDate == endTaskDate}
+                        task={task}
                       />
                     ))}
                   </div>
