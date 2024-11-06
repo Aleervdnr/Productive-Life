@@ -71,6 +71,7 @@ export const updateTask = async (req, res) => {
       recurringDays,
       endTime,
       recurringEndDate,
+      recurrences,
       createdAt,
       updatedAt,
       user
@@ -90,7 +91,7 @@ export const updateTask = async (req, res) => {
       isRecurring,
       recurringDays,
       recurringEndDate,
-      recurrences: generatedOcurrences,
+      recurrences: recurrences? recurrences : generatedOcurrences,
       createdAt,
       updatedAt,
       user

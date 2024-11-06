@@ -60,7 +60,7 @@ export function TasksProvider({ children }) {
             endTime: task.endTime,
             status: task.status,
             recurrenceOf:res.data._id,
-            id: task._id
+            _id: task._id
           })
         );
         setTasks((prevTasks) => [...prevTasks, ...recurrences ] );
@@ -111,7 +111,7 @@ export function TasksProvider({ children }) {
     try {
       const session = { token: localStorage.getItem("token") };
       const res = await updateTasksRequest(task, session.token);
-      console.log(res.data)
+      console.log(res.data,task)
 
       if(res.data.isRecurring){
         const recurrences = [];

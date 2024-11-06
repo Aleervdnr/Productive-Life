@@ -35,13 +35,13 @@ export default function ItemRecurrent({
       ]);
     }else{
       setRecurringDays([
-        { name: "Lunes", isoDay: "1", status: task.recurringDays.includes(1) },
-        { name: "Martes", isoDay: "2", status: task.recurringDays.includes(2) },
-        { name: "Miercoles", isoDay: "3", status: task.recurringDays.includes(3) },
-        { name: "Jueves", isoDay: "4", status: task.recurringDays.includes(4) },
-        { name: "Viernes", isoDay: "5", status: task.recurringDays.includes(5) },
-        { name: "Sabado", isoDay: "6", status: task.recurringDays.includes(6) },
-        { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
+        { name: "Lunes", isoDay: "1", status: task?.recurringDays ? task.recurringDays.includes(1) : false },
+        { name: "Martes", isoDay: "2", status: task?.recurringDays ? task.recurringDays.includes(2) : false },
+        { name: "Miercoles", isoDay: "3", status: task?.recurringDays ? task.recurringDays.includes(3) : false },
+        { name: "Jueves", isoDay: "4", status: task?.recurringDays ? task.recurringDays.includes(4) : false },
+        { name: "Viernes", isoDay: "5", status: task?.recurringDays ? task.recurringDays.includes(5) : false },
+        { name: "Sabado", isoDay: "6", status: task?.recurringDays ? task.recurringDays.includes(6) : false },
+        { name: "Domingo", isoDay: "0", status: task?.recurringDays ? task.recurringDays.includes(0) : false },
       ])
     }
   }, [disabled]);
