@@ -15,7 +15,8 @@ import generateOccurrences from "../../libs/generateOcurrences.js";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
-  const { tasks, updateTask, deleteTask, handleCheckRecurringDays } = useTasks();
+  const { tasks, updateTask, deleteTask, handleCheckRecurringDays } =
+    useTasks();
   const { register, setValue, handleSubmit, watch } = useForm();
   const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
@@ -33,11 +34,45 @@ export default function ItemTodayTask({ task }) {
   ]);
 
   const handleChangeStatus = () => {
-    const newTask = task;
-    if (status == "completed") newTask.status = "pending";
-    if (status == "pending") newTask.status = "completed";
+    if (!task.recurrenceOf) {
+      const newTask = task;
+      if (status == "completed") newTask.status = "pending";
+      if (status == "pending") newTask.status = "completed";
 
-    updateTask(newTask, true);
+      updateTask(newTask, true);
+    } else {
+      const parentTask = tasks.find(
+        (taskMap) => taskMap._id == task.recurrenceOf
+      );
+      const toggle = (task) => {
+        if (status == "completed") {
+          const newTask = {
+            startTime: task.startTime,
+            endTime: task.endTime,
+            taskDate: task.taskDate,
+            status: "pending",
+            _id: task._id,
+          };
+          return newTask;
+        }
+        if (status == "pending") {
+          const newTask = {
+            startTime: task.startTime,
+            endTime: task.endTime,
+            taskDate: task.taskDate,
+            status: "completed",
+            _id: task._id,
+          };
+          return newTask;
+        }
+      };
+      const modifiedRecurrences = parentTask.recurrences.map((taskMap) =>
+        taskMap._id == task._id ? toggle(taskMap) : taskMap
+      );
+
+      parentTask.recurrences = modifiedRecurrences
+      updateTask(parentTask,true)
+    }
   };
 
   const taskDate = watch("taskDate");
@@ -113,20 +148,24 @@ export default function ItemTodayTask({ task }) {
       startTime,
       endTime,
     } = data;
-    console.log(data, task) 
-    
-    const parentTask = tasks.find(taskMap => taskMap._id == task.recurrenceOf)
+    console.log(data, task);
+
+    const parentTask = tasks.find(
+      (taskMap) => taskMap._id == task.recurrenceOf
+    );
 
     const newRecurrence = {
       taskDate,
       startTime,
       endTime,
       status: task.status,
-      _id: task._id
-    }
+      _id: task._id,
+    };
 
-    const recurrences = parentTask.recurrences.map(taskMap => taskMap._id == task._id ? newRecurrence : taskMap)
-    
+    const recurrences = parentTask.recurrences.map((taskMap) =>
+      taskMap._id == task._id ? newRecurrence : taskMap
+    );
+
     const newTask = {
       _id: parentTask._id,
       title: title,
@@ -142,13 +181,40 @@ export default function ItemTodayTask({ task }) {
       createdAt: parentTask.createdAt,
       updatedAt: parentTask.updatedAt,
       user: parentTask.user,
-    }
-    updateTask(newTask,false)
-    console.log(parentTask,newTask)
-  }
+    };
+    updateTask(newTask, false);
+    console.log(parentTask, newTask);
+  };
 
   const handleDeleteTask = () => {
-    deleteTask(task._id);
+    if (!task.recurrenceOf) {
+      deleteTask(task._id);
+    } else {
+      console.log("isrecu");
+      const parentTask = tasks.find(
+        (taskMap) => taskMap._id == task.recurrenceOf
+      );
+      const newArray = parentTask.recurrences.filter(
+        (taskMap) => taskMap._id != task._id
+      );
+      const newTask = {
+        _id: parentTask._id,
+        title: parentTask.title,
+        description: parentTask.description,
+        taskDate: parentTask.taskDate,
+        recurringEndDate: parentTask.recurringEndDate,
+        startTime: parentTask.startTime,
+        endTime: parentTask.endTime,
+        recurringDays: parentTask.recurringDays,
+        isRecurring: parentTask.isRecurring,
+        recurrences: newArray,
+        status: parentTask.status,
+        createdAt: parentTask.createdAt,
+        updatedAt: parentTask.updatedAt,
+        user: parentTask.user,
+      };
+      updateTask(newTask, false, true);
+    }
   };
 
   return (
@@ -319,7 +385,11 @@ export default function ItemTodayTask({ task }) {
                 </div>
               </div>
             </div>
-            <form onSubmit={handleSubmit(task.recurrenceOf ? onSubmitRecurrence : onSubmit)}>
+            <form
+              onSubmit={handleSubmit(
+                task.recurrenceOf ? onSubmitRecurrence : onSubmit
+              )}
+            >
               <h3 className="font-bold text-lg mb-2">Editar Tarea</h3>
               <div className="grid  gap-y-4">
                 <div className="grid">
