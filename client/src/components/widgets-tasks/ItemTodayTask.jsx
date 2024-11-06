@@ -148,7 +148,30 @@ export default function ItemTodayTask({ task }) {
   }
 
   const handleDeleteTask = () => {
-    deleteTask(task._id);
+    if(!task.recurrenceOf){
+      deleteTask(task._id);
+    }else{
+      console.log("isrecu")
+      const parentTask = tasks.find(taskMap => taskMap._id == task.recurrenceOf)
+      const newArray = parentTask.recurrences.filter(taskMap => taskMap._id != task._id)
+      const newTask = {
+        _id: parentTask._id,
+        title: parentTask.title,
+        description: parentTask.description,
+        taskDate: parentTask.taskDate,
+        recurringEndDate: parentTask.recurringEndDate,
+        startTime: parentTask.startTime,
+        endTime: parentTask.endTime,
+        recurringDays: parentTask.recurringDays,
+        isRecurring: parentTask.isRecurring,
+        recurrences: newArray,
+        status: parentTask.status,
+        createdAt: parentTask.createdAt,
+        updatedAt: parentTask.updatedAt,
+        user: parentTask.user,
+      }
+      updateTask(newTask,false,true)
+    }
   };
 
   return (

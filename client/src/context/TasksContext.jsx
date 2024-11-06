@@ -47,9 +47,9 @@ export function TasksProvider({ children }) {
       setTasks([...tasks, res.data]);
       toast.success("Tarea creada con exito");
 
-      if(res.data.isRecurring){
+      if (res.data.isRecurring) {
         const recurrences = [];
-        res.data.recurrences.forEach(task => 
+        res.data.recurrences.forEach((task) =>
           recurrences.push({
             title: res.data.title,
             description: res.data.description,
@@ -59,11 +59,11 @@ export function TasksProvider({ children }) {
             startTime: task.startTime,
             endTime: task.endTime,
             status: task.status,
-            recurrenceOf:res.data._id,
-            _id: task._id
+            recurrenceOf: res.data._id,
+            _id: task._id,
           })
         );
-        setTasks((prevTasks) => [...prevTasks, ...recurrences ] );
+        setTasks((prevTasks) => [...prevTasks, ...recurrences]);
       }
     } catch (err) {
       toast.error("Ocurrio un error");
@@ -76,14 +76,17 @@ export function TasksProvider({ children }) {
     try {
       const session = { token: localStorage.getItem("token") };
       const res = await getTasksRequest(session.token);
-  
-      const filteredRecurringTasks = res.data.filter(task => task.isRecurring === true);
+
+      const filteredRecurringTasks = res.data.filter(
+        (task) => task.isRecurring === true
+      );
       const recurrences = [];
-    
+
       // Iterar solo hasta el último índice del array
       for (let i = 0; i < filteredRecurringTasks.length; i++) {
-        if (filteredRecurringTasks[i].recurrences) { // Verificar que 'recurrences' exista
-          filteredRecurringTasks[i].recurrences.forEach(task => 
+        if (filteredRecurringTasks[i].recurrences) {
+          // Verificar que 'recurrences' exista
+          filteredRecurringTasks[i].recurrences.forEach((task) =>
             recurrences.push({
               title: filteredRecurringTasks[i].title,
               description: filteredRecurringTasks[i].description,
@@ -93,13 +96,13 @@ export function TasksProvider({ children }) {
               startTime: task.startTime,
               endTime: task.endTime,
               status: task.status,
-              recurrenceOf:filteredRecurringTasks[i]._id,
-              _id: task._id
+              recurrenceOf: filteredRecurringTasks[i]._id,
+              _id: task._id,
             })
           );
         }
       }
-  
+
       setTasks([...res.data, ...recurrences]);
     } catch (error) {
       console.error("Error obteniendo tareas:", error);
@@ -107,15 +110,15 @@ export function TasksProvider({ children }) {
   };
 
   //Actualizar tareas
-  const updateTask = async (task, isStatus) => {
+  const updateTask = async (task, isStatus, isRecurrenceDeleted) => {
     try {
       const session = { token: localStorage.getItem("token") };
       const res = await updateTasksRequest(task, session.token);
-      console.log(res.data,task)
+      console.log(res.data, task);
 
-      if(res.data.isRecurring){
+      if (res.data.isRecurring) {
         const recurrences = [];
-        res.data.recurrences.forEach(task => 
+        res.data.recurrences.forEach((task) =>
           recurrences.push({
             title: res.data.title,
             description: res.data.description,
@@ -125,22 +128,28 @@ export function TasksProvider({ children }) {
             startTime: task.startTime,
             endTime: task.endTime,
             status: task.status,
-            recurrenceOf:res.data._id,
-            _id: task._id
+            recurrenceOf: res.data._id,
+            _id: task._id,
           })
         );
-        const mapTasks = tasks.map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
-        console.log(mapTasks)
-        const deletedOldRecurrencesTasks =  mapTasks.filter((task) => task.recurrenceOf != res.data._id )
-        console.log(deletedOldRecurrencesTasks)
-        console.log(deletedOldRecurrencesTasks, recurrences)
+        const mapTasks = tasks.map((TaskMap) =>
+          TaskMap._id == task._id ? res.data : TaskMap
+        );
+        console.log(mapTasks);
+        const deletedOldRecurrencesTasks = mapTasks.filter(
+          (task) => task.recurrenceOf != res.data._id
+        );
+        console.log(deletedOldRecurrencesTasks);
+        console.log(deletedOldRecurrencesTasks, recurrences);
         setTasks([...deletedOldRecurrencesTasks, ...recurrences]);
-      }else{
+      } else {
         setTasks(
           tasks.map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
         );
       }
-      if (!isStatus) toast.success("Tarea actualizada con exito");
+      if (!isStatus & !isRecurrenceDeleted)
+        toast.success("Tarea actualizada con exito");
+      if (isRecurrenceDeleted) toast.warning("Recurrencia Eliminada");
     } catch (error) {
       console.log(error);
     }
@@ -180,7 +189,7 @@ export function TasksProvider({ children }) {
         tasksIsLoading,
         setTasksIsLoading,
         handleCheckRecurringDays,
-        filterDailyTasks
+        filterDailyTasks,
       }}
     >
       {children}
