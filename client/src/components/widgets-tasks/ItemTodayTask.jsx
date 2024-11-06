@@ -15,7 +15,7 @@ import generateOccurrences from "../../libs/generateOcurrences.js";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id } = task;
-  const { updateTask, deleteTask, handleCheckRecurringDays } = useTasks();
+  const { tasks, updateTask, deleteTask, handleCheckRecurringDays } = useTasks();
   const { register, setValue, handleSubmit, watch } = useForm();
   const { nowDate, daysOfWeek } = useDate();
   const [editIsActive, setEditIsActive] = useState(false);
@@ -103,6 +103,49 @@ export default function ItemTodayTask({ task }) {
     dialog.close();
     setEditIsActive(false);
   };
+
+  const onSubmitRecurrence = (data) => {
+    const {
+      title,
+      description,
+      taskDate,
+      recurringEndDate,
+      startTime,
+      endTime,
+    } = data;
+    console.log(data, task) 
+    
+    const parentTask = tasks.find(taskMap => taskMap._id == task.recurrenceOf)
+
+    const newRecurrence = {
+      taskDate,
+      startTime,
+      endTime,
+      status: task.status,
+      _id: task._id
+    }
+
+    const recurrences = parentTask.recurrences.map(taskMap => taskMap._id == task._id ? newRecurrence : taskMap)
+    
+    const newTask = {
+      _id: parentTask._id,
+      title: title,
+      description: description,
+      taskDate: parentTask.taskDate,
+      recurringEndDate: parentTask.recurringEndDate,
+      startTime: parentTask.startTime,
+      endTime: parentTask.endTime,
+      recurringDays: parentTask.recurringDays,
+      isRecurring: parentTask.isRecurring,
+      recurrences: recurrences,
+      status: parentTask.status,
+      createdAt: parentTask.createdAt,
+      updatedAt: parentTask.updatedAt,
+      user: parentTask.user,
+    }
+    updateTask(newTask,false)
+    console.log(parentTask,newTask)
+  }
 
   const handleDeleteTask = () => {
     deleteTask(task._id);
@@ -276,7 +319,7 @@ export default function ItemTodayTask({ task }) {
                 </div>
               </div>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(task.recurrenceOf ? onSubmitRecurrence : onSubmit)}>
               <h3 className="font-bold text-lg mb-2">Editar Tarea</h3>
               <div className="grid  gap-y-4">
                 <div className="grid">
