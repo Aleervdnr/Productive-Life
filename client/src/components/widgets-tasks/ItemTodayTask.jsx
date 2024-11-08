@@ -183,7 +183,8 @@ export default function ItemTodayTask({ task }) {
       user: parentTask.user,
     };
     updateTask(newTask, false);
-    console.log(parentTask, newTask);
+    dialog.close();
+    setEditIsActive(false);
   };
 
   const handleDeleteTask = () => {
