@@ -121,7 +121,7 @@ export function TasksProvider({ children }) {
         res.data.recurrences.forEach((task) =>
           recurrences.push({
             title: res.data.title,
-            description: res.data.description,
+            description: task.description ? task.description : "",
             recurringDays: res.data.recurringDays,
             taskDate: task.taskDate,
             recurringEndDate: res.data.recurringEndDate,

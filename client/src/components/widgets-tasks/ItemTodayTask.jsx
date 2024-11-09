@@ -92,7 +92,6 @@ export default function ItemTodayTask({ task }) {
       setValue("recurringEndDate", task.recurringEndDate);
       setValue("startTime", task.startTime);
       setValue("endTime", task.endTime);
-      console.log(task.recurringDays);
     }
   };
 
@@ -156,11 +155,14 @@ export default function ItemTodayTask({ task }) {
 
     const newRecurrence = {
       taskDate,
+      description,
       startTime,
       endTime,
       status: task.status,
       _id: task._id,
     };
+
+    console.log(newRecurrence)
 
     const recurrences = parentTask.recurrences.map((taskMap) =>
       taskMap._id == task._id ? newRecurrence : taskMap
@@ -169,7 +171,7 @@ export default function ItemTodayTask({ task }) {
     const newTask = {
       _id: parentTask._id,
       title: title,
-      description: description,
+      description: parentTask.description,
       taskDate: parentTask.taskDate,
       recurringEndDate: parentTask.recurringEndDate,
       startTime: parentTask.startTime,
@@ -221,23 +223,23 @@ export default function ItemTodayTask({ task }) {
   return (
     <>
       <div
-        className={`w-full max-h-[64px] ${
-          status == "pending" && `bg-dark-400`
+        className={`w-full  ${
+          status == "pending" && `bg-dark-400  border-transparent`
         } ${
-          status == "completed" && `border-2 border-dark-400`
-        }  rounded-xl px-3 py-[10px] flex items-center justify-between cursor-pointer`}
+          status == "completed" && ` border-dark-400`
+        }  rounded-xl px-3 border-2 py-[10px] flex items-center justify-between cursor-pointer`}
         onClick={(e) => handleShowModal(e)}
       >
-        <div className="grid ">
+        <div className="grid max-w-[85%]">
           <span
-            className={`font-semibold capitalize ${
+            className={`font-semibold capitalize truncate ...${
               status == "completed" && "line-through text-dark-100"
             }`}
           >
             {title}
           </span>
           <span
-            className={`text-base font-extralight ${
+            className={`text-sm font-extralight ${
               status == "completed" && "text-dark-100"
             }`}
           >{`${startTime.slice(0, -3)} - ${endTime.slice(0, -3)}`}</span>
@@ -283,7 +285,7 @@ export default function ItemTodayTask({ task }) {
                   disabled
                 />
               </div>
-              {task?.description.length > 1 && (
+              {task?.description?.length > 1 && (
                 <div className="grid gap-1">
                   <span className="font-medium text-sm">Descripcion</span>
                   <textarea
