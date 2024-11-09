@@ -92,7 +92,6 @@ export default function ItemTodayTask({ task }) {
       setValue("recurringEndDate", task.recurringEndDate);
       setValue("startTime", task.startTime);
       setValue("endTime", task.endTime);
-      console.log(task.recurringDays);
     }
   };
 
@@ -156,11 +155,14 @@ export default function ItemTodayTask({ task }) {
 
     const newRecurrence = {
       taskDate,
+      description,
       startTime,
       endTime,
       status: task.status,
       _id: task._id,
     };
+
+    console.log(newRecurrence)
 
     const recurrences = parentTask.recurrences.map((taskMap) =>
       taskMap._id == task._id ? newRecurrence : taskMap
@@ -169,7 +171,7 @@ export default function ItemTodayTask({ task }) {
     const newTask = {
       _id: parentTask._id,
       title: title,
-      description: description,
+      description: parentTask.description,
       taskDate: parentTask.taskDate,
       recurringEndDate: parentTask.recurringEndDate,
       startTime: parentTask.startTime,
@@ -283,7 +285,7 @@ export default function ItemTodayTask({ task }) {
                   disabled
                 />
               </div>
-              {task?.description.length > 1 && (
+              {task?.description?.length > 1 && (
                 <div className="grid gap-1">
                   <span className="font-medium text-sm">Descripcion</span>
                   <textarea
