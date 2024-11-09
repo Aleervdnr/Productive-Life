@@ -44,7 +44,7 @@ export default function TodayTasks() {
 
   return (
     <div className="max-lg:w-[100vw] max-lg:h-[calc(100dvh-85px)] px-5 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll">
-      <span className="text-md font-semibold">Tareas del dia</span>
+      <span className="text-lg font-semibold">Tareas del dia</span>
       <div
         className={`${
           tasks.filter((task) => task.taskDate == todayDate).length
