@@ -496,7 +496,3 @@ export default function ItemTodayTask({ task }) {
     </>
   );
 }
-
-{
-  /* You can open the modal using document.getElementById('ID').showModal() method */
-}

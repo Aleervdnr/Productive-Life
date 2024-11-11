@@ -104,6 +104,8 @@ export function TasksProvider({ children }) {
       }
 
       setTasks([...res.data, ...recurrences]);
+      if(res.status == 200) setTasksIsLoading(false);
+      return res
     } catch (error) {
       console.error("Error obteniendo tareas:", error);
     }
