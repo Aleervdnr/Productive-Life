@@ -11,11 +11,20 @@ export default function ItemRecurrent({
   setRecurringDays,
   recurringDays,
   disabled,
-  task
+  task,
+  setRecurrencesChange,
+  setRecurrencesDelete
 }) {
   const handleClick = () => {
     if (!disabled) {
       handleCheck(isoDay, setRecurringDays, recurringDays);
+      if(!status){
+        setRecurrencesChange((prevIsoDay) => [...prevIsoDay, isoDay])
+        setRecurrencesDelete((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
+      }else{
+        setRecurrencesChange((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
+        setRecurrencesDelete((prevIsoDay) => [...prevIsoDay, isoDay])
+      }
     }
     if (disabled) {
       toast.info("Be at the area 10 minutes before the event time");
@@ -25,7 +34,7 @@ export default function ItemRecurrent({
   useEffect(() => {
     if (disabled) {
       setRecurringDays([
-        { name: "Lunes", isoDay: "1", status: true },
+        { name: "Lunes", isoDay: "1", status: false },
         { name: "Martes", isoDay: "2", status: false },
         { name: "Miercoles", isoDay: "3", status: false },
         { name: "Jueves", isoDay: "4", status: false },
