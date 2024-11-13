@@ -1,6 +1,5 @@
 import { format, getDate, setDefaultOptions } from "date-fns";
 import { useTasks } from "../../context/TasksContext";
-import { useEffect } from "react";
 import { es } from "date-fns/locale";
 import ItemTodayTask from "./ItemTodayTask";
 
@@ -8,9 +7,15 @@ setDefaultOptions({ locale: es });
 
 export default function MonthDayItem({ children, day }) {
   const { tasks, tasksIsLoading } = useTasks();
-  const filteredTasks = tasks.filter(
-    (task) => task.taskDate == format(new Date(day), "yyyy-MM-dd")
-  );
+
+  const filteredTasks = tasks
+  .filter((task) => task.taskDate == format(new Date(day), "yyyy-MM-dd"))
+  .sort((a, b) => {
+    // Convertir el tiempo de "HH:mm:ss" a un timestamp para ordenarlos
+    const timeA = new Date(`1970-01-01T${a.startTime}`).getTime();
+    const timeB = new Date(`1970-01-01T${b.startTime}`).getTime();
+    return timeA - timeB; // Orden ascendente
+  });
   const completedTasks = filteredTasks.filter( task => task.status == "completed")
 
   return (
