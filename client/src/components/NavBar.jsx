@@ -52,10 +52,10 @@ function NavBar({ activeItem }) {
             <li className="grid justify-items-center my-4">
               {user ? <AvatarIcon name={user.name} /> : <AvatarIconSkeleton />}
             </li>
-            <ItemNavBar name={"home"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose} >
+            {/* <ItemNavBar name={"home"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose} >
               <FaHome className="text-[18px]" />
               <span>Inicio</span>
-            </ItemNavBar>
+            </ItemNavBar> */}
             <ItemNavBar name={"tasks"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaTasks className="text-[18px]" />
               <span>Tareas</span>
@@ -64,10 +64,10 @@ function NavBar({ activeItem }) {
               <FaWallet className="text-[18px]" />
               <span>Gastos</span>
             </ItemNavBar>
-            <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
+            {/* <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaCartShopping className="text-[18px]" />
               <span>Compras</span>
-            </ItemNavBar>
+            </ItemNavBar> */}
           </ul>
         </div>
         <ul className="w-full flex justify-center self-end">

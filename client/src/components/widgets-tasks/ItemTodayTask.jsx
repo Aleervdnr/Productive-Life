@@ -161,8 +161,8 @@ export default function ItemTodayTask({ task }) {
     const newRecurrence = {
       taskDate,
       description,
-      startTime,
-      endTime,
+      startTime: startTime.length == 8 ? startTime : `${startTime}:00`,
+      endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
       status: task.status,
       _id: task._id,
     };
@@ -229,6 +229,7 @@ export default function ItemTodayTask({ task }) {
         user: parentTask.user,
       };      
       updateTask(newTask, false);
+      setRecurrencesDelete([])
     }
     //Si hay que agregar dias a la recurrencias pero no eliminar niguno
     if (recurrencesChange.length > 0 && recurrencesDelete.length == 0) {
@@ -272,6 +273,7 @@ export default function ItemTodayTask({ task }) {
         user: parentTask.user,
       };
       updateTask(newTask, false);
+      setRecurrencesChange([])
     }
 
     //Si hay que agregar y eliminar recurrencias
@@ -324,6 +326,8 @@ export default function ItemTodayTask({ task }) {
       user: parentTask.user,
     };
     updateTask(newTask, false);
+    setRecurrencesChange([])
+    setRecurrencesDelete([])
     }
 
     dialog.close();

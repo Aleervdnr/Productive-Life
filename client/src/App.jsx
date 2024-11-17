@@ -26,16 +26,16 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginRegisterpage />} />
           <Route element={<ProtectedRoute />}>
-            <Route
+            {/* <Route
               path="/home"
               element={<Homepage setActiveItem={setActiveItem} />}
-            />
+            /> */}
             <Route
               path="/tasks"
               element={<TasksPage setActiveItem={setActiveItem} />}
             />
             <Route path="/gastos" element={<GastosPage setActiveItem={setActiveItem} />} />
-            <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} />
+            {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
           </Route>
         </Routes>
         <Toaster theme="dark" richColors />
