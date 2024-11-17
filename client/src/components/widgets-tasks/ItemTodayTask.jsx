@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { useDate } from "../../context/DateContext.jsx";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { RiPencilFill } from "react-icons/ri";
-import { useState } from "react";
-import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { format, getISODay, isBefore, isToday, parseISO } from "date-fns";
 import { RiCalendar2Line } from "react-icons/ri";
 import { RiCalendarCheckLine } from "react-icons/ri";
 import { RiCalendarScheduleLine } from "react-icons/ri";
@@ -33,6 +33,11 @@ export default function ItemTodayTask({ task }) {
     { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
   ]);
 
+  const parentTask = tasks.find((taskMap) => taskMap._id == task.recurrenceOf);
+
+  const [recurrencesChange, setRecurrencesChange] = useState([]);
+  const [recurrencesDelete, setRecurrencesDelete] = useState([]);
+
   const handleChangeStatus = () => {
     if (!task.recurrenceOf) {
       const newTask = task;
@@ -41,9 +46,6 @@ export default function ItemTodayTask({ task }) {
 
       updateTask(newTask, true);
     } else {
-      const parentTask = tasks.find(
-        (taskMap) => taskMap._id == task.recurrenceOf
-      );
       const toggle = (task) => {
         if (status == "completed") {
           const newTask = {
@@ -70,8 +72,8 @@ export default function ItemTodayTask({ task }) {
         taskMap._id == task._id ? toggle(taskMap) : taskMap
       );
 
-      parentTask.recurrences = modifiedRecurrences
-      updateTask(parentTask,true)
+      parentTask.recurrences = modifiedRecurrences;
+      updateTask(parentTask, true);
     }
   };
 
@@ -139,34 +141,173 @@ export default function ItemTodayTask({ task }) {
   };
 
   const onSubmitRecurrence = (data) => {
+    //Desestructuramos el objeto a recibir
     const {
       title,
       description,
       taskDate,
-      recurringEndDate,
       startTime,
       endTime,
+      recurringEndDate,
     } = data;
     console.log(data, task);
 
+    //Obtenemos la tarea padre
     const parentTask = tasks.find(
       (taskMap) => taskMap._id == task.recurrenceOf
     );
 
+    //Con la data recibida armamos un nueva recurrencia
     const newRecurrence = {
       taskDate,
       description,
-      startTime,
-      endTime,
+      startTime: startTime.length == 8 ? startTime : `${startTime}:00`,
+      endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
       status: task.status,
       _id: task._id,
     };
 
-    console.log(newRecurrence)
+    console.log(newRecurrence);
 
-    const recurrences = parentTask.recurrences.map((taskMap) =>
-      taskMap._id == task._id ? newRecurrence : taskMap
-    );
+    //Si no hay que agregar ni eliminar recurrencias, solo edicion de info
+    if (recurrencesChange.length == 0 && recurrencesDelete.length == 0) {
+      //Luego modificamos mediante el id en el lugar de la tarea a actuazaliar colocamos la recurrencia nueva
+      const recurrences = parentTask.recurrences.map((taskMap) =>
+        taskMap._id == task._id ? newRecurrence : taskMap
+      );
+
+      const newTask = {
+        _id: parentTask._id,
+        title: title,
+        description: parentTask.description,
+        taskDate: parentTask.taskDate,
+        recurringEndDate: parentTask.recurringEndDate,
+        startTime: parentTask.startTime,
+        endTime: parentTask.endTime,
+        recurringDays: parentTask.recurringDays,
+        isRecurring: parentTask.isRecurring,
+        recurrences: recurrences,
+        status: parentTask.status,
+        createdAt: parentTask.createdAt,
+        updatedAt: parentTask.updatedAt,
+        user: parentTask.user,
+      };
+      console.log(newTask);
+      updateTask(newTask, false);
+    }
+
+    //Si hay que eliminar recurrencias
+    if (recurrencesChange.length == 0 && recurrencesDelete.length > 0) {
+      const today = new Date(); // Fecha actual
+
+      const updatedRecurrences = parentTask.recurrences.filter(recurrence => {
+        const taskDate = parseISO(recurrence.taskDate);
+        const taskIsoDay = getISODay(taskDate).toString();
+      
+        // Condición para mantener la tarea si es menor a hoy o no está en los días a eliminar
+        return isBefore(taskDate, today) || isToday(taskDate) || !recurrencesDelete.includes(taskIsoDay);
+      });
+
+      const filteredRecurringDays = recurringDays
+      .filter((item) => item.status == true)
+      .map((item) => item.status == true && item.isoDay);
+
+      const newTask = {
+        _id: parentTask._id,
+        title: title,
+        description: parentTask.description,
+        taskDate: parentTask.taskDate,
+        recurringEndDate: parentTask.recurringEndDate,
+        startTime: parentTask.startTime,
+        endTime: parentTask.endTime,
+        recurringDays: filteredRecurringDays,
+        isRecurring: parentTask.isRecurring,
+        recurrences: updatedRecurrences,
+        status: parentTask.status,
+        createdAt: parentTask.createdAt,
+        updatedAt: parentTask.updatedAt,
+        user: parentTask.user,
+      };      
+      updateTask(newTask, false);
+      setRecurrencesDelete([])
+    }
+    //Si hay que agregar dias a la recurrencias pero no eliminar niguno
+    if (recurrencesChange.length > 0 && recurrencesDelete.length == 0) {
+      const filteredRecurringDays = recurringDays
+        .filter((item) => item.status == true)
+        .map((item) => item.status == true && item.isoDay);
+
+      const forRecurrences = {
+        taskDate,
+        recurringEndDate,
+        startTime,
+        endTime,
+        recurringDays: recurrencesChange,
+      };
+
+      const generatedRecurrences = generateOccurrences(forRecurrences);
+
+      const newRecurrences = [
+        ...parentTask.recurrences,
+        ...generatedRecurrences,
+      ];
+
+      const recurrences = newRecurrences.map((taskMap) =>
+        taskMap._id == task._id ? newRecurrence : taskMap
+      );
+
+      const newTask = {
+        _id: parentTask._id,
+        title: title,
+        description: parentTask.description,
+        taskDate: parentTask.taskDate,
+        recurringEndDate: parentTask.recurringEndDate,
+        startTime: parentTask.startTime,
+        endTime: parentTask.endTime,
+        recurringDays: filteredRecurringDays,
+        isRecurring: parentTask.isRecurring,
+        recurrences: recurrences,
+        status: parentTask.status,
+        createdAt: parentTask.createdAt,
+        updatedAt: parentTask.updatedAt,
+        user: parentTask.user,
+      };
+      updateTask(newTask, false);
+      setRecurrencesChange([])
+    }
+
+    //Si hay que agregar y eliminar recurrencias
+    if (recurrencesChange.length > 0 && recurrencesDelete.length > 0) {
+      console.log("dentro los dos mayor que 0");
+
+      const filteredRecurringDays = recurringDays
+      .filter((item) => item.status == true)
+      .map((item) => item.status == true && item.isoDay);
+
+    const forRecurrences = {
+      taskDate,
+      recurringEndDate,
+      startTime,
+      endTime,
+      recurringDays: recurrencesChange,
+    };
+
+    const generatedRecurrences = generateOccurrences(forRecurrences);
+
+    const today = new Date(); // Fecha actual
+
+    const updatedRecurrences = parentTask.recurrences.filter(recurrence => {
+      const taskDate = parseISO(recurrence.taskDate);
+      const taskIsoDay = getISODay(taskDate).toString();
+    
+      // Condición para mantener la tarea si es menor a hoy o no está en los días a eliminar
+      return isBefore(taskDate, today) || isToday(taskDate) || !recurrencesDelete.includes(taskIsoDay);
+    });
+
+    const newRecurrences = [
+      ...updatedRecurrences,
+      ...generatedRecurrences,
+    ];
 
     const newTask = {
       _id: parentTask._id,
@@ -176,15 +317,19 @@ export default function ItemTodayTask({ task }) {
       recurringEndDate: parentTask.recurringEndDate,
       startTime: parentTask.startTime,
       endTime: parentTask.endTime,
-      recurringDays: parentTask.recurringDays,
+      recurringDays: filteredRecurringDays,
       isRecurring: parentTask.isRecurring,
-      recurrences: recurrences,
+      recurrences: newRecurrences,
       status: parentTask.status,
       createdAt: parentTask.createdAt,
       updatedAt: parentTask.updatedAt,
       user: parentTask.user,
     };
     updateTask(newTask, false);
+    setRecurrencesChange([])
+    setRecurrencesDelete([])
+    }
+
     dialog.close();
     setEditIsActive(false);
   };
@@ -473,6 +618,8 @@ export default function ItemTodayTask({ task }) {
                         key={item.isoDay}
                         disabled={taskDate == endTaskDate}
                         task={task}
+                        setRecurrencesChange={setRecurrencesChange}
+                        setRecurrencesDelete={setRecurrencesDelete}
                       />
                     ))}
                   </div>
@@ -495,8 +642,4 @@ export default function ItemTodayTask({ task }) {
       </dialog>
     </>
   );
-}
-
-{
-  /* You can open the modal using document.getElementById('ID').showModal() method */
 }

@@ -2,9 +2,10 @@ import { useTasks } from "../../context/TasksContext";
 import ItemTodayTask from "./ItemTodayTask";
 import { todayDate } from "../../libs/Dates.js";
 import { useEffect } from "react";
+import ItemTaskSkeleton from "../skeletons/ItemTaskSkeleton.jsx";
 
 export default function TodayTasks() {
-  const { tasks } = useTasks();
+  const { tasks, tasksIsLoading } = useTasks();
 
   useEffect(() => {
     console.log(
@@ -46,19 +47,25 @@ export default function TodayTasks() {
     <div className="max-lg:w-[100vw] max-lg:h-[calc(100dvh-85px)] px-5 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll">
       <span className="text-lg font-semibold">Tareas del dia</span>
       <div
-        className={`${
-          tasks.filter((task) => task.taskDate == todayDate).length
-            ? "flex flex-col gap-2"
-            : " w-full h-[calc(100%-32px)] grid place-content-center"
-        }  mt-2`}
+        className={`${tasksIsLoading ? "flex flex-col gap-2" : `${tasks.filter((task) => task.taskDate == todayDate).length > 0 ? "flex flex-col gap-2" : " w-full h-[calc(100%-32px)] grid place-content-center"}`} mt-2`}
       >
-        {filteredTasks.length ? (
-          filteredTasks.map((task) => (
-            <ItemTodayTask task={task} key={task._id} />
-          ))
-        ) : (
-          <p className="text-sm text-center">{getMotivationalMessage()}</p>
-        )}
+        {
+          tasksIsLoading ?
+          <>
+            <div className='w-full h-[68px] rounded-xl bg-dark-400 animate-pulse'></div>
+            <div className='w-full h-[68px] rounded-xl bg-dark-400 animate-pulse'></div>
+            <div className='w-full h-[68px] rounded-xl bg-dark-400 animate-pulse'></div>
+          </>
+          :
+          filteredTasks.length ? (
+            filteredTasks.map((task) => (
+              <ItemTodayTask task={task} key={task._id} />
+            ))
+          ) : (
+            <p className="text-sm text-center">{getMotivationalMessage()}</p>
+          )
+        }
+        
       </div>
     </div>
   );

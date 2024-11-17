@@ -26,10 +26,10 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginRegisterpage />} />
           <Route element={<ProtectedRoute />}>
-            <Route
+            {/* <Route
               path="/home"
               element={<Homepage setActiveItem={setActiveItem} />}
-            />
+            /> */}
             <Route
               path="/tasks"
               element={<TasksPage setActiveItem={setActiveItem} />}

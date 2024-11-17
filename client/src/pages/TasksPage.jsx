@@ -10,8 +10,7 @@ export default function TasksPage({ setActiveItem }) {
 
   useEffect(() => {
     setActiveItem("tasks");
-    getTasks();
-    setTasksIsLoading(false);
+    getTasks()
   }, []);
 
   const [tabActive, setTabActive] = useState("hoy");

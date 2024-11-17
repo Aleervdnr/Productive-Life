@@ -14,7 +14,7 @@ function RegisterForm({ handleSetIsLogin }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/home");
+    if (isAuthenticated) navigate("/tasks");
   }, [isAuthenticated]);
 
   const onSubmit = async (values) => {
