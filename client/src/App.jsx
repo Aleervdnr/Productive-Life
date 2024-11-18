@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginRegisterpage from "./pages/LoginRegisterpage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -34,12 +34,8 @@ function App() {
               path="/tasks"
               element={<TasksPage setActiveItem={setActiveItem} />}
             />
-
-            <Route path="/*" element={<Navigate to="/"></Navigate>} />
-
             <Route path="/gastos" element={<GastosPage setActiveItem={setActiveItem} />} />
-            <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} />
-
+            {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
           </Route>
         </Routes>
         <Toaster theme="dark" richColors />
