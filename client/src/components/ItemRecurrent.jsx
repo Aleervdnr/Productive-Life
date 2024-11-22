@@ -64,7 +64,7 @@ export default function ItemRecurrent({
       } ${disabled ? "text-dark-100 border-dark-100 cursor-default" :"border-violet-main" }`}
       onClick={() => handleClick()}
     >
-      {width < 425 ? day.charAt(0) : day.slice(0, 3)}
+      {width <= 425 ? day.charAt(0) : day.slice(0, 3)}
     </div>
   );
 }

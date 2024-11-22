@@ -85,6 +85,7 @@ export default function TaskFormModalContent({step, setStep}) {
     ]);
     resetField("startTime");
     resetField("endTime");
+    setSelected(defaultSelected)
     dialog.close();
     setStep(1);
   };
