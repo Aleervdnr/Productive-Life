@@ -146,7 +146,9 @@ export function TasksProvider({ children }) {
         setTasks([...deletedOldRecurrencesTasks, ...recurrences]);
       } else {
         setTasks(
-          tasks.map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
+          tasks
+          .map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
+          .filter((taskMap) => taskMap.recurrenceOf != task._id)
         );
       }
       if (!isStatus & !isRecurrenceDeleted)

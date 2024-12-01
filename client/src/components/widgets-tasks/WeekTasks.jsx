@@ -5,7 +5,7 @@ import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
 import TaskFormButton from "../taskForm/TaskFormButton";
 
 export default function WeekTasks() {
-  const [tabActive, setTabActive] = useState({ name: "Lun", isoDay: 1 });
+  const [tabActive, setTabActive] = useState({ name: "Lunes", isoDay: 1 });
   const { tasks, setWeeklyTasks, weeklyTasks } = useTasks();
 
   // Filtrar tareas de la semana actual

@@ -11,20 +11,19 @@ export default function ItemRecurrent({
   setRecurringDays,
   recurringDays,
   disabled,
-  task,
-  setRecurrencesChange,
-  setRecurrencesDelete
+  task
 }) {
   const handleClick = () => {
     if (!disabled) {
       handleCheck(isoDay, setRecurringDays, recurringDays);
-      if(!status){
-        setRecurrencesChange((prevIsoDay) => [...prevIsoDay, isoDay])
-        setRecurrencesDelete((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
-      }else{
-        setRecurrencesChange((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
-        setRecurrencesDelete((prevIsoDay) => [...prevIsoDay, isoDay])
-      }
+      
+      // if(!status){
+      //   setRecurrencesChange((prevIsoDay) => [...prevIsoDay, isoDay])
+      //   setRecurrencesDelete((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
+      // }else{
+      //   setRecurrencesChange((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
+      //   setRecurrencesDelete((prevIsoDay) => [...prevIsoDay, isoDay])
+      // }
     }
     if (disabled) {
       toast.info("Be at the area 10 minutes before the event time");
@@ -64,7 +63,7 @@ export default function ItemRecurrent({
       } ${disabled ? "text-dark-100 border-dark-100 cursor-default" :"border-violet-main" }`}
       onClick={() => handleClick()}
     >
-      {width < 425 ? day.charAt(0) : day.slice(0, 3)}
+      {width <= 425 ? day.charAt(0) : day.slice(0, 3)}
     </div>
   );
 }

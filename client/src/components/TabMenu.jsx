@@ -1,8 +1,10 @@
 import { getISODay } from "date-fns";
 import useWindowSize from "../hooks/useWindowSize.jsx";
+import { useTasks } from "../context/TasksContext.jsx";
 
 export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
-  const {width} = useWindowSize()
+  const { tasksIsLoading } = useTasks();
+  const { width } = useWindowSize();
   return (
     <div className="h-screen font-medium flex justify-between gap-2 lg:h-[calc(100%-56px)] lg:relative ">
       {items.map((item, i) => (
@@ -14,13 +16,25 @@ export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
           onClick={() => handleChangeTab(item)}
         >
           {width <= 425 && item.name.charAt(0)}
-          {width > 425 & width < 1024 ? item.name.slice(0,3) : null}
+          {(width > 425) & (width < 1024) ? item.name.slice(0, 3) : null}
           {width >= 1024 && item.name}
-          <div className={`w-[calc(100vw-40px)] h-[calc(100vh-143px)] absolute top-[38px] left-5 bg-dark-400 rounded lg:w-full px-2 py-2 ${tabActive.name !== item.name && `max-lg:hidden`} lg:static lg:h-full lg:p-0 lg:bg-transparent lg:overflow-auto`}>
-            {weeklyTasks.map(
-              (task) =>
-                getISODay(new Date(`${task.taskDate}T${task.startTime}`)) ==
-                  item.isoDay && <TabMenuItem task={task} key={task._id} />
+          <div
+            className={`w-[calc(100vw-40px)] h-[calc(100vh-143px)] absolute top-[38px] left-5 bg-dark-400 rounded lg:w-full px-2 py-2 ${
+              tabActive.name !== item.name && `max-lg:hidden`
+            } lg:static lg:h-full lg:p-0 lg:bg-transparent lg:overflow-auto`}
+          >
+            {tasksIsLoading ? (
+              <>
+                <div className="w-full h-[28px] mt-2 rounded-lg bg-dark-400 animate-pulse"></div>
+                <div className="w-full h-[28px] mt-2 rounded-lg bg-dark-400 animate-pulse"></div>
+                <div className="w-full h-[28px] mt-2 rounded-lg bg-dark-400 animate-pulse"></div>
+              </>
+            ) : (
+              weeklyTasks.map(
+                (task) =>
+                  getISODay(new Date(`${task.taskDate}T${task.startTime}`)) ==
+                    item.isoDay && <TabMenuItem task={task} key={task._id} />
+              )
             )}
           </div>
         </div>

@@ -4,6 +4,9 @@ import WeekTasks from "../components/widgets-tasks/WeekTasks";
 import MonthTasks from "../components/widgets-tasks/MonthTasks";
 import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
+import { isSameMonth, isSameWeek } from "date-fns";
+import { todayDate } from "../libs/Dates.js";
+
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading } = useTasks();
@@ -18,6 +21,9 @@ export default function TasksPage({ setActiveItem }) {
   const handleChangeTab = (name) => {
     setTabActive(name);
   };
+
+  const weeklyTasks = tasks.filter((task) => isSameWeek(new Date(task.taskDate), new Date(todayDate)))
+  const monthlyTasks = tasks.filter((task) => isSameMonth(new Date(task.taskDate), new Date(todayDate)))
 
   return (
     <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative">
@@ -59,33 +65,33 @@ export default function TasksPage({ setActiveItem }) {
         <MonthTasks />
         <div className="w-full h-full hidden lg:block lg:border-[2px] lg:border-dark-400 lg:rounded-lg"></div>
         <div className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
-          <div className="py-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xs">Tareas Completadas</span>
-            <span className="text-[1.375rem] font-bold leading-7">
+            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
               {tasks.filter((task) => task.status == "completed").length}{" "}
-              <span className="text-lg">de</span> {tasks.length}
+              <span className="lg:text-sm xl:text-lg">de</span> {tasks.length}
             </span>
           </div>
-          <div className="py-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xs">Tareas Para Hacer</span>
-            <span className="text-[1.375rem] font-bold leading-7">
+            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
               {tasks.filter((task) => task.status == "pending").length}{" "}
-              <span className="text-lg">de</span> {tasks.length}
+              <span className="lg:text-sm xl:text-lg">de</span> {tasks.length}
             </span>
           </div>
-          <div className="py-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xs">Tareas Atrasadas</span>
-            <span className="text-[1.375rem] font-bold leading-7">
+            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
               {tasks.filter((task) => task.status == "overdue").length}{" "}
-              <span className="text-lg">de</span> {tasks.length}
+              <span className="lg:text-sm xl:text-lg">de</span> {tasks.length}
             </span>
           </div>
-          <div className="py-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
             <span className="text-xs">Progreso mensual</span>
-            <span className="text-[1.375rem] font-bold leading-7">
+            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
               {Math.round(
-                (tasks.filter((task) => task.status == "completed").length /
-                  tasks.length) *
+                (monthlyTasks.filter((task) => task.status == "completed").length /
+                  monthlyTasks.length) *
                   100
               )}
               %
