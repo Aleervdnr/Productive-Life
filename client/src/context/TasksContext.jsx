@@ -177,6 +177,7 @@ export function TasksProvider({ children }) {
         : item
     );
     set(newArray);
+    return newArray
   };
 
   return (

@@ -11,12 +11,20 @@ export default function ItemRecurrent({
   setRecurringDays,
   recurringDays,
   disabled,
-  task
+  task,
+  handleChange,
 }) {
   const handleClick = () => {
     if (!disabled) {
-      handleCheck(isoDay, setRecurringDays, recurringDays);
-      
+      const newArray = handleCheck(isoDay, setRecurringDays, recurringDays);
+
+      const filteredRecurringDays = newArray
+        .filter((item) => item.status == true)
+        .map((item) => item.status == true && item.isoDay)
+        .map(Number);
+
+      handleChange(JSON.stringify(filteredRecurringDays), JSON.stringify(task.recurringDays));
+
       // if(!status){
       //   setRecurrencesChange((prevIsoDay) => [...prevIsoDay, isoDay])
       //   setRecurrencesDelete((prevIsoDays) => prevIsoDays.length > 0 ? prevIsoDays.filter((item) => item != isoDay) : [])
@@ -41,16 +49,44 @@ export default function ItemRecurrent({
         { name: "Sabado", isoDay: "6", status: false },
         { name: "Domingo", isoDay: "0", status: false },
       ]);
-    }else{
+    } else {
       setRecurringDays([
-        { name: "Lunes", isoDay: "1", status: task?.recurringDays ? task.recurringDays.includes(1) : false },
-        { name: "Martes", isoDay: "2", status: task?.recurringDays ? task.recurringDays.includes(2) : false },
-        { name: "Miercoles", isoDay: "3", status: task?.recurringDays ? task.recurringDays.includes(3) : false },
-        { name: "Jueves", isoDay: "4", status: task?.recurringDays ? task.recurringDays.includes(4) : false },
-        { name: "Viernes", isoDay: "5", status: task?.recurringDays ? task.recurringDays.includes(5) : false },
-        { name: "Sabado", isoDay: "6", status: task?.recurringDays ? task.recurringDays.includes(6) : false },
-        { name: "Domingo", isoDay: "0", status: task?.recurringDays ? task.recurringDays.includes(0) : false },
-      ])
+        {
+          name: "Lunes",
+          isoDay: "1",
+          status: task?.recurringDays ? task.recurringDays.includes(1) : false,
+        },
+        {
+          name: "Martes",
+          isoDay: "2",
+          status: task?.recurringDays ? task.recurringDays.includes(2) : false,
+        },
+        {
+          name: "Miercoles",
+          isoDay: "3",
+          status: task?.recurringDays ? task.recurringDays.includes(3) : false,
+        },
+        {
+          name: "Jueves",
+          isoDay: "4",
+          status: task?.recurringDays ? task.recurringDays.includes(4) : false,
+        },
+        {
+          name: "Viernes",
+          isoDay: "5",
+          status: task?.recurringDays ? task.recurringDays.includes(5) : false,
+        },
+        {
+          name: "Sabado",
+          isoDay: "6",
+          status: task?.recurringDays ? task.recurringDays.includes(6) : false,
+        },
+        {
+          name: "Domingo",
+          isoDay: "0",
+          status: task?.recurringDays ? task.recurringDays.includes(0) : false,
+        },
+      ]);
     }
   }, [disabled]);
 
@@ -60,7 +96,11 @@ export default function ItemRecurrent({
     <div
       className={`border px-2 rounded-full  transition-colors text-sm cursor-pointer ${
         status ? `bg-violet-main text-white` : ` text-dark-100`
-      } ${disabled ? "text-dark-100 border-dark-100 cursor-default" :"border-violet-main" }`}
+      } ${
+        disabled
+          ? "text-dark-100 border-dark-100 cursor-default"
+          : "border-violet-main"
+      }`}
       onClick={() => handleClick()}
     >
       {width <= 425 ? day.charAt(0) : day.slice(0, 3)}
