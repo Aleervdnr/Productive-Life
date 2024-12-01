@@ -475,6 +475,7 @@ export default function ItemTodayTask({ task }) {
                   <textarea
                     className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-sm transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
                     {...register("description")}
+                    onChange={(e) => handleOnChange(e.target.value, task.description)}
                   />
                 </div>
                 <div className="flex gap-5">
@@ -489,6 +490,7 @@ export default function ItemTodayTask({ task }) {
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                      onChange={(e) => handleOnChange(e.target.value, taskDate)}
                     />
                   </div>
                   <div className="grid">
@@ -499,6 +501,7 @@ export default function ItemTodayTask({ task }) {
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                      onChange={(e) => handleOnChange(e.target.value, task.recurringEndDate)}
                     />
                   </div>
                 </div>
@@ -513,6 +516,7 @@ export default function ItemTodayTask({ task }) {
                       {...register("startTime")}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                      onChange={(e) => handleOnChange(e.target.value, startTime)}
                     />
                   </div>
                   <div className="grid">
@@ -522,6 +526,7 @@ export default function ItemTodayTask({ task }) {
                       {...register("endTime")}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
+                      onChange={(e) => handleOnChange(e.target.value, endTime)}
                     />
                   </div>
                 </div>
@@ -540,6 +545,7 @@ export default function ItemTodayTask({ task }) {
                         key={item.isoDay}
                         disabled={taskDate == endTaskDate}
                         task={task}
+                        handleChange={handleOnChange}
                       />
                     ))}
                   </div>
