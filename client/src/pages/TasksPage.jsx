@@ -4,6 +4,9 @@ import WeekTasks from "../components/widgets-tasks/WeekTasks";
 import MonthTasks from "../components/widgets-tasks/MonthTasks";
 import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
+import { isSameMonth, isSameWeek } from "date-fns";
+import { todayDate } from "../libs/Dates.js";
+
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading } = useTasks();
@@ -18,6 +21,9 @@ export default function TasksPage({ setActiveItem }) {
   const handleChangeTab = (name) => {
     setTabActive(name);
   };
+
+  const weeklyTasks = tasks.filter((task) => isSameWeek(new Date(task.taskDate), new Date(todayDate)))
+  const monthlyTasks = tasks.filter((task) => isSameMonth(new Date(task.taskDate), new Date(todayDate)))
 
   return (
     <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative">
@@ -84,8 +90,8 @@ export default function TasksPage({ setActiveItem }) {
             <span className="text-xs">Progreso mensual</span>
             <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
               {Math.round(
-                (tasks.filter((task) => task.status == "completed").length /
-                  tasks.length) *
+                (monthlyTasks.filter((task) => task.status == "completed").length /
+                  monthlyTasks.length) *
                   100
               )}
               %
