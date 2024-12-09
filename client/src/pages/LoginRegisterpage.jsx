@@ -31,8 +31,8 @@ function LoginRegisterpage() {
             isLogin ? "" : "translate-x-[-100%]"
           }`}
         >
-          <LoginForm handleSetIsLogin={handleSetIsLogin} />
-          <RegisterForm handleSetIsLogin={handleSetIsLogin} />
+          <LoginForm handleSetIsLogin={handleSetIsLogin} isLogin={isLogin} />
+          <RegisterForm handleSetIsLogin={handleSetIsLogin} isLogin={isLogin} />
         </div>
       </div>
       <div className="hidden lg:flex w-2/4 h-dvh bg-violet-main lg:items-center lg:justify-center ">
