@@ -37,14 +37,14 @@ export default function ItemTodayTask({ task }) {
     { name: "Domingo", isoDay: "0", status: task.recurringDays.includes(0) },
   ]);
 
- const handleOnChange = (data, lastData) => {
-    console.log(data,lastData)
-    if(data === lastData){
-      setIsDisabled(true)
-    }else{
-      setIsDisabled(false)
+  const handleOnChange = (data, lastData) => {
+    console.log(data, lastData);
+    if (data === lastData) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
     }
-  }
+  };
 
   const parentTask = tasks.find((taskMap) => taskMap._id == task.recurrenceOf);
 
@@ -114,17 +114,29 @@ export default function ItemTodayTask({ task }) {
       endTime,
     } = data;
 
+    const formatTime = (time) => (time.length === 8 ? time : `${time}:00`);
+
     const filteredRecurringDays = recurringDays
       .filter((item) => item.status == true)
       .map((item) => item.status == true && item.isoDay)
       .map(Number);
 
-    const forRecurrences = {
-      taskDate,
-      recurringEndDate,
-      startTime,
-      endTime,
-      recurringDays: filteredRecurringDays,
+    const generateNewRecurrences = (
+      newRecurringDays,
+      existingRecurrences
+    ) => {
+      const forRecurrences = {
+        taskDate,
+        recurringEndDate,
+        startTime: startTime,
+        endTime: endTime,
+        recurringDays: newRecurringDays,
+      };
+      return generateOccurrences(
+        forRecurrences,
+        existingRecurrences,
+        false
+      );
     };
 
     const updatedTask = {
@@ -133,14 +145,14 @@ export default function ItemTodayTask({ task }) {
       description,
       taskDate,
       recurringEndDate,
-      startTime: startTime.length == 8 ? startTime : `${startTime}:00`,
-      endTime: endTime.length == 8 ? endTime : `${endTime}:00`,
+      startTime: formatTime(startTime),
+      endTime: formatTime(endTime),
       recurringDays: filteredRecurringDays ? filteredRecurringDays : [],
       isRecurring: filteredRecurringDays.length >= 1 && true,
-      recurrences: generateOccurrences(forRecurrences, recurrences),
+      recurrences: generateNewRecurrences(filteredRecurringDays,recurrences),
       status: task.status,
       createdAt: task.createdAt,
-      updatedAt: task.updatedAt,
+      updatedAt: new Date().toISOString(),
       user: task.user,
     };
 
@@ -224,16 +236,25 @@ export default function ItemTodayTask({ task }) {
       rec._id === task._id ? newRecurrence : rec
     );
 
-    console.log(JSON.stringify(filteredRecurringDays), JSON.stringify(parentTask.recurringDays))
-    console.log(JSON.stringify(filteredRecurringDays) === JSON.stringify(parentTask.recurringDays) ? true : false);
-    console.log(recurringEndDate, parentTask.recurringEndDate)
-    console.log(recurringEndDate == parentTask.recurringEndDate ? true : false)
+    console.log(
+      JSON.stringify(filteredRecurringDays),
+      JSON.stringify(parentTask.recurringDays)
+    );
+    console.log(
+      JSON.stringify(filteredRecurringDays) ===
+        JSON.stringify(parentTask.recurringDays)
+        ? true
+        : false
+    );
+    console.log(recurringEndDate, parentTask.recurringEndDate);
+    console.log(recurringEndDate == parentTask.recurringEndDate ? true : false);
 
     if (
       recurringEndDate == parentTask.recurringEndDate &&
-      JSON.stringify(filteredRecurringDays) == JSON.stringify(parentTask.recurringDays)
+      JSON.stringify(filteredRecurringDays) ==
+        JSON.stringify(parentTask.recurringDays)
     ) {
-      console.log("dentro sin cambio")
+      console.log("dentro sin cambio");
       const newTask = createNewTask({
         recurrences: updatedRecurrences,
         recurringDays: filteredRecurringDays,
@@ -252,7 +273,7 @@ export default function ItemTodayTask({ task }) {
     }
     dialog.close();
     setEditIsActive(false);
-    setIsDisabled(true)
+    setIsDisabled(true);
   };
 
   const handleDeleteTask = () => {
@@ -475,7 +496,9 @@ export default function ItemTodayTask({ task }) {
                   <textarea
                     className="border border-dark-200 bg-transparent font-medium px-2 py-1 rounded text-sm transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
                     {...register("description")}
-                    onChange={(e) => handleOnChange(e.target.value, task.description)}
+                    onChange={(e) =>
+                      handleOnChange(e.target.value, task.description)
+                    }
                   />
                 </div>
                 <div className="flex gap-5">
@@ -501,7 +524,9 @@ export default function ItemTodayTask({ task }) {
                       // onChange={(e) => handleSelectedDate(e)}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
-                      onChange={(e) => handleOnChange(e.target.value, task.recurringEndDate)}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, task.recurringEndDate)
+                      }
                     />
                   </div>
                 </div>
@@ -516,7 +541,9 @@ export default function ItemTodayTask({ task }) {
                       {...register("startTime")}
                       required
                       className="border border-dark-200 bg-transparent rounded px-[10px] py-[5px] w-36 text-xs font-semibold row-start-4"
-                      onChange={(e) => handleOnChange(e.target.value, startTime)}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, startTime)
+                      }
                     />
                   </div>
                   <div className="grid">
@@ -558,7 +585,12 @@ export default function ItemTodayTask({ task }) {
                 >
                   Cancelar
                 </div>
-                <button className={`cursor-pointer ${isDisabled ? "bg-dark-100":"bg-violet-main"} text-white text-sm px-4 py-[6px] rounded-lg w-fit font-semibold`} disabled={isDisabled}>
+                <button
+                  className={`cursor-pointer ${
+                    isDisabled ? "bg-dark-100" : "bg-violet-main"
+                  } text-white text-sm px-4 py-[6px] rounded-lg w-fit font-semibold`}
+                  disabled={isDisabled}
+                >
                   Guardar
                 </button>
               </div>

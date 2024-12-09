@@ -4,7 +4,7 @@ import InputForm from "./InputForm";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function RegisterForm({ handleSetIsLogin }) {
+function RegisterForm({ handleSetIsLogin, isLogin }) {
   const {
     register,
     handleSubmit,
@@ -38,6 +38,7 @@ function RegisterForm({ handleSetIsLogin }) {
           placeholder={"Ingrese su nombre"}
           name={"name"}
           register={register}
+          tabIndexValue={isLogin ? -1 : 1}
         />
       </div>
       {errors.email && (
@@ -52,6 +53,7 @@ function RegisterForm({ handleSetIsLogin }) {
           placeholder={"Ingrese su email"}
           name={"email"}
           register={register}
+          tabIndexValue={isLogin ? -1 : 2}
         />
       </div>
       {errors.password && (
@@ -66,6 +68,7 @@ function RegisterForm({ handleSetIsLogin }) {
           placeholder={"Ingrese su contraseña"}
           name={"password"}
           register={register}
+          tabIndexValue={isLogin ? -1 : 3}
         />
       </div>
 
@@ -79,7 +82,10 @@ function RegisterForm({ handleSetIsLogin }) {
             Inicia Sesion
           </span>
         </p>
-        <button className="bg-violet-main text-white text-sm px-4 py-[6px] rounded w-fit font-semibold">
+        <button
+          className="bg-violet-main text-white text-sm px-4 py-[6px] rounded w-fit font-semibold"
+          tabIndex={isLogin ? -1 : 4}
+        >
           Registrar
         </button>
       </div>
