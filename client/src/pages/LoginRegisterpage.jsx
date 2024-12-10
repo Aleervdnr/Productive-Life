@@ -1,12 +1,10 @@
 import { useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
-import { useAuth } from "../context/AuthContext";
 import { EmblaCarousel } from "../components/Carousel/EmblaCarousel";
 
 function LoginRegisterpage() {
   const [isLogin, setIsLogin] = useState(true);
-  const { errors } = useAuth();
 
   const handleSetIsLogin = () => {
     setIsLogin(!isLogin);
@@ -21,11 +19,6 @@ function LoginRegisterpage() {
           </h1>
           <span className="text-2xl font-semibold">Bienvenido</span>
         </div>
-        {errors.map((error, i) => (
-          <p className="text-center bg-red-500" key={i}>
-            {error}
-          </p>
-        ))}
         <div
           className={`grid grid-cols-[100vw_100vw] lg:grid-cols-[50vw_50vw] justify-items-center transition-transform duration-500 ${
             isLogin ? "" : "translate-x-[-100%]"

@@ -38,7 +38,7 @@ function App() {
             {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
           </Route>
         </Routes>
-        <Toaster theme="dark" richColors />
+        <Toaster theme="dark" richColors expand={true} />
         <NavBar activeItem={activeItem} />
       </main>
     </BrowserRouter>

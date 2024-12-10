@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
-import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 export const AuthContext = createContext();
 
@@ -15,18 +15,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  //borra los errores despues de  segundos
-  useEffect(() => {
-    if (errors.length > 0) {
-      const timer = setTimeout(() => {
-        setErrors([]);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [errors]);
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -61,8 +50,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      console.log(error.response.data);
-      setErrors(error.response.data);
+      error.response.data.map(error => toast.error(error))
     }
   };
 
@@ -73,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      setErrors(error.response.data);
+      error.response.data.map(error => toast.error(error))
     }
   };
 
@@ -84,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signup, signin, logout, user, isAuthenticated, errors, loading }}
+      value={{ signup, signin, logout, user, isAuthenticated, loading }}
     >
       {children}
     </AuthContext.Provider>
