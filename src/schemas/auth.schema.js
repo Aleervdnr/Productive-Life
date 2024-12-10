@@ -6,33 +6,33 @@ export const registerSchema = z.object({
   }),
   email: z
     .string({
-      required_error: "email is required",
+      required_error: "Por favor, no olvides ingresar tu correo.",
     })
     .email({
-      message: "invalid email",
+      message: "Correo no válido. Inténtalo nuevamente.",
     }),
   password: z
     .string({
-      required_error: "password is required",
+      required_error: "Por favor, no olvides ingresar tu contraseña.",
     })
     .min(6, {
-      message: "password must be a least 6 characters",
+      message: "Asegúrate de que la contraseña tenga 6 caracteres o más.",
     }),
 });
 
 export const loginSchema = z.object({
   email: z
     .string({
-      required_error: "email is required",
+      required_error: "Por favor, no olvides ingresar tu correo.",
     })
     .email({
-      message: "invalid email",
+      message: "Correo no válido. Inténtalo nuevamente.",
     }),
   password: z
     .string({
-      required_error: "Password is requerida",
+      required_error: "Por favor, no olvides ingresar tu contraseña.",
     })
     .min(6, {
-      message: "password must be a least 6 characters",
+      message: "Asegúrate de que la contraseña tenga 6 caracteres o más.",
     }),
 });

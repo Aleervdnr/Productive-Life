@@ -50,7 +50,11 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      error.response.data.map(error => toast.error(error))
+      error.response.data.map((error) =>
+        toast.error(error, {
+          duration: 3000,
+        })
+      );
     }
   };
 
@@ -61,13 +65,17 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
-      error.response.data.map(error => toast.error(error))
+      error.response.data.map((error) =>
+        toast.error(error, {
+          duration: 3000,
+        })
+      );
     }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    setIsAuthenticated(false)
+    setIsAuthenticated(false);
   };
 
   return (
