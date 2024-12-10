@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import InputForm from "./InputForm";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
+import InputFormPassword from "./InputFormPassword";
+
 export default function LoginForm({ handleSetIsLogin }) {
   const {
     register,
@@ -8,7 +11,7 @@ export default function LoginForm({ handleSetIsLogin }) {
     formState: { errors },
   } = useForm();
 
- const {signin} = useAuth()
+  const { signin } = useAuth();
 
   const onSubmit = (values) => {
     signin(values);
@@ -39,7 +42,7 @@ export default function LoginForm({ handleSetIsLogin }) {
       )}
       <div className="flex flex-col gap-1">
         <label className="text-sm font-semibold">Contraseña</label>{" "}
-        <InputForm
+        <InputFormPassword
           typeInput={"password"}
           placeholder={"Ingrese su contraseña"}
           name={"password"}
