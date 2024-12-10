@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import InputForm from "./InputForm";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import InputFormPassword from "./InputFormPassword";
 
 function RegisterForm({ handleSetIsLogin, isLogin }) {
   const {
@@ -63,7 +64,7 @@ function RegisterForm({ handleSetIsLogin, isLogin }) {
       )}
       <div className="grid gap-1">
         <label className="text-sm font-semibold">Contraseña</label>
-        <InputForm
+        <InputFormPassword
           typeInput={"password"}
           placeholder={"Ingrese su contraseña"}
           name={"password"}
