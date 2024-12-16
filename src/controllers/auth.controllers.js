@@ -2,9 +2,9 @@ import { createAccessToken } from "../libs/jwt.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import { TOKEN_SECRET } from "../config.js";
+import { TOKEN_SECRET, FRONTEND_URL } from "../config.js";
 import sendVerificationEmail from "../libs/sendVerificationEmail.js";
+import { generateVerificationToken } from "../libs/generateVerificationToken.js";
 
 export const register = async (req, res) => {
   try {
@@ -16,8 +16,7 @@ export const register = async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Generar el token de verificación
-    const verificationToken = crypto.randomUUID();
+    const verificationToken = generateVerificationToken(email);
 
     // Crear nuevo usuario con estado no verificado
     const newUser = new User({
@@ -31,7 +30,7 @@ export const register = async (req, res) => {
     const userSaved = await newUser.save();
 
     // Crear el enlace de verificación
-    const verificationLink = `http://productivelife.site/verify-email?token=${verificationToken}`;
+    const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
 
     // Enviar el correo de verificación
     await sendVerificationEmail(
@@ -50,7 +49,7 @@ export const register = async (req, res) => {
               </tr>
               <tr>
                 <td style="color: white;">
-                  <h1 class="title" style="text-decoration: none;">Hola ${name}, Bienvenido</h1>
+                  <h1 class="title" style="text-decoration: none;">Hola ${name.split(" ")[0]}, Bienvenido</h1>
                 </td>
               </tr>
               <tr>
@@ -96,15 +95,12 @@ export const register = async (req, res) => {
     </table>`
     );
 
-    const token = await createAccessToken({ id: userSaved._id });
-
     res.json({
       _id: userSaved._id,
       name: userSaved.name,
       email: userSaved.email,
       createdAt: userSaved.createdAt,
       updateAt: userSaved.updatedAt,
-      token: token,
     });
   } catch (err) {
     console.error(err); // Agrega esto para depurar el error
@@ -122,6 +118,8 @@ export const login = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, userFound.password);
     if (!isMatch) return res.status(400).json(["Contraseña incorrecta"]);
+
+    if(!userFound.isVerified) return res.status(400).json(["Email no verificado, revisa tu casilla de mensajes"])
 
     const token = await createAccessToken({ id: userFound._id });
 
@@ -156,4 +154,49 @@ export const verifyToken = async (req, res) => {
       email: userFound.email,
     });
   });
+};
+
+export const verifyEmailToken = async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res
+      .status(400)
+      .json({ message: "Token de verificación requerido." });
+  }
+
+  try {
+    // Decodificar y verificar el token
+    const decoded = jwt.verify(token, TOKEN_SECRET);
+
+    const { email } = decoded;
+
+    // Buscar al usuario por email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    if (user.isVerified) {
+      return res
+        .status(400)
+        .json({ message: "El email ya ha sido verificado." });
+    }
+
+    // Actualizar el estado del usuario a "verificado"
+    user.isVerified = true;
+    await user.save();
+
+    res.status(200).json({ message: "Email verificado exitosamente." });
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "El token ha expirado. Solicita un nuevo enlace." });
+    }
+    res
+      .status(500)
+      .json({ message: "Error al verificar el email.", error: error.message });
+  }
 };

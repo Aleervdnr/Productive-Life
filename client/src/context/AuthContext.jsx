@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
+
 
 export const AuthContext = createContext();
 
@@ -16,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -45,10 +49,8 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (user) => {
     try {
-      const res = await registerRequest(user);
-      localStorage.setItem("token", res.data.token);
-      setUser(res.data);
-      setIsAuthenticated(true);
+      await registerRequest(user);
+      navigate("/verify-email")
     } catch (error) {
       error.response.data.map((error) =>
         toast.error(error, {
@@ -61,6 +63,7 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
+      console.log(res)
       localStorage.setItem("token", res.data.token);
       setUser(res.data);
       setIsAuthenticated(true);
@@ -76,6 +79,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
+    setUser(null)
   };
 
   return (
