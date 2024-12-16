@@ -31,6 +31,7 @@ const handleOnChange = (e) => {
         className="w-full border border-dark-200 bg-transparent rounded h-11 p-5 text-xs font-semibold transition duration-300 ease focus:outline-none focus:border-violet-main autofill:bg-transparent"
         tabIndex={tabIndexValue}
         {...register(name, { required: required })}
+        required
         onChange={(e) => handleOnChange(e)}
       />
       <div
