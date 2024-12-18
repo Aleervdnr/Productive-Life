@@ -49,7 +49,8 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (user) => {
     try {
-      await registerRequest(user);
+      const res = await registerRequest(user);
+      setUser(res.data)
       navigate("/verify-email")
     } catch (error) {
       error.response.data.map((error) =>

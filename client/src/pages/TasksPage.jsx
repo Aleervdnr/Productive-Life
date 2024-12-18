@@ -4,16 +4,24 @@ import WeekTasks from "../components/widgets-tasks/WeekTasks";
 import MonthTasks from "../components/widgets-tasks/MonthTasks";
 import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
-import { isSameMonth, isSameWeek } from "date-fns";
+import { isSameDay, isSameMonth, isSameWeek } from "date-fns";
 import { todayDate } from "../libs/Dates.js";
-
+import CardsProgress from "../components/widgets-tasks/CardsProgress.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading } = useTasks();
 
+  const [dropDownState, setDropDownState] = useState("Progreso Mensual");
+
+  const handleChangeDropDown = () => {
+    if (dropDownState == "Progreso Mensual") return monthlyTasks
+    if (dropDownState == "Progreso Semanal") return weeklyTasks
+    if (dropDownState == "Progreso Diario") return todayTasks
+  }
+
   useEffect(() => {
     setActiveItem("tasks");
-    getTasks()
+    getTasks();
   }, []);
 
   const [tabActive, setTabActive] = useState("hoy");
@@ -22,8 +30,16 @@ export default function TasksPage({ setActiveItem }) {
     setTabActive(name);
   };
 
-  const weeklyTasks = tasks.filter((task) => isSameWeek(new Date(task.taskDate), new Date(todayDate)))
-  const monthlyTasks = tasks.filter((task) => isSameMonth(new Date(task.taskDate), new Date(todayDate)))
+  const todayTasks = tasks.filter((task) =>
+    isSameDay(new Date(task.taskDate), new Date(todayDate))
+  );
+
+  const weeklyTasks = tasks.filter((task) =>
+    isSameWeek(new Date(task.taskDate), new Date(todayDate))
+  );
+  const monthlyTasks = tasks.filter((task) =>
+    isSameMonth(new Date(task.taskDate), new Date(todayDate))
+  );
 
   return (
     <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative">
@@ -64,40 +80,12 @@ export default function TasksPage({ setActiveItem }) {
         <WeekTasks />
         <MonthTasks />
         <div className="w-full h-full hidden lg:block lg:border-[2px] lg:border-dark-400 lg:rounded-lg"></div>
-        <div className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
-          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xs">Tareas Completadas</span>
-            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-              {monthlyTasks.filter((task) => task.status == "completed").length}{" "}
-              <span className="lg:text-sm xl:text-lg">de</span> {monthlyTasks.length}
-            </span>
-          </div>
-          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xs">Tareas Para Hacer</span>
-            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-              {monthlyTasks.filter((task) => task.status == "pending").length}{" "}
-              <span className="lg:text-sm xl:text-lg">de</span> {monthlyTasks.length}
-            </span>
-          </div>
-          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xs">Tareas Atrasadas</span>
-            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-              {tasks.filter((task) => task.status == "overdue").length}{" "}
-              <span className="lg:text-sm xl:text-lg">de</span> {tasks.length}
-            </span>
-          </div>
-          <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-            <span className="text-xs">Progreso mensual</span>
-            <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-              {Math.round(
-                (monthlyTasks.filter((task) => task.status == "completed").length /
-                  monthlyTasks.length) *
-                  100
-              )}
-              %
-            </span>
-          </div>
-        </div>
+        <CardsProgress
+          filteredTasks={handleChangeDropDown()}
+          tasks={tasks}
+          title={dropDownState}
+          setDropDownState={setDropDownState}
+        />
       </div>
       <TaskFormButton styles={"lg:hidden"} />
     </div>

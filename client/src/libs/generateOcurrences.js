@@ -5,7 +5,6 @@ import {
   format,
   isAfter,
   isSameDay,
-  isWithinInterval
 } from "date-fns";
 
 function generateOccurrences(
@@ -30,8 +29,7 @@ function generateOccurrences(
       )
     : [];
   const occurrences = [];
-  let currentDate = start
-  //let currentDate = isRecurrence ? start : addDays(start,1);
+  let currentDate = isRecurrence ? start : addDays(start,1);
 
   console.log(savedRecurrences, end);
 
