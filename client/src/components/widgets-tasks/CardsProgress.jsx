@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
+import { AnimatedCounter } from "../AnimatedCounter";
 
 export default function CardsProgress({
   filteredTasks,
@@ -68,12 +69,17 @@ export default function CardsProgress({
           </ul>
         </details>
         <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7 px-3">
-          {Math.round(
+          <AnimatedCounter value={Math.round(
             (filteredTasks.filter((task) => task.status == "completed").length /
               filteredTasks.length) *
               100
-          )}
-          %
+          )} duration={200} />
+          {/* {Math.round(
+            (filteredTasks.filter((task) => task.status == "completed").length /
+              filteredTasks.length) *
+              100
+          )} */}
+          
         </span>
       </div>
     </div>
