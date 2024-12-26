@@ -1,8 +1,8 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
 import { toast } from "sonner";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
+import { completeTourRequest } from "../api/auth.js";
 
 export const AuthContext = createContext();
 
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -50,8 +49,8 @@ export const AuthProvider = ({ children }) => {
   const signup = async (user) => {
     try {
       const res = await registerRequest(user);
-      setUser(res.data)
-      navigate("/verify-email")
+      setUser(res.data);
+      navigate("/verify-email");
     } catch (error) {
       error.response.data.map((error) =>
         toast.error(error, {
@@ -64,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-      console.log(res)
+      console.log(res);
       localStorage.setItem("token", res.data.token);
       setUser(res.data);
       setIsAuthenticated(true);
@@ -80,12 +79,30 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    setUser(null)
+    setUser(null);
+  };
+
+  const completeTour = async (tourType) => {
+    try {
+      const response = await completeTourRequest(tourType,user._id);
+      console.log(`Estado de ${tourType} actualizado:`, response.data);
+      setUser(response.data.user)
+    } catch (error) {
+      console.error(`Error al actualizar ${tourType}:`, error);
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ signup, signin, logout, user, isAuthenticated, loading }}
+      value={{
+        signup,
+        signin,
+        logout,
+        completeTour,
+        user,
+        isAuthenticated,
+        loading,
+      }}
     >
       {children}
     </AuthContext.Provider>

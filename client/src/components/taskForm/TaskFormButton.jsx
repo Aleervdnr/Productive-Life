@@ -12,6 +12,7 @@ export default function TaskFormButton({ styles }) {
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
       <button
+        id="step-4"
         className={`bg-violet-main w-11 h-11 rounded-full text-2xl absolute bottom-5 right-5 lg:bottom-0 lg:right-0 lg:relative lg:w-fit lg:h-fit lg:py-[10px] lg:px-4 lg:text-xs lg:flex lg:m-0 lg:my-auto lg:justify-self-end ${styles} `}
         onClick={() => document.getElementById("my_modal_50").showModal()}
       >

@@ -3,6 +3,7 @@ import { authRequired } from "../middlewares/validateToken.js";
 import { createTask, deleteTask, getTasks, updateTask } from "../controllers/tasks.controllers.js";
 import { validateSchema } from "../middlewares/validateSchema.js";
 import { taskSchema } from "../schemas/task.schema.js";
+import { tourCompleted } from "../controllers/auth.controllers.js";
 
 const router = Router();
 

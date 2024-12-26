@@ -16,7 +16,7 @@ export default function CardsProgress({
   };
 
   return (
-    <div className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
+    <div id="step-2" className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5">
       <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
         <span className="text-xs">Tareas Completadas</span>
         <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">

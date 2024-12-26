@@ -9,4 +9,10 @@ export const verifyTokenRequest = (token) =>
       },
     });
 export const verifyEmailRequest = (token) => axios.get(`verify-email-token?token=${token}`)
+export const completeTourRequest = (tourType,userId) =>
+  axios.patch("/tour-completed", {
+    userId, // Reemplaza con el ID del usuario actual
+    tourType: tourType, // Nombre del tour, por ejemplo: "taskTour" o "gastosPage"
+    value: true, // El nuevo valor, en este caso siempre "true"
+  });
 
