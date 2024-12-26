@@ -95,13 +95,7 @@ export const register = async (req, res) => {
     </table>`
     );
 
-    res.json({
-      _id: userSaved._id,
-      name: userSaved.name,
-      email: userSaved.email,
-      createdAt: userSaved.createdAt,
-      updateAt: userSaved.updatedAt,
-    });
+    res.json(userFound);
   } catch (err) {
     console.error(err); // Agrega esto para depurar el error
     res.status(500).json({ error: "Error interno del servidor." });
@@ -123,12 +117,7 @@ export const login = async (req, res) => {
 
     const token = await createAccessToken({ id: userFound._id });
 
-    res.json({
-      _id: userFound._id,
-      name: userFound.name,
-      email: userFound.email,
-      createdAt: userFound.createdAt,
-      updateAt: userFound.updatedAt,
+    res.json({...userFound.toObject(),
       token: token,
     });
   } catch (error) {
@@ -148,11 +137,7 @@ export const verifyToken = async (req, res) => {
     const userFound = await User.findById(user.id);
     if (!userFound) return res.status(401).json(["No Autorizado"]);
 
-    return res.json({
-      id: userFound.id,
-      name: userFound.name,
-      email: userFound.email,
-    });
+    return res.json(userFound);
   });
 };
 
@@ -198,5 +183,28 @@ export const verifyEmailToken = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error al verificar el email.", error: error.message });
+  }
+};
+
+export const tourCompleted =  async (req, res) => {
+  try {
+    const { userId, tourType, value } = req.body; // Recibe el ID del usuario, el tipo de tour y el nuevo valor
+
+    // Construimos dinámicamente el campo a actualizar
+    const updateField = { [`tourCompleted.${tourType}`]: value };
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updateField,
+      { new: true } // Retorna el usuario actualizado
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Estado actualizado', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar el estado', error });
   }
 };

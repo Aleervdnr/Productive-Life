@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
     verificationToken: {
       type: String,
     },
+    tourCompleted: {
+      taskTour: { type: Boolean, default: false },
+      gastosTour: { type: Boolean, default: false },
+    },    
   },
   {
     timestamps: true,

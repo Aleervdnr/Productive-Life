@@ -7,11 +7,18 @@ import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
 import { isSameDay, isSameMonth, isSameWeek } from "date-fns";
 import { todayDate } from "../libs/Dates.js";
 import CardsProgress from "../components/widgets-tasks/CardsProgress.jsx";
-import Joyride from "react-joyride";
+import Joyride, {
+  ACTIONS,
+  EVENTS,
+  ORIGIN,
+  STATUS
+} from "react-joyride";
 import Logo from "../assets/Logo.png";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading } = useTasks();
+  const {completeTour, user} = useAuth()
 
   const [dropDownState, setDropDownState] = useState("Progreso Mensual");
 
@@ -151,11 +158,33 @@ export default function TasksPage({ setActiveItem }) {
     },
   ];
 
+  const handleJoyrideCallback = (data) => {
+    const { action, index, origin, status, type } = data;
+
+    if (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) {
+      // do something
+    }
+
+    if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+      // Update state to advance the tour
+      //setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
+    } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      // You need to set our running state to false, so we can restart if we click start again.
+      completeTour("taskTour")
+      console.log("Terminado");
+    }
+
+    console.groupCollapsed(type);
+    console.log(data);
+    console.groupEnd();
+  };
+
   return (
     <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative">
       <Joyride
+        callback={handleJoyrideCallback}
         steps={steps}
-        run={true}
+        run={!user.tourCompleted.taskTour}
         styles={{
           options: {
             arrowColor: "#2A2B31",
