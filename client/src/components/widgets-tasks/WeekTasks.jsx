@@ -3,10 +3,13 @@ import { TabMenu } from "../TabMenu";
 import { useTasks } from "../../context/TasksContext";
 import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
 import TaskFormButton from "../taskForm/TaskFormButton";
+import useWindowSize from "../../hooks/useWindowSize";
 
 export default function WeekTasks() {
   const [tabActive, setTabActive] = useState({ name: "Lunes", isoDay: 1 });
   const { tasks, setWeeklyTasks, weeklyTasks } = useTasks();
+
+  const {width} = useWindowSize()
 
   // Filtrar tareas de la semana actual
   const filterWeeklyTasks = () => {
@@ -38,7 +41,7 @@ export default function WeekTasks() {
     setTabActive(name);
   };
   return (
-    <div id="step-3" className="w-[100vw] h-[calc(100vh-97px)] max-lg:relative px-5 py-2 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full lg:h-full">
+    <div id={width >= 1024 ? "step-3" : null} className="w-[100vw] h-[calc(100vh-97px)] max-lg:relative px-5 py-2 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full lg:h-full">
       <div className="lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center lg:py-1">
         <h2 className="text-center hidden lg:block font-medium text-2xl my-2 lg:col-start-2">
           Mi Semana
