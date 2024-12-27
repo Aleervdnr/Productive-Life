@@ -6,9 +6,11 @@ import { useDate } from "../../context/DateContext.jsx";
 import { RiArrowRightSLine } from "react-icons/ri";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { useTasks } from "../../context/TasksContext.jsx";
+import useWindowSize from "../../hooks/useWindowSize.jsx";
 
 export default function MonthTasks() {
   const { tasksIsLoading } = useTasks();
+  const {width} = useWindowSize()
 
   const [days, setDays] = useState([]);
   const { nowDateTime } = useDate();
@@ -53,7 +55,7 @@ export default function MonthTasks() {
   };
 
   return (
-    <div id="step-1" className="w-[100vw] px-5 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[24px,24px,repeat(auto-fill,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[24px,24px,repeat(auto-fit,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
+    <div id={width >= 1024 ? "step-1" : null} className="w-[100vw] px-5 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[24px,24px,repeat(auto-fill,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[24px,24px,repeat(auto-fit,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
       <div className="col-span-7 w-full flex justify-between">
         <span className="text-md font-semibold">
           {months[month - 1]}, {year}

@@ -7,18 +7,14 @@ import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
 import { isSameDay, isSameMonth, isSameWeek } from "date-fns";
 import { todayDate } from "../libs/Dates.js";
 import CardsProgress from "../components/widgets-tasks/CardsProgress.jsx";
-import Joyride, {
-  ACTIONS,
-  EVENTS,
-  ORIGIN,
-  STATUS
-} from "react-joyride";
+import Joyride, { ACTIONS, EVENTS, ORIGIN, STATUS } from "react-joyride";
 import Logo from "../assets/Logo.png";
 import { useAuth } from "../context/AuthContext.jsx";
+import useWindowSize from "../hooks/useWindowSize.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks, tasks, setTasksIsLoading } = useTasks();
-  const {completeTour, user} = useAuth()
+  const { completeTour, user } = useAuth();
 
   const [dropDownState, setDropDownState] = useState("Progreso Mensual");
 
@@ -27,6 +23,8 @@ export default function TasksPage({ setActiveItem }) {
     if (dropDownState == "Progreso Semanal") return weeklyTasks;
     if (dropDownState == "Progreso Diario") return todayTasks;
   };
+
+  const { width } = useWindowSize();
 
   useEffect(() => {
     setActiveItem("tasks");
@@ -50,7 +48,7 @@ export default function TasksPage({ setActiveItem }) {
     isSameMonth(new Date(task.taskDate), new Date(todayDate))
   );
 
-  const steps = [
+  const stepsDesktop = [
     {
       target: "body",
       placement: "center",
@@ -76,7 +74,7 @@ export default function TasksPage({ setActiveItem }) {
     {
       target: "#step-0",
       content: (
-        <div className="max-w-[550px] ">
+        <div className="max-[768px]:w-[80vw] ">
           <h3 className="font-bold text-lg">Domina tu día</h3>
           <p>
             Revisa, edita y completa tus tareas con facilidad. Cada check te
@@ -93,7 +91,7 @@ export default function TasksPage({ setActiveItem }) {
     {
       target: "#step-1",
       content: (
-        <div className="max-w-[550px] ">
+        <div className="max-[768px]:w-[80vw] ">
           <h3 className="font-bold text-lg">Un calendario para tu progreso</h3>
           <p>
             Visualiza tus avances diarios, navega por el mes y mantente en
@@ -110,7 +108,7 @@ export default function TasksPage({ setActiveItem }) {
     {
       target: "#step-2",
       content: (
-        <div className="max-w-[550px] ">
+        <div className="max-[768px]:w-[80vw] ">
           <h3 className="font-bold text-lg">Mide tu éxito</h3>
           <p>
             Analiza tus tareas completadas y pendientes. Cambia la vista y
@@ -127,7 +125,7 @@ export default function TasksPage({ setActiveItem }) {
     {
       target: "#step-3",
       content: (
-        <div className="max-w-[550px] ">
+        <div className="max-[768px]:w-[80vw] ">
           <h3 className="font-bold text-lg">Diseña tu semana ideal</h3>
           <p>
             Organiza tus días y mantén el equilibrio en tus prioridades.
@@ -143,7 +141,7 @@ export default function TasksPage({ setActiveItem }) {
     {
       target: "#step-4",
       content: (
-        <div className="lg:max-w-[550px] ">
+        <div className="max-[768px]:w-[80vw] ">
           <h3 className="font-bold text-lg">Transforma tus ideas en acción</h3>
           <p>Agrega nuevas tareas y da el primer paso hacia tus metas.</p>{" "}
         </div>
@@ -158,6 +156,81 @@ export default function TasksPage({ setActiveItem }) {
     },
   ];
 
+  const stepsMobile = [
+    {
+      target: "body",
+      placement: "center",
+      content: (
+        <div className="max-[768px]:w-[80vw] grid justify-items-center">
+          <span className="font-semibold">Bienvenido a</span>
+          <img src={Logo} />
+          <p className="max-[768px]:w-full w-[550px] mt-5">
+            {" "}
+            Estás en la sección de <strong>Tareas</strong>, donde podrás
+            organizar tu día a día de forma simple y eficiente. Crea, edita y
+            completa tus actividades mientras avanzas hacia tus objetivos con
+            claridad y motivación.
+          </p>
+        </div>
+      ),
+      locale: {
+        skip: <strong aria-label="skip">Saltar</strong>,
+        next: <span aria-label="next">Siguiente</span>,
+        back: <span aria-label="back">Volver</span>,
+      },
+    },
+    {
+      target: "#step-0",
+      content: (
+        <div className="max-[768px]:w-[80vw] ">
+          <h3 className="font-bold text-lg">Domina tu día</h3>
+          <p>
+            Revisa, edita y completa tus tareas con facilidad. Cada check te
+            acerca más a tus metas.
+          </p>{" "}
+        </div>
+      ),
+      locale: {
+        skip: <strong aria-label="skip">Saltar</strong>,
+        next: <span aria-label="next">Siguiente</span>,
+        back: <span aria-label="back">Volver</span>,
+      },
+    },
+    {
+      target: "#step-1",
+      content: (
+        <div className="max-[768px]:w-[80vw] ">
+          <h3 className="font-bold text-lg">Diseña tu semana ideal</h3>
+          <p>
+            Organiza tus días y mantén el equilibrio en tus prioridades.
+          </p>{" "}
+        </div>
+      ),
+      locale: {
+        skip: <strong aria-label="skip">Saltar</strong>,
+        next: <span aria-label="next">Siguiente</span>,
+        back: <span aria-label="back">Volver</span>,
+      },
+    },
+    {
+      target: "#step-2",
+      content: (
+        <div className="max-[768px]:w-[80vw] ">
+          <h3 className="font-bold text-lg">Un calendario para tu progreso</h3>
+          <p>
+            Visualiza tus avances diarios, navega por el mes y mantente en
+            control de tus objetivos.
+          </p>{" "}
+        </div>
+      ),
+      locale: {
+        skip: <strong aria-label="skip">Saltar</strong>,
+        next: <span aria-label="next">Siguiente</span>,
+        back: <span aria-label="back">Volver</span>,
+      },
+    }
+  ];
+
   const handleJoyrideCallback = (data) => {
     const { action, index, origin, status, type } = data;
 
@@ -170,7 +243,7 @@ export default function TasksPage({ setActiveItem }) {
       //setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
     } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // You need to set our running state to false, so we can restart if we click start again.
-      completeTour("taskTour")
+      completeTour("taskTour");
       console.log("Terminado");
     }
 
@@ -183,7 +256,7 @@ export default function TasksPage({ setActiveItem }) {
     <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative">
       <Joyride
         callback={handleJoyrideCallback}
-        steps={steps}
+        steps={width >= 1024 ? stepsDesktop : stepsMobile}
         run={!user.tourCompleted.taskTour}
         styles={{
           options: {
@@ -204,6 +277,7 @@ export default function TasksPage({ setActiveItem }) {
             tabActive == "hoy" && `bg-dark-400`
           }`}
           onClick={() => handleChangeTab("hoy")}
+          id={width < 1024 ? "step-0" : null}
         >
           Hoy
         </div>
@@ -212,6 +286,7 @@ export default function TasksPage({ setActiveItem }) {
             tabActive == "semana" && `bg-dark-400`
           }`}
           onClick={() => handleChangeTab("semana")}
+          id={width < 1024 ? "step-1" : null}
         >
           Semana
         </div>
@@ -220,6 +295,7 @@ export default function TasksPage({ setActiveItem }) {
             tabActive == "mes" && `bg-dark-400`
           }`}
           onClick={() => handleChangeTab("mes")}
+          id={width < 1024 ? "step-2" : null}
         >
           Mes
         </div>
