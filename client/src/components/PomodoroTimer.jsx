@@ -101,7 +101,10 @@ const PomodoroTimer = () => {
         }  text-white  transition-transform duration-500`}
       >
         <div className="px-6 h-full flex flex-col justify-center gap-2 text-center">
-          <h2 className="text-xl font-semibold">
+          <h2 className={`text-xl font-semibold ${isRunning && "hidden"}`}>
+            {!isRunning && "Listo?"}
+          </h2>
+          <h2 className={`text-xl font-semibold ${!isRunning && "hidden"}`}>
             {isWorkMode ? "Enfocate!" : "Descansa"}
           </h2>
           <div>
