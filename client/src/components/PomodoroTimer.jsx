@@ -7,7 +7,7 @@ import { FaGear } from "react-icons/fa6";
 import { IoChevronBackOutline } from "react-icons/io5";
 
 const PomodoroTimer = () => {
-  const workOptions = [15, 20, 25, 30, 35, 40, 45, 50, 55, 60]; // Opciones de trabajo
+  const workOptions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]; // Opciones de trabajo
   const breakOptions = [5, 10, 15, 20, 25]; // Opciones de descanso
   const sessionOptions = [1, 2, 3, 4, 5, 6, 7, 8]; // Opciones de sesiones
 
