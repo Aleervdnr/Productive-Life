@@ -7,8 +7,8 @@ import { FaGear } from "react-icons/fa6";
 import { IoChevronBackOutline } from "react-icons/io5";
 
 const PomodoroTimer = () => {
-  const workOptions = [0.1, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]; // Opciones de trabajo
-  const breakOptions = [0.1, 5, 10, 15, 20, 25]; // Opciones de descanso
+  const workOptions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]; // Opciones de trabajo
+  const breakOptions = [5, 10, 15, 20, 25]; // Opciones de descanso
   const sessionOptions = [1, 2, 3, 4, 5, 6, 7, 8]; // Opciones de sesiones
 
   const [workTime, setWorkTime] = useState(25); // Minutos de trabajo
@@ -101,7 +101,10 @@ const PomodoroTimer = () => {
         }  text-white  transition-transform duration-500`}
       >
         <div className="px-6 h-full flex flex-col justify-center gap-2 text-center">
-          <h2 className="text-xl font-semibold">
+          <h2 className={`text-xl font-semibold ${isRunning && "hidden"}`}>
+            {!isRunning && "Listo?"}
+          </h2>
+          <h2 className={`text-xl font-semibold ${!isRunning && "hidden"}`}>
             {isWorkMode ? "Enfocate!" : "Descansa"}
           </h2>
           <div>
