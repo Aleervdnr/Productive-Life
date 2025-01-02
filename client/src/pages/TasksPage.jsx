@@ -5,8 +5,6 @@ import MonthTasks from "../components/widgets-tasks/MonthTasks";
 import PomodoroTimer from "../components/PomodoroTimer.jsx";
 import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
-import { isSameDay, isSameMonth, isSameWeek } from "date-fns";
-import { todayDate } from "../libs/Dates.js";
 import CardsProgress from "../components/widgets-tasks/CardsProgress.jsx";
 import Joyride, { ACTIONS, EVENTS, ORIGIN, STATUS } from "react-joyride";
 import Logo from "../assets/Logo.png";
@@ -14,16 +12,8 @@ import { useAuth } from "../context/AuthContext.jsx";
 import useWindowSize from "../hooks/useWindowSize.jsx";
 
 export default function TasksPage({ setActiveItem }) {
-  const { getTasks, tasks, setTasksIsLoading } = useTasks();
+  const { getTasks } = useTasks();
   const { completeTour, user } = useAuth();
-
-  const [dropDownState, setDropDownState] = useState("Progreso Mensual");
-
-  const handleChangeDropDown = () => {
-    if (dropDownState == "Progreso Mensual") return monthlyTasks;
-    if (dropDownState == "Progreso Semanal") return weeklyTasks;
-    if (dropDownState == "Progreso Diario") return todayTasks;
-  };
 
   const { width } = useWindowSize();
 
@@ -37,17 +27,6 @@ export default function TasksPage({ setActiveItem }) {
   const handleChangeTab = (name) => {
     setTabActive(name);
   };
-
-  const todayTasks = tasks.filter((task) =>
-    isSameDay(new Date(task.taskDate), new Date(todayDate))
-  );
-
-  const weeklyTasks = tasks.filter((task) =>
-    isSameWeek(new Date(task.taskDate), new Date(todayDate))
-  );
-  const monthlyTasks = tasks.filter((task) =>
-    isSameMonth(new Date(task.taskDate), new Date(todayDate))
-  );
 
   const stepsDesktop = [
     {
@@ -312,12 +291,7 @@ export default function TasksPage({ setActiveItem }) {
         <WeekTasks />
         <MonthTasks />
         <PomodoroTimer />
-        <CardsProgress
-          filteredTasks={handleChangeDropDown()}
-          tasks={tasks}
-          title={dropDownState}
-          setDropDownState={setDropDownState}
-        />
+        <CardsProgress />
       </div>
       <TaskFormButton styles={"lg:hidden"} />
     </div>
