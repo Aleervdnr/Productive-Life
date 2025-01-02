@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import TodayTasks from "../components/widgets-tasks/TodayTasks";
 import WeekTasks from "../components/widgets-tasks/WeekTasks";
 import MonthTasks from "../components/widgets-tasks/MonthTasks";
+import PomodoroTimer from "../components/PomodoroTimer.jsx";
 import { useTasks } from "../context/TasksContext.jsx";
 import TaskFormButton from "../components/taskForm/TaskFormButton.jsx";
 import { isSameDay, isSameMonth, isSameWeek } from "date-fns";
@@ -228,7 +229,7 @@ export default function TasksPage({ setActiveItem }) {
         next: <span aria-label="next">Siguiente</span>,
         back: <span aria-label="back">Volver</span>,
       },
-    }
+    },
   ];
 
   const handleJoyrideCallback = (data) => {
@@ -310,7 +311,7 @@ export default function TasksPage({ setActiveItem }) {
         <TodayTasks />
         <WeekTasks />
         <MonthTasks />
-        <div className="w-full h-full hidden lg:block lg:border-[2px] lg:border-dark-400 lg:rounded-lg"></div>
+        <PomodoroTimer />
         <CardsProgress
           filteredTasks={handleChangeDropDown()}
           tasks={tasks}
