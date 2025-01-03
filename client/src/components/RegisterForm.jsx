@@ -11,7 +11,7 @@ function RegisterForm({ handleSetIsLogin, isLogin }) {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { signup, isAuthenticated } = useAuth();
+  const { signup, isAuthenticated, setUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +20,7 @@ function RegisterForm({ handleSetIsLogin, isLogin }) {
 
   const onSubmit = async (values) => {
     signup(values);
+    //setUser({name:values.name, email:values.email})
   };
 
   return (

@@ -1,5 +1,10 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
+import {
+  loginRequest,
+  registerRequest,
+  reSendEmailRequest,
+  verifyTokenRequest,
+} from "../api/auth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { completeTourRequest } from "../api/auth.js";
@@ -48,8 +53,8 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (user) => {
     try {
-      const res = await registerRequest(user);
-      setUser(res.data);
+      await registerRequest(user);
+      setUser(user);
       navigate("/verify-email");
     } catch (error) {
       error.response.data.map((error) =>
@@ -82,11 +87,24 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const reSendEmailVerification = async (user) => {
+    try {
+      const res = await reSendEmailRequest(user);
+      console.log(res);
+    } catch (error) {
+      error.response.data.map((error) =>
+        toast.error(error, {
+          duration: 3000,
+        })
+      );
+    }
+  };
+
   const completeTour = async (tourType) => {
     try {
-      const response = await completeTourRequest(tourType,user._id);
+      const response = await completeTourRequest(tourType, user._id);
       console.log(`Estado de ${tourType} actualizado:`, response.data);
-      setUser(response.data.user)
+      setUser(response.data.user);
     } catch (error) {
       console.error(`Error al actualizar ${tourType}:`, error);
     }
@@ -98,8 +116,10 @@ export const AuthProvider = ({ children }) => {
         signup,
         signin,
         logout,
+        reSendEmailVerification,
         completeTour,
         user,
+        setUser,
         isAuthenticated,
         loading,
       }}

@@ -6,6 +6,72 @@ import { TOKEN_SECRET, FRONTEND_URL } from "../config.js";
 import sendVerificationEmail from "../libs/sendVerificationEmail.js";
 import { generateVerificationToken } from "../libs/generateVerificationToken.js";
 
+const createEmailText = (name, verificationLink) => {
+  return {
+    subject: "Verificación de Email - Productive Life",
+    html:`    
+      <table width="100%">
+        <tr align="center">
+          <td style="color: white;">
+            <div class="container" style="width: 100%; max-width: 400px; background-color: #232429; color: white; padding: 20px 80px;">
+              <table>
+                <tr align="center">
+                  <td style="color: white;">
+                    <img src="https://iili.io/2SLraDv.png" alt="Logo" border="0" width="40%">
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: white;">
+                    <h1 class="title" style="text-decoration: none;">Hola ${
+                      name.split(" ")[0]
+                    }, Bienvenido</h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: white;">
+                    <p>
+                      Gracias por registrarte en Productive Life. 🥳 Solo falta
+                      confirmar tu correo electrónico para activar tu cuenta. ¡Haz
+                      clic aquí! 👇
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="color: white;">
+                    <a class="button_link" href="${verificationLink}" style="background-color: #7e73ff; color: white; padding: 10px 25px; text-decoration: none; font-weight: bold; margin: 10px 0;">Verificar mi email</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: white;">
+                    <p>
+                      Si no reconoces este registro, no te preocupes, puedes
+                      ignorar este correo.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: white;">
+                    <p>
+                      ¡Esperamos que disfrutes de tu experiencia!
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: white;">
+                    <p>
+                      El equipo de Productive Life
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </table>`
+  }
+}
+
+
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -32,67 +98,13 @@ export const register = async (req, res) => {
     // Crear el enlace de verificación
     const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
 
+    const emailText = createEmailText(name, verificationLink)
+
     // Enviar el correo de verificación
     await sendVerificationEmail(
       email,
-      "Verificación de Email - Productive Life",
-      `    
-    <table width="100%">
-      <tr align="center">
-        <td style="color: white;">
-          <div class="container" style="width: 100%; max-width: 400px; background-color: #232429; color: white; padding: 20px 80px;">
-            <table>
-              <tr align="center">
-                <td style="color: white;">
-                  <img src="https://i.ibb.co/4MbRB40/Logo.png" alt="Logo" border="0" width="40%">
-                </td>
-              </tr>
-              <tr>
-                <td style="color: white;">
-                  <h1 class="title" style="text-decoration: none;">Hola ${name.split(" ")[0]}, Bienvenido</h1>
-                </td>
-              </tr>
-              <tr>
-                <td style="color: white;">
-                  <p>
-                    Gracias por registrarte en Productive Life. 🥳 Solo falta
-                    confirmar tu correo electrónico para activar tu cuenta. ¡Haz
-                    clic aquí! 👇
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td align="center" style="color: white;">
-                  <a class="button_link" href="${verificationLink}" style="background-color: #7e73ff; color: white; padding: 5px 15px; text-decoration: none; font-weight: bold; margin: 10px 0;">Verificar mi email</a>
-                </td>
-              </tr>
-              <tr>
-                <td style="color: white;">
-                  <p>
-                    Si no reconoces este registro, no te preocupes, puedes
-                    ignorar este correo.
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td style="color: white;">
-                  <p>
-                    ¡Esperamos que disfrutes de tu experiencia!
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td style="color: white;">
-                  <p>
-                    El equipo de Productive Life
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </td>
-      </tr>
-    </table>`
+      emailText.subject,
+      emailText.html
     );
 
     res.json(userFound);
@@ -113,13 +125,14 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, userFound.password);
     if (!isMatch) return res.status(400).json(["Contraseña incorrecta"]);
 
-    if(!userFound.isVerified) return res.status(400).json(["Email no verificado, revisa tu casilla de mensajes"])
+    if (!userFound.isVerified)
+      return res
+        .status(400)
+        .json(["Email no verificado, revisa tu casilla de mensajes"]);
 
     const token = await createAccessToken({ id: userFound._id });
 
-    res.json({...userFound.toObject(),
-      token: token,
-    });
+    res.json({ ...userFound.toObject(), token: token });
   } catch (error) {
     return res.status(500).json([error.message]);
   }
@@ -186,7 +199,7 @@ export const verifyEmailToken = async (req, res) => {
   }
 };
 
-export const tourCompleted =  async (req, res) => {
+export const tourCompleted = async (req, res) => {
   try {
     const { userId, tourType, value } = req.body; // Recibe el ID del usuario, el tipo de tour y el nuevo valor
 
@@ -200,11 +213,34 @@ export const tourCompleted =  async (req, res) => {
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    res.status(200).json({ message: 'Estado actualizado', user: updatedUser });
+    res.status(200).json({ message: "Estado actualizado", user: updatedUser });
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar el estado', error });
+    res.status(500).json({ message: "Error al actualizar el estado", error });
+  }
+};
+
+export const reSendEmailVerification = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    const verificationToken = generateVerificationToken(email);
+
+    const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
+
+    const emailText = createEmailText(name, verificationLink)
+
+    const res = await sendVerificationEmail(
+      email,
+      emailText.subject,
+      emailText.html
+    );
+
+    res.status(200).json({ message: "Email Reenviado." });
+  } catch (error) {
+    console.error(error); // Agrega esto para depurar el error
+    res.status(500).json({ error: "Error interno del servidor." });
   }
 };
