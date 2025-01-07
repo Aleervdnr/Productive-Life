@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="w-full h-[calc(100dvh-55px)] lg:h-screen  overflow-hidden relative grid place-content-center">
+    <div className="w-full h-dvh lg:h-screen  overflow-hidden relative grid place-content-center">
       <div className="w-[95vw] max-w-[750px] px-[2vw] lg:px-12  border-dark-100 bg-dark-400  py-8 grid justify-items-center gap-[10px] ">
         <img src={logo} alt="logo productive life" className="max-w-[250px] " />
         <div className="flex flex-col gap-0 items-center">

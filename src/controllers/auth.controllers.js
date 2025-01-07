@@ -9,7 +9,7 @@ import { generateVerificationToken } from "../libs/generateVerificationToken.js"
 const createEmailText = (name, verificationLink) => {
   return {
     subject: "Verificación de Email - Productive Life",
-    html:`    
+    html: `    
       <table width="100%">
         <tr align="center">
           <td style="color: white;">
@@ -67,10 +67,9 @@ const createEmailText = (name, verificationLink) => {
             </div>
           </td>
         </tr>
-      </table>`
-  }
-}
-
+      </table>`,
+  };
+};
 
 export const register = async (req, res) => {
   try {
@@ -98,14 +97,10 @@ export const register = async (req, res) => {
     // Crear el enlace de verificación
     const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
 
-    const emailText = createEmailText(name, verificationLink)
+    const emailText = createEmailText(name, verificationLink);
 
     // Enviar el correo de verificación
-    await sendVerificationEmail(
-      email,
-      emailText.subject,
-      emailText.html
-    );
+    await sendVerificationEmail(email, emailText.subject, emailText.html);
 
     res.json(userFound);
   } catch (err) {
@@ -224,13 +219,18 @@ export const tourCompleted = async (req, res) => {
 
 export const reSendEmailVerification = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { email } = req.body;
+
+    const userFound = await User.findOne({ email });
+
+    if (!userFound)
+      return res.status(400).json(["El email indicado no está registrado"]);
 
     const verificationToken = generateVerificationToken(email);
 
     const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
 
-    const emailText = createEmailText(name, verificationLink)
+    const emailText = createEmailText(userFound.name, verificationLink);
 
     const res = await sendVerificationEmail(
       email,
