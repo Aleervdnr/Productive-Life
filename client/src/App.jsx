@@ -1,10 +1,9 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {Routes, Route, useLocation } from "react-router-dom";
 import LoginRegisterpage from "./pages/LoginRegisterpage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./ProtectedRoute";
 import NavBar from "./components/NavBar";
 import { useEffect, useState } from "react";
-import Homepage from "./pages/Homepage";
 import TasksPage from "./pages/TasksPage";
 import { Toaster } from "sonner";
 import "./App.css";
