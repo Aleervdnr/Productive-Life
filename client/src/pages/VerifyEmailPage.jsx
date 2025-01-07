@@ -23,9 +23,7 @@ export default function VerifyEmailPage() {
 
   const handleResend = () => {
     if (timer === 0) {
-      reSendEmailVerification(user)
-      toast.info("El correo de verificación se ha reenviado.");
-      setTimer(60); // Reiniciar el temporizador
+      reSendEmailVerification(user, setTimer)
     }
   };
 

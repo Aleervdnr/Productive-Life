@@ -64,8 +64,7 @@ const VerifyEmail401Error = () => {
 
   const handleResend = async (values) => {
     if (timer === 0) {
-      reSendEmailVerification(values);
-      setTimer(60); // Reiniciar el temporizador
+      reSendEmailVerification(values,setTimer);
     }
   };
   return (
