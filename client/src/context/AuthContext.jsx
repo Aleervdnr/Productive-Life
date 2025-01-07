@@ -89,8 +89,8 @@ export const AuthProvider = ({ children }) => {
 
   const reSendEmailVerification = async (user) => {
     try {
-      const res = await reSendEmailRequest(user);
-      console.log(res);
+      await reSendEmailRequest(user);
+      toast.info("El correo de verificación se ha reenviado.");
     } catch (error) {
       error.response.data.map((error) =>
         toast.error(error, {

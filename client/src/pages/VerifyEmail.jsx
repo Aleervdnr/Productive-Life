@@ -64,9 +64,7 @@ const VerifyEmail401Error = () => {
 
   const handleResend = async (values) => {
     if (timer === 0) {
-      console.log(values)
       reSendEmailVerification(values);
-      toast.info("El correo de verificación se ha reenviado.");
       setTimer(60); // Reiniciar el temporizador
     }
   };

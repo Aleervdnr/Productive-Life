@@ -226,13 +226,15 @@ export const reSendEmailVerification = async (req, res) => {
     if (!userFound)
       return res.status(400).json(["El email indicado no está registrado"]);
 
+    if(userFound.isVerified) return res.status(400).json(["El email indicado ya se encuentra verificado"]);
+
     const verificationToken = generateVerificationToken(email);
 
     const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
 
     const emailText = createEmailText(userFound.name, verificationLink);
 
-    const res = await sendVerificationEmail(
+    const response = await sendVerificationEmail(
       email,
       emailText.subject,
       emailText.html
