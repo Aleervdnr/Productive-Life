@@ -5,7 +5,6 @@ import {
   getTasksRequest,
   updateTasksRequest,
 } from "../api/tasks";
-import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
 import { toast } from "sonner";
 
 const TasksContext = createContext();
