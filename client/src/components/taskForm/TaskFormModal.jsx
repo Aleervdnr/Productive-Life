@@ -7,20 +7,25 @@ import { es } from "react-day-picker/locale";
 import { format } from "date-fns";
 import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
+import { useTasks } from "../../context/TasksContext";
 
 export default function TaskFormModal() {
+
+  //Contexts
   const {
     taskFormActive,
     setOverlayActive,
     setTaskFormActive,
     overlayIsClicked,
   } = useUi();
+
+  const {createTask} = useTasks()
+
   const sizesCarousel = {
     size1: "166px",
     size2: "276px",
     size3: "auto",
   };
-  const [sizeCarousel, setSizeCarousel] = useState(sizesCarousel.size1);
 
   //Reducer
   const initialState = {
@@ -77,8 +82,17 @@ export default function TaskFormModal() {
     dispatch({ type: "SET_STEP", payload: 2 });
   };
 
+
   const onSubmit = () => {
-    console.log(state.task);
+    const { title, taskDate, startTime, endTime } = state.task;
+  
+    if (!title) return alert("El título es obligatorio");
+    if (!taskDate) return alert("La fecha es obligatoria");
+    if (startTime >= endTime)
+      return alert("La hora de inicio debe ser anterior a la de finalización");
+  
+    createTask(state.task)
+    handleCloseMenu()
   };
 
   // Day Picker
@@ -149,10 +163,11 @@ export default function TaskFormModal() {
   }, [selected]);
 
   useEffect(() => {
-    if (state.step == 1) setSizeCarousel(sizesCarousel.size1);
+    if (state.step == 1)
+      dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size1 });
     if (state.step == 2) {
       setTimeout(() => {
-        setSizeCarousel(sizesCarousel.size2);
+        dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size2 });
       }, 100);
     }
     if (state.step == 3 && state.step3Is == "Fecha") {
@@ -160,12 +175,12 @@ export default function TaskFormModal() {
         state.task.isRecurring == false
           ? setSelected(defaultSelectedSingle)
           : setSelected(defaultSelectedRange);
-        setSizeCarousel(sizesCarousel.size3);
+        dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size3 });
       }, 100);
     }
     if (state.step == 3 && state.step3Is == "Hora") {
       setTimeout(() => {
-        setSizeCarousel(sizesCarousel.size3);
+        dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size3 });
       }, 100);
     }
   }, [state.step]);
@@ -198,7 +213,7 @@ export default function TaskFormModal() {
         } ${state.step == 2 && "translate-x-[-100%]"} ${
           state.step == 3 && "translate-x-[-200%]"
         } justify-self-start transition-all duration-500`}
-        style={{ height: `${sizeCarousel}` }}
+        style={{ height: `${state.sizeCarousel}` }}
       >
         <div
           className={`grid gap-[10px] px-5`}
