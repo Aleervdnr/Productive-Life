@@ -25,6 +25,17 @@ export function BackButton({ onClick }) {
   );
 }
 
+export function AcceptButton({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center justify-center py-3 text-sm font-medium  w-full max-h-[44px] bg-violet-main rounded justify-self-end"
+    >
+      Aceptar
+    </button>
+  );
+}
+
 export function SaveButton() {
   return (
     <button className="flex items-center px-[5px] py-[3px] text-sm font-medium  w-fit bg-violet-main rounded">

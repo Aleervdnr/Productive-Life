@@ -1,4 +1,4 @@
-import {Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import LoginRegisterpage from "./pages/LoginRegisterpage";
 import { useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -11,10 +11,17 @@ import GastosPage from "./pages/GastosPage";
 import VerifyEmailToken from "./pages/VerifyEmail";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { initializeAnalytics, trackPageView } from "./libs/analytics";
+import { useUi } from "./context/UiContext";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
   const { isAuthenticated } = useAuth();
+  const {
+    overlayActive,
+    setOverlayActive,
+    setTaskFormActive,
+    setOverlayIsClicked,
+  } = useUi();
 
   const location = useLocation();
 
@@ -26,6 +33,13 @@ function App() {
     trackPageView(location.pathname);
   }, [location]);
 
+  const handleClickOverlay = () => {
+    setOverlayIsClicked(true);
+    setTimeout(() => {
+      setOverlayIsClicked(false);
+    }, 500);
+  };
+
   return (
     <main
       className={`${
@@ -34,6 +48,12 @@ function App() {
           : ""
       } `}
     >
+      <div
+        className={`${
+          overlayActive ? "opacity-45 z-[1000]" : "opacity-0 z-[-10]"
+        } absolute bottom-0 h-screen w-full bg-black transition-opacity duration-500`}
+        onClick={handleClickOverlay}
+      ></div>
       <Routes>
         <Route path="/" element={<LoginRegisterpage />} />
         <Route path="/verify-email-token" element={<VerifyEmailToken />} />

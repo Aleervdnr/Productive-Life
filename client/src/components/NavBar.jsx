@@ -20,6 +20,7 @@ function NavBar({ activeItem }) {
 
   const handleLogout = () => {
     logout();
+    setMenuIsOpen(false)
     navigate("/");
   };
 
