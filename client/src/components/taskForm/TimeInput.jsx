@@ -54,6 +54,14 @@ export default function TimeInput({ onChange, title}) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Previene que un formulario padre se envíe si existe
+      console.log("Enter key pressed");
+      // Aquí puedes ejecutar cualquier lógica adicional
+    }
+  };
+
   return (
     <div className=" relative flex flex-col items-start gap-2">
       <span className="absolute top-[10px] left-[12px] text-lg font-semibold">{title}</span>
@@ -63,8 +71,11 @@ export default function TimeInput({ onChange, title}) {
         onChange={handleChange}
         value={time}
         onBlur={handleBlur}
+        onSubmit={()=>alert("submit")}
         placeholder="00:00"
         maxLength="5"
+        onKeyDown={handleKeyDown}
+        inputMode="numeric"
         className={`w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 pt-[38px] pb-[10px] text-4xl text-dark-100 bg-dark-400 font-semibold leading-none ${
           error
             ? "border-red-500 focus:ring-red-300"
