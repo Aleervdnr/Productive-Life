@@ -3,7 +3,7 @@ import { RxCross1 } from "react-icons/rx";
 import { useUi } from "../../context/UiContext";
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
-import { es} from "react-day-picker/locale";
+import { es } from "react-day-picker/locale";
 import { format } from "date-fns";
 import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
@@ -191,11 +191,27 @@ export default function TaskFormModal() {
         });
       }, 100);
     }
-    if (state.step == 3 && state.step3Is == "Fecha") {
+    if (
+      state.step == 3 &&
+      state.step3Is == "Fecha" &&
+      state.task.taskDate == ""
+    ) {
       setTimeout(() => {
         state.task.isRecurring == false
           ? setSelected(defaultSelectedSingle)
           : setSelected(defaultSelectedRange);
+        dispatch({
+          type: "SET_CAROUSEL_SIZE",
+          payload: sizesCarousel.size3,
+        });
+      }, 100);
+    }
+    if (
+      state.step == 3 &&
+      state.step3Is == "Fecha" &&
+      state.task.taskDate != ""
+    ) {
+      setTimeout(() => {
         dispatch({
           type: "SET_CAROUSEL_SIZE",
           payload: sizesCarousel.size3,
