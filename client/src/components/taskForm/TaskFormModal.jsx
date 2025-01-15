@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
 import { format } from "date-fns";
+import { es as esDateFns } from "date-fns/locale";
 import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
 import { useTasks } from "../../context/TasksContext";
@@ -41,7 +42,7 @@ export default function TaskFormModal() {
   //Reducer
   const initialState = {
     step: 1,
-    step3Is: "Fecha",
+    step3Is: "",
     sizeCarousel: "166px",
     task: {
       title: "",
@@ -293,6 +294,7 @@ export default function TaskFormModal() {
               dispatch({ type: "UPDATE_TASK", payload: { title: value } })
             }
             required={true}
+            tabIndexValue={state.step == 2 ? 1 : -1}
           />
           <TaskFormModalInput
             placeholder={"Descripción"}
@@ -300,6 +302,7 @@ export default function TaskFormModal() {
             onChange={(value) =>
               dispatch({ type: "UPDATE_TASK", payload: { description: value } })
             }
+            tabIndexValue={state.step == 2 ? 2 : -1}
           />
           <TaskFormModalSelectTime
             title={"Fecha"}
@@ -307,16 +310,20 @@ export default function TaskFormModal() {
               !selected
                 ? "Elegir Fecha"
                 : state.task.isRecurring
-                ? `${format(selected.from, "yyyy-MM-dd")} a ${format(
-                    selected.to,
-                    "yyyy-MM-dd"
-                  )}`
-                : format(selected, "yyyy-MM-dd")
+                ? `Del ${format(selected.from, "d 'de' MMMM", {
+                    locale: esDateFns,
+                  })} al ${format(selected.to, "d 'de' MMMM", {
+                    locale: esDateFns,
+                  })}`
+                : format(selected, "d 'de' MMMM", {
+                    locale: esDateFns,
+                  })
             }
             handleClick={() => {
               dispatch({ type: "SET_STEP", payload: 3 });
               dispatch({ type: "SET_STEP_3_IS", payload: "Fecha" });
             }}
+            tabIndexValue={state.step == 2 ? 3 : -1}
           />
           <TaskFormModalSelectTime
             title={"Hora"}
@@ -336,13 +343,17 @@ export default function TaskFormModal() {
               dispatch({ type: "SET_STEP", payload: 3 });
               dispatch({ type: "SET_STEP_3_IS", payload: "Hora" });
             }}
+            tabIndexValue={state.step == 2 ? 4 : -1}
           />
-          <button className="py-3 text-sm font-medium  w-full bg-violet-main rounded disabled:bg-dark-200 disabled:text-dark-100">
+          <button
+            className="py-3 text-sm font-medium  w-full bg-violet-main rounded disabled:bg-dark-200 disabled:text-dark-100"
+            tabIndex={state.step == 2 ? 5 : -1}
+          >
             Crear Tarea
           </button>
         </div>
         <div className="h-full w-full px-5 grid gap-4">
-          {state.step3Is == "Fecha" ? (
+          {state.step3Is == "Fecha" && (
             <>
               <DayPicker
                 mode={state.task.isRecurring == false ? "single" : "range"}
@@ -379,8 +390,10 @@ export default function TaskFormModal() {
                   ))}
                 </div>
               </div>
+              <AcceptButton onClick={handleAcceptButton} />
             </>
-          ) : (
+          )}
+          {state.step3Is == "Hora" && (
             <>
               <TimeInput
                 onChange={(value) =>
@@ -400,14 +413,15 @@ export default function TaskFormModal() {
                 }
                 title={"Hasta Las"}
               />
+              <AcceptButton onClick={handleAcceptButton} />
             </>
           )}
-          <AcceptButton onClick={handleAcceptButton} />
         </div>
       </form>
       <button
         className="w-12 h-12 bg-dark-400 rounded-full grid place-content-center"
         onClick={handleCloseMenu}
+        tabIndex={0}
       >
         <RxCross1 />
       </button>
@@ -432,7 +446,12 @@ const TaskFormModalSelectType = ({ title, description, handleClick }) => {
   );
 };
 
-const TaskFormModalSelectTime = ({ title, placeholder, handleClick }) => {
+const TaskFormModalSelectTime = ({
+  title,
+  placeholder,
+  handleClick,
+  tabIndexValue,
+}) => {
   const handleNextStep = (e) => {
     e.preventDefault();
     handleClick();
@@ -442,6 +461,7 @@ const TaskFormModalSelectTime = ({ title, placeholder, handleClick }) => {
     <button
       className="w-full max-h-[88px] bg-dark-400 rounded-lg px-5 py-3 text-left flex justify-between items-center gap-1"
       onClick={handleNextStep}
+      tabIndex={tabIndexValue}
     >
       <p className="font-semibold">{title}</p>
       <p className="text-sm text-dark-100">{placeholder}</p>
@@ -449,7 +469,13 @@ const TaskFormModalSelectTime = ({ title, placeholder, handleClick }) => {
   );
 };
 
-const TaskFormModalInput = ({ placeholder, onChange, value, required }) => {
+const TaskFormModalInput = ({
+  placeholder,
+  onChange,
+  value,
+  required,
+  tabIndexValue,
+}) => {
   return (
     <input
       type="text"
@@ -458,6 +484,7 @@ const TaskFormModalInput = ({ placeholder, onChange, value, required }) => {
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
       required={required}
+      tabIndex={tabIndexValue}
     />
   );
 };
