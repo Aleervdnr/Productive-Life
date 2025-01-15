@@ -15,6 +15,13 @@ export const UiProvider = ({ children }) => {
   const [taskFormActive, setTaskFormActive] = useState(false);
   const [overlayIsClicked, setOverlayIsClicked] = useState(false);
 
+  const scrollbarStyles = {
+    overflowY: "auto",
+    overflowX: 'hidden',
+    scrollbarWidth: "thin", // Firefox
+    scrollbarColor: "#6b7280 transparent", // Firefox
+  };
+
   return (
     <UiContext.Provider
       value={{
@@ -24,6 +31,7 @@ export const UiProvider = ({ children }) => {
         setTaskFormActive,
         overlayIsClicked,
         setOverlayIsClicked,
+        scrollbarStyles
       }}
     >
       {children}

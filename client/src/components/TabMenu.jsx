@@ -1,10 +1,12 @@
 import { getISODay } from "date-fns";
 import useWindowSize from "../hooks/useWindowSize.jsx";
 import { useTasks } from "../context/TasksContext.jsx";
+import { useUi } from "../context/UiContext.jsx";
 
 export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
   const { tasksIsLoading } = useTasks();
   const { width } = useWindowSize();
+  const {scrollbarStyles} = useUi()
   return (
     <div className="h-screen font-medium flex justify-between gap-2 lg:h-[calc(100%-56px)] lg:relative ">
       {items.map((item, i) => (
@@ -22,6 +24,7 @@ export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
             className={`w-[calc(100vw-40px)] h-[calc(100vh-143px)] absolute top-[38px] left-5 bg-dark-400 rounded lg:w-full px-2 py-2 ${
               tabActive.name !== item.name && `max-lg:hidden`
             } lg:static lg:h-full lg:p-0 lg:bg-transparent lg:overflow-auto`}
+            style={scrollbarStyles}
           >
             {tasksIsLoading ? (
               <>
@@ -45,7 +48,9 @@ export function TabMenu({ items, tabActive, handleChangeTab, weeklyTasks }) {
 
 export function TabMenuItem({ task }) {
   return (
-    <div className="mt-2 flex gap-1 items-center justify-between relative">
+    <div
+      className="mt-2 flex gap-1 items-center justify-between relative"
+    >
       <span className="font-extralight text-dark-100 lg:hidden">
         {task.startTime.slice(0, -3)}
       </span>

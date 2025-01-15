@@ -8,9 +8,9 @@ import { format } from "date-fns";
 import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
 import { useTasks } from "../../context/TasksContext";
+import ItemRecurringDays from "../ItemRecurringDays";
 
 export default function TaskFormModal() {
-
   //Contexts
   const {
     taskFormActive,
@@ -19,13 +19,24 @@ export default function TaskFormModal() {
     overlayIsClicked,
   } = useUi();
 
-  const {createTask} = useTasks()
+  const { createTask } = useTasks();
 
+  //consts
   const sizesCarousel = {
     size1: "166px",
     size2: "276px",
     size3: "auto",
   };
+
+  const recurringDaysArray = [
+    { name: "Lunes", isoDay: "1" },
+    { name: "Martes", isoDay: "2" },
+    { name: "Miercoles", isoDay: "3" },
+    { name: "Jueves", isoDay: "4" },
+    { name: "Viernes", isoDay: "5" },
+    { name: "Sabado", isoDay: "6" },
+    { name: "Domingo", isoDay: "0" },
+  ];
 
   //Reducer
   const initialState = {
@@ -51,7 +62,10 @@ export default function TaskFormModal() {
       case "SET_STEP_3_IS":
         return { ...state, step3Is: action.payload };
       case "SET_CAROUSEL_SIZE":
-        return { ...state, sizeCarousel: action.payload };
+        return {
+          ...state,
+          sizeCarousel: action.payload,
+        };
       case "UPDATE_TASK":
         return { ...state, task: { ...state.task, ...action.payload } };
       case "RESET":
@@ -82,17 +96,18 @@ export default function TaskFormModal() {
     dispatch({ type: "SET_STEP", payload: 2 });
   };
 
-
   const onSubmit = () => {
     const { title, taskDate, startTime, endTime } = state.task;
-  
+
     if (!title) return alert("El título es obligatorio");
     if (!taskDate) return alert("La fecha es obligatoria");
+    if (!startTime) return alert("La hora de inicio es obligatoria");
+    if (!endTime) return alert("La Hora de Fin es obligatoria");
     if (startTime >= endTime)
       return alert("La hora de inicio debe ser anterior a la de finalización");
-  
-    createTask(state.task)
-    handleCloseMenu()
+
+    createTask(state.task);
+    handleCloseMenu();
   };
 
   // Day Picker
@@ -164,23 +179,51 @@ export default function TaskFormModal() {
 
   useEffect(() => {
     if (state.step == 1)
-      dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size1 });
+      dispatch({
+        type: "SET_CAROUSEL_SIZE",
+        payload: sizesCarousel.size1,
+      });
     if (state.step == 2) {
       setTimeout(() => {
-        dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size2 });
+        dispatch({
+          type: "SET_CAROUSEL_SIZE",
+          payload: sizesCarousel.size2,
+        });
       }, 100);
     }
-    if (state.step == 3 && state.step3Is == "Fecha") {
+    if (
+      state.step == 3 &&
+      state.step3Is == "Fecha" &&
+      state.task.taskDate == ""
+    ) {
       setTimeout(() => {
         state.task.isRecurring == false
           ? setSelected(defaultSelectedSingle)
           : setSelected(defaultSelectedRange);
-        dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size3 });
+        dispatch({
+          type: "SET_CAROUSEL_SIZE",
+          payload: sizesCarousel.size3,
+        });
+      }, 100);
+    }
+    if (
+      state.step == 3 &&
+      state.step3Is == "Fecha" &&
+      state.task.taskDate != ""
+    ) {
+      setTimeout(() => {
+        dispatch({
+          type: "SET_CAROUSEL_SIZE",
+          payload: sizesCarousel.size3,
+        });
       }, 100);
     }
     if (state.step == 3 && state.step3Is == "Hora") {
       setTimeout(() => {
-        dispatch({ type: "SET_CAROUSEL_SIZE", payload: sizesCarousel.size3 });
+        dispatch({
+          type: "SET_CAROUSEL_SIZE",
+          payload: sizesCarousel.size3,
+        });
       }, 100);
     }
   }, [state.step]);
@@ -199,7 +242,7 @@ export default function TaskFormModal() {
 
   return (
     <div
-      className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-dvw max-w-[550px] h-auto bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
+      className={`absolute bottom-0 left-1/2 -translate-x-1/2  w-dvw max-w-[550px] h-auto min-h-0  bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
         taskFormActive ? "translate-y-0" : "translate-y-[100%]"
       } transition-transform duration-500 overflow-hidden`}
     >
@@ -249,6 +292,7 @@ export default function TaskFormModal() {
             onChange={(value) =>
               dispatch({ type: "UPDATE_TASK", payload: { title: value } })
             }
+            required={true}
           />
           <TaskFormModalInput
             placeholder={"Descripción"}
@@ -299,14 +343,43 @@ export default function TaskFormModal() {
         </div>
         <div className="h-full w-full px-5 grid gap-4">
           {state.step3Is == "Fecha" ? (
-            <DayPicker
-              mode={state.task.isRecurring == false ? "single" : "range"}
-              selected={selected}
-              onSelect={setSelected}
-              disabled={{ before: new Date() }}
-              footer={footer}
-              locale={es}
-            />
+            <>
+              <DayPicker
+                mode={state.task.isRecurring == false ? "single" : "range"}
+                selected={selected}
+                onSelect={setSelected}
+                disabled={{ before: new Date() }}
+                footer={footer}
+                locale={es}
+              />
+              <div
+                className={`grid gap-1 ${
+                  state.task.isRecurring == false ? "hidden" : ""
+                }`}
+              >
+                <label className="text-sm">Repetir todos los</label>
+                <div className="flex gap-1 max-[425px]:max-w-[385px]">
+                  {recurringDaysArray.map((item) => (
+                    <ItemRecurringDays
+                      key={item.isoDay}
+                      name={item.name}
+                      isoDay={item.isoDay}
+                      isActive={state.task.recurringDays.includes(item.isoDay)}
+                      handleToggle={(value) => {
+                        const currentDays = state.task.recurringDays;
+                        const updatedDays = currentDays.includes(value)
+                          ? currentDays.filter((day) => day !== value)
+                          : [...currentDays, value];
+                        dispatch({
+                          type: "UPDATE_TASK",
+                          payload: { recurringDays: updatedDays },
+                        });
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </>
           ) : (
             <>
               <TimeInput
@@ -376,7 +449,7 @@ const TaskFormModalSelectTime = ({ title, placeholder, handleClick }) => {
   );
 };
 
-const TaskFormModalInput = ({ placeholder, onChange, value }) => {
+const TaskFormModalInput = ({ placeholder, onChange, value, required }) => {
   return (
     <input
       type="text"
@@ -384,6 +457,7 @@ const TaskFormModalInput = ({ placeholder, onChange, value }) => {
       placeholder={placeholder}
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
+      required={required}
     />
   );
 };
