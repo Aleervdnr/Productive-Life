@@ -10,6 +10,11 @@ import { useAuth } from "../context/AuthContext";
 export default function VerifyEmailToken() {
   const navigate = useNavigate();
   const [status, setStatus] = useState(0);
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) navigate("/");
+  }, [loading]);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -64,7 +69,7 @@ const VerifyEmail401Error = () => {
 
   const handleResend = async (values) => {
     if (timer === 0) {
-      reSendEmailVerification(values,setTimer);
+      reSendEmailVerification(values, setTimer);
     }
   };
   return (
