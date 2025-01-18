@@ -30,7 +30,9 @@ export default function WeekTasks() {
 
   const { width } = useWindowSize();
 
-  function getMotivationalMessage() {
+  const [motivationalMessage, setMotivationalMessage] = useState("");
+
+  useEffect(() => {
     const messages = [
       "¡Hoy está en blanco! 🎨 ¿Qué te gustaría lograr hoy? Agrega una tarea y comienza a avanzar.",
       "¡Es un buen día para empezar algo nuevo! 🌱 Añade una tarea y alcanza tus metas.",
@@ -45,9 +47,9 @@ export default function WeekTasks() {
     // Generar un índice aleatorio
     const randomIndex = Math.floor(Math.random() * messages.length);
 
-    // Retornar el mensaje seleccionado
-    return messages[randomIndex];
-  }
+    // Guardar el mensaje aleatorio en el estado
+    setMotivationalMessage(messages[randomIndex]);
+  }, []); // Solo se ejecuta una vez al montar el componente
 
   // Filtrar tareas de la semana actual
   const filterWeeklyTasks = () => {
@@ -169,7 +171,7 @@ export default function WeekTasks() {
             <ItemTodayTask task={task} key={task._id} />
           ))
         ) : (
-          <p className="text-sm text-center">{getMotivationalMessage()}</p>
+          <p className="text-sm text-center">{motivationalMessage}</p>
         )}
       </div>
     </div>
