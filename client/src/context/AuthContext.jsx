@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkLogin = async () => {
       const session = { token: localStorage.getItem("token") };
-      console.log(session);
+
       if (!session.token) {
         setIsAuthenticated(false);
         setLoading(false);
@@ -38,10 +38,11 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await verifyTokenRequest(session.token);
         if (!res.data) return setIsAuthenticated(false);
-        console.log(res.data);
         setIsAuthenticated(true);
         setUser(res.data);
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       } catch (error) {
         setIsAuthenticated(false);
         setLoading(false);
@@ -72,6 +73,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", res.data.token);
       setUser(res.data);
       setIsAuthenticated(true);
+      setLoading(true)
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     } catch (error) {
       error.response.data.map((error) =>
         toast.error(error, {

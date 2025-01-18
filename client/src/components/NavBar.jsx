@@ -15,7 +15,7 @@ import { FaArrowRightFromBracket } from "react-icons/fa6";
 
 function NavBar({ activeItem }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout, user, loading } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -32,6 +32,8 @@ function NavBar({ activeItem }) {
     <div
       className={`p-5 lg:p-0 lg:w-[220px] row-start-1 ${
         !isAuthenticated && `hidden`
+      } ${
+        loading && `hidden`
       }`}
     >
       <BurgerMenu setMenu={handleMenuOpenClose} />
