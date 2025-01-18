@@ -243,7 +243,7 @@ export default function TaskFormModal() {
 
   return (
     <div
-      className={`absolute bottom-0 left-1/2 -translate-x-1/2  w-dvw max-w-[550px] h-auto min-h-0  bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
+      className={`absolute bottom-0 left-1/2 -translate-x-1/2  w-dvw max-w-[550px] lg:max-w-[650px] h-auto min-h-0  bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
         taskFormActive ? "translate-y-0" : "translate-y-[100%]"
       } transition-transform duration-500 overflow-hidden`}
     >
@@ -260,7 +260,7 @@ export default function TaskFormModal() {
         style={{ height: `${state.sizeCarousel}` }}
       >
         <div
-          className={`grid gap-[10px] px-5`}
+          className={`grid gap-[10px] px-5 lg:px-10`}
           style={{ maxHeight: `${sizesCarousel.size1}` }}
         >
           <TaskFormModalSelectType
@@ -284,7 +284,7 @@ export default function TaskFormModal() {
           />
         </div>
         <div
-          className={`h-full w-full px-5 flex flex-col gap-[10px]`}
+          className={`h-full w-full px-5 lg:px-10 flex flex-col gap-[10px]`}
           style={{ maxHeight: `${sizesCarousel.size2}` }}
         >
           <TaskFormModalInput
@@ -352,23 +352,23 @@ export default function TaskFormModal() {
             Crear Tarea
           </button>
         </div>
-        <div className="h-full w-full px-5 grid gap-4">
+        <div className="h-full w-full px-5 lg:px-10  grid gap-4">
           {state.step3Is == "Fecha" && (
             <>
               <DayPicker
                 mode={state.task.isRecurring == false ? "single" : "range"}
                 selected={selected}
                 onSelect={setSelected}
-                disabled={{ before: new Date() }}
+                disabled={{ before: new Date("2025-01-13") }}
                 footer={footer}
                 locale={es}
               />
               <div
-                className={`grid gap-1 ${
+                className={`grid gap-1 justify-items-center ${
                   state.task.isRecurring == false ? "hidden" : ""
                 }`}
               >
-                <label className="text-sm">Repetir todos los</label>
+                <label className=" font-semibold">Repetir todos los</label>
                 <div className="flex gap-1 max-[425px]:max-w-[385px]">
                   {recurringDaysArray.map((item) => (
                     <ItemRecurringDays

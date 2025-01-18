@@ -10,9 +10,13 @@ import Joyride, { ACTIONS, EVENTS, ORIGIN, STATUS } from "react-joyride";
 import Logo from "../assets/Logo.png";
 import { useAuth } from "../context/AuthContext.jsx";
 import useWindowSize from "../hooks/useWindowSize.jsx";
+import { useDate } from "../context/DateContext.jsx";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks } = useTasks();
+  const { nowDateTime } = useDate();
   const { completeTour, user } = useAuth();
 
   const { width } = useWindowSize();
@@ -251,7 +255,11 @@ export default function TasksPage({ setActiveItem }) {
         }}
         continuous
       />
-      <div className="font-medium flex gap-2 px-5 mb-3 lg:hidden">
+      <div className="grid mb-3 px-5 lg:hidden">
+        <span className="text-2xl">Hola, {user.name.split(" ")[0]}! </span>
+        <span className="text-xs text-dark-100">{format(nowDateTime, "d 'de' MMMM yyyy", { locale: es })}</span>
+      </div>
+      <div className="font-medium flex gap-2 px-5 lg:hidden">
         <div
           className={`px-[5px] py-[3px] rounded ${
             tabActive == "hoy" && `bg-dark-400`
