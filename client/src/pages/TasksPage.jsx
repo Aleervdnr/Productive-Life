@@ -256,7 +256,7 @@ export default function TasksPage({ setActiveItem }) {
         continuous
       />
       <div className="grid mb-3 px-5 lg:hidden">
-        <span className="text-2xl">Hola, {user.name.split(" ")[0]}! </span>
+        <span className="text-2xl capitalize">Hola, {user.name.split(" ")[0]}! </span>
         <span className="text-xs text-dark-100">{format(nowDateTime, "d 'de' MMMM yyyy", { locale: es })}</span>
       </div>
       <div className="font-medium flex gap-2 px-5 lg:hidden">
