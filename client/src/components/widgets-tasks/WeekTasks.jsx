@@ -13,6 +13,7 @@ import {
 import TaskFormButton from "../taskForm/TaskFormButton";
 import useWindowSize from "../../hooks/useWindowSize";
 import ItemTodayTask from "./ItemTodayTask";
+import { AnimatedCounter } from "../AnimatedCounter";
 
 export default function WeekTasks() {
   const [tabActive, setTabActive] = useState({ name: "Lunes", isoDay: 1 });
@@ -134,9 +135,9 @@ export default function WeekTasks() {
   return (
     <div
       id={width >= 1024 ? "step-3" : null}
-      className="w-[100vw] h-[calc(100vh-97px)] max-lg:relative px-5 max-lg:py-3 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full lg:h-full lg:pb-3"
+      className="w-[100vw] h-[calc(100vh-145px)]  max-lg:relative max-lg:grid max-lg:grid-rows-[55px,38vh,33px,136px] px-5 max-lg:py-3 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full lg:h-full lg:pb-3"
     >
-      <div className="lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center lg:py-1">
+      <div className="max-lg:hidden lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center lg:py-1">
         <h2 className="text-center hidden lg:block font-medium text-2xl my-2 lg:col-start-2">
           Mi Semana
         </h2>
@@ -158,7 +159,7 @@ export default function WeekTasks() {
                   ? "flex flex-col gap-2"
                   : " w-full h-[calc(100%-32px)] grid place-content-center"
               }`
-        } mt-3`}
+        } mt-3 overflow-auto`}
       >
         {tasksIsLoading ? (
           <>
@@ -174,6 +175,47 @@ export default function WeekTasks() {
           <p className="text-sm text-center">{motivationalMessage}</p>
         )}
       </div>
+            <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
+            <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
+              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+                <span className="text-xs">Tareas Completadas</span>
+                <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+                  {weeklyTasks.filter((task) => task.status == "completed").length}{" "}
+                  <span className="lg:text-sm xl:text-lg">de</span>{" "}
+                  {weeklyTasks.length}
+                </span>
+              </div>
+              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+                <span className="text-xs">Tareas Para Hacer</span>
+                <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+                  {weeklyTasks.filter((task) => task.status == "pending").length}{" "}
+                  <span className="lg:text-sm xl:text-lg">de</span>{" "}
+                  {weeklyTasks.length}
+                </span>
+              </div>
+              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+                <span className="text-xs">Tareas Atrasadas</span>
+                <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+                  {weeklyTasks.filter((task) => task.status == "overdue").length}{" "}
+                  <span className="lg:text-sm xl:text-lg">de</span>{" "}
+                  {weeklyTasks.length}
+                </span>
+              </div>
+              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+                <span className="text-xs">Progreso Semanal</span>
+                <AnimatedCounter
+                  value={
+                    weeklyTasks.length > 0
+                      ? (weeklyTasks.filter((task) => task.status === "completed")
+                          .length /
+                          weeklyTasks.length) *
+                        100
+                      : 0
+                  }
+                  duration={200}
+                />
+              </div>
+            </div>
     </div>
   );
 }

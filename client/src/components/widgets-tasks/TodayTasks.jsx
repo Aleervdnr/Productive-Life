@@ -2,9 +2,9 @@ import { useTasks } from "../../context/TasksContext";
 import ItemTodayTask from "./ItemTodayTask";
 import { todayDate } from "../../libs/Dates.js";
 import { useEffect, useState } from "react";
-import ItemTaskSkeleton from "../skeletons/ItemTaskSkeleton.jsx";
 import useWindowSize from "../../hooks/useWindowSize.jsx";
 import { useUi } from "../../context/UiContext.jsx";
+import { AnimatedCounter } from "../AnimatedCounter.jsx";
 
 export default function TodayTasks() {
   const { tasks, tasksIsLoading } = useTasks();
@@ -41,12 +41,12 @@ export default function TodayTasks() {
       return timeA - timeB; // Orden ascendente
     });
 
-  const {scrollbarStyles} = useUi()
+  const { scrollbarStyles } = useUi();
 
   return (
     <div
       id={width >= 1024 ? "step-0" : null}
-      className={`max-lg:w-[100vw] max-lg:h-fit px-5 py-3 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll`}
+      className={`max-lg:w-[100vw] max-lg:h-[calc(100vh-145px)] max-lg:grid max-lg:grid-rows-[25px,40vh,33px,136px] px-5 py-3 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll`}
       style={scrollbarStyles}
     >
       <span className="text-lg font-semibold">Tareas del dia</span>
@@ -59,7 +59,7 @@ export default function TodayTasks() {
                   ? "flex flex-col gap-2"
                   : " w-full h-fit py-8 grid place-content-center"
               }`
-        } mt-2`}
+        } mt-2 overflow-auto`}
       >
         {tasksIsLoading ? (
           <>
@@ -74,6 +74,47 @@ export default function TodayTasks() {
         ) : (
           <p className="text-sm text-center">{motivationalMessage}</p>
         )}
+      </div>
+      <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
+      <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Tareas Completadas</span>
+          <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+            {filteredTasks.filter((task) => task.status == "completed").length}{" "}
+            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            {filteredTasks.length}
+          </span>
+        </div>
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Tareas Para Hacer</span>
+          <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+            {filteredTasks.filter((task) => task.status == "pending").length}{" "}
+            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            {filteredTasks.length}
+          </span>
+        </div>
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Tareas Atrasadas</span>
+          <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+            {filteredTasks.filter((task) => task.status == "overdue").length}{" "}
+            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            {filteredTasks.length}
+          </span>
+        </div>
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Progreso Diario</span>
+          <AnimatedCounter
+            value={
+              filteredTasks.length > 0
+                ? (filteredTasks.filter((task) => task.status === "completed")
+                    .length /
+                    filteredTasks.length) *
+                  100
+                : 0
+            }
+            duration={200}
+          />
+        </div>
       </div>
     </div>
   );
