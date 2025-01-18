@@ -1,20 +1,31 @@
 import useWindowSize from "../hooks/useWindowSize";
 
-export default function ItemRecurringDays({ name, isoDay, isActive, handleToggle }) {
+export default function ItemRecurringDays({
+  name,
+  isoDay,
+  isActive,
+  handleToggle,
+}) {
   const { width } = useWindowSize();
 
   const handleClick = () => {
-    handleToggle(isoDay)
-  }
-  
+    handleToggle(isoDay);
+  };
+
   return (
     <div
       className={`border px-[8px] rounded-full  transition-colors text-sm cursor-pointer ${
-        isActive ? `bg-violet-main text-white` : ` text-dark-100 border-violet-main`
+        isActive
+          ? `bg-violet-main text-white`
+          : ` text-dark-100 border-violet-main`
       }`}
       onClick={handleClick}
     >
-      {width <= 375 ? name.charAt(0) : name.slice(0, 3)}
+      {width <= 375
+        ? name.charAt(0)
+        : width < 1024
+        ? name.slice(0, 3)
+        : name.slice()}{" "}
     </div>
   );
 }
