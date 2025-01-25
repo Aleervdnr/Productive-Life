@@ -7,6 +7,7 @@ import { TasksProvider } from "./context/TasksContext.jsx";
 import { DateProvider } from "./context/DateContext.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { UiProvider } from "./context/UiContext.jsx";
+import { ExpensesProvider } from "./context/ExpensesContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -14,9 +15,11 @@ createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <DateProvider>
           <TasksProvider>
-            <UiProvider>
-              <App />
-            </UiProvider>
+            <ExpensesProvider>
+              <UiProvider>
+                <App />
+              </UiProvider>
+            </ExpensesProvider>
           </TasksProvider>
         </DateProvider>
       </AuthProvider>

@@ -7,11 +7,11 @@ import { useEffect, useState } from "react";
 import TasksPage from "./pages/TasksPage";
 import { Toaster } from "sonner";
 import "./App.css";
-import GastosPage from "./pages/GastosPage";
 import VerifyEmailToken from "./pages/VerifyEmail";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { initializeAnalytics, trackPageView } from "./libs/analytics";
 import { useUi } from "./context/UiContext";
+import ExpensesPage from "./pages/ExpensesPage";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
@@ -68,8 +68,8 @@ function App() {
             element={<TasksPage setActiveItem={setActiveItem} />}
           />
           <Route
-            path="/gastos"
-            element={<GastosPage setActiveItem={setActiveItem} />}
+            path="/expenses"
+            element={<ExpensesPage setActiveItem={setActiveItem} />}
           />
           {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
         </Route>

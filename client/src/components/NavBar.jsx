@@ -63,7 +63,7 @@ function NavBar({ activeItem }) {
               <FaTasks className="text-[18px]" />
               <span>Tareas</span>
             </ItemNavBar>
-            <ItemNavBar name={"gastos"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
+            <ItemNavBar name={"expenses"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaWallet className="text-[18px]" />
               <span>Gastos</span>
             </ItemNavBar>
