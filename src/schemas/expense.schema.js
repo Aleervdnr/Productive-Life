@@ -20,19 +20,13 @@ export const expenseSchema = z.object({
     })
     .min(0, "El monto debe ser mayor o igual a 0"),
 
-  date: z
-    .string({
-      required_error: "La fecha es obligatoria",
-    })
-    .refine((value) => !isNaN(Date.parse(value)), {
-      message: "La fecha debe tener un formato válido",
-    }),
+  date: z.string().date({ message: "fecha invalida" }),
 
   category: z.string({
     required_error: "La categoria es obligatoria",
   }),
 
-  type: z.enum(["Expense", "Income"], {
+  type: z.enum(["Expense","Fixed Expense", "Income"], {
     required_error: "El tipo es obligatorio",
   }),
 });

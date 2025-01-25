@@ -3,9 +3,9 @@ import Expense from '../models/expense.model.js';
 // Crear un gasto
 export const createExpense = async (req, res) => {
   try {
-    const { title, description, amount, date, category, type, user } = req.body;
+    const { title, description, amount, date, category, type} = req.body;
 
-    const expense = new Expense({ title, description, amount, date, category, type, user });
+    const expense = new Expense({ title, description, amount, date, category, type, user: req.user.id });
     await expense.save();
 
     res.status(201).json(expense);
@@ -17,7 +17,7 @@ export const createExpense = async (req, res) => {
 // Obtener todos los gastos
 export const getExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find({ user: req.user.id }).sort({ date: -1 });
+    const expenses = await Expense.find({ user: req.user.id }).populate("user");
     res.status(200).json(expenses);
   } catch (error) {
     res.status(500).json({ message: 'Error obteniendo los gastos', error });
