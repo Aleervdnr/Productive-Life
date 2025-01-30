@@ -8,9 +8,7 @@
     font-family: "Poppins", sans-serif;
   }
 }
-html {
-  min-width: 100vw;
-}
+
 body {
   background-color: #232429;
   color: white;

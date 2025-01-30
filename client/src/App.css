@@ -1,0 +1,50 @@
+.start-day {
+  background-color: #6c5ce7;
+  color: white;
+  border-radius: 50%;
+}
+
+.end-day {
+  background-color: #00cec9;
+  color: white;
+  border-radius: 50%;
+}
+
+.between-days {
+  background-color: #dfe6e9;
+  color: black;
+}
+
+.card-3d {
+  transform: perspective(1000px) rotateX(4deg) rotateY(-16deg) rotateZ(4deg);
+  box-shadow: 24px 16px 64px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+}
+
+.card-1{
+  animation: fadeIn linear;
+  animation-timeline: view();
+}
+
+@keyframes fadeInScale {
+  0%{
+    opacity: 1;
+    scale: 0.2;
+  }
+  
+  100%{
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes fadeIn {
+  0%{
+    opacity: 0;
+    transform: translateX(1000px);
+  }
+  
+  100%{
+    opacity: 1;
+    transform: translateX(24px);
+  }
+}
