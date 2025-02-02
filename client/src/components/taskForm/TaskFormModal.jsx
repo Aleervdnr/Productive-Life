@@ -4,7 +4,7 @@ import { useUi } from "../../context/UiContext";
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
-import { format } from "date-fns";
+import { format, isAfter, isBefore, lastDayOfMonth } from "date-fns";
 import { es as esDateFns } from "date-fns/locale";
 import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
@@ -116,12 +116,51 @@ export default function TaskFormModal() {
 
   const defaultSelectedSingle = pastMonth;
 
-  const defaultSelectedRange = {
-    from: pastMonth,
-    to: pastMonth,
+  const defaultSelectedRange = [];
+
+  const [selected, setSelected] = useState([new Date()]);
+
+  const handleSelected = (value) => {
+    if(value.length > 2){
+      if(isAfter(new Date(value[value.length - 1]), new Date(value[1])) ){
+        const newArray = value
+        newArray.splice(1,0,value[value.length - 1])
+        newArray.splice(value.length - 1,1)
+        setSelected(newArray)
+        //console.log(value.splice(1,0,value[value.length - 1]))
+      }else if(isBefore(new Date(value[value.length - 1]), new Date(value[0]))) {
+        const newArray = value
+        newArray.splice(0,0,value[value.length - 1])
+        newArray.splice(value.length - 1,1)
+        newArray.splice(3,0,value[1])
+        newArray.splice(1,1)
+        setSelected(newArray)
+      }else{
+        setSelected(value)
+      }
+    }else{
+      setSelected(value)
+    }
+    //console.log(value)
+  }
+
+  const modifiers = {
+    start: selected.length > 0 ? selected[0] : undefined,
+    end: selected.length > 1 ? selected[1] : undefined,
+    between:
+      selected.length > 1
+        ? {
+            from: selected[0],
+            to: selected[1],
+          }
+        : undefined,
   };
 
-  const [selected, setSelected] = useState();
+  const modifiersClassNames = {
+    start: "start-day",
+    end: "end-day",
+    between: "between-days",
+  };
 
   let footer = (
     <p className="text-xs md:text-sm text-center mt-2">
@@ -139,7 +178,7 @@ export default function TaskFormModal() {
     );
   } else if (state.task.isRecurring && selected) {
     if (!selected.to) {
-      footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
+      //footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
     } else if (selected.to) {
       footer = (
         <p className="text-xs md:text-sm text-center mt-2">
@@ -167,15 +206,15 @@ export default function TaskFormModal() {
         },
       });
     }
-    if (selected && state.task.isRecurring) {
-      dispatch({
-        type: "UPDATE_TASK",
-        payload: {
-          taskDate: format(selected.from, "yyyy-MM-dd"),
-          recurringEndDate: format(selected.to, "yyyy-MM-dd"),
-        },
-      });
-    }
+    // if (selected && state.task.isRecurring) {
+    //   dispatch({
+    //     type: "UPDATE_TASK",
+    //     payload: {
+    //       taskDate: format(selected.from, "yyyy-MM-dd"),
+    //       recurringEndDate: format(selected.to, "yyyy-MM-dd"),
+    //     },
+    //   });
+    // }
   }, [selected]);
 
   useEffect(() => {
@@ -306,19 +345,20 @@ export default function TaskFormModal() {
           />
           <TaskFormModalSelectTime
             title={"Fecha"}
-            placeholder={
-              !selected
-                ? "Elegir Fecha"
-                : state.task.isRecurring
-                ? `Del ${format(selected.from, "d 'de' MMMM", {
-                    locale: esDateFns,
-                  })} al ${format(selected.to, "d 'de' MMMM", {
-                    locale: esDateFns,
-                  })}`
-                : format(selected, "d 'de' MMMM", {
-                    locale: esDateFns,
-                  })
-            }
+            placeholder={"Elegir Fecha"}
+            // placeholder={
+            //   !selected
+            //     ? "Elegir Fecha"
+            //     : state.task.isRecurring
+            //     ? `Del ${format(selected.from, "d 'de' MMMM", {
+            //         locale: esDateFns,
+            //       })} al ${format(selected.to, "d 'de' MMMM", {
+            //         locale: esDateFns,
+            //       })}`
+            //     : format(selected, "d 'de' MMMM", {
+            //         locale: esDateFns,
+            //       })
+            // }
             handleClick={() => {
               dispatch({ type: "SET_STEP", payload: 3 });
               dispatch({ type: "SET_STEP_3_IS", payload: "Fecha" });
@@ -356,12 +396,14 @@ export default function TaskFormModal() {
           {state.step3Is == "Fecha" && (
             <>
               <DayPicker
-                mode={state.task.isRecurring == false ? "single" : "range"}
+                mode={state.task.isRecurring == false ? "single" : "multiple"}
                 selected={selected}
-                onSelect={setSelected}
+                onSelect={handleSelected}
                 disabled={{ before: new Date("2025-01-13") }}
                 footer={footer}
                 locale={es}
+                modifiers={state.task.isRecurring ? modifiers : null}
+                modifiersClassNames={state.task.isRecurring ? modifiersClassNames : null}
               />
               <div
                 className={`grid gap-1 justify-items-center ${
