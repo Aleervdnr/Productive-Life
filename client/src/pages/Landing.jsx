@@ -12,6 +12,8 @@ import { useInView } from "framer-motion";
 import InputForm from "../components/InputForm";
 import { useForm } from "react-hook-form";
 import useWindowSize from "../hooks/useWindowSize";
+import { addEmailWaitListRequest } from "../api/waitList";
+import { toast } from "sonner";
 
 export default function Landing() {
   const { width } = useWindowSize();
@@ -32,7 +34,24 @@ export default function Landing() {
     margin: "-5% 0px -5% 0px",
   });
 
-  const { register } = useForm();
+  const { register, handleSubmit } = useForm();
+
+  const addEmailWaitList = async (email) => {
+    try {
+      await addEmailWaitListRequest(email);
+      toast.success("Email agregado a la lista de espera");
+    } catch (error) {
+      error.response.data.map((error) =>
+        toast.error(error, {
+          duration: 3000,
+        })
+      );
+    }
+  };
+
+  const submitEmail = async (value) => {
+    addEmailWaitList(value)
+  };
 
   return (
     <div className="overflow-hidden">
@@ -437,7 +456,10 @@ export default function Landing() {
               ¡Forma parte de los primeros usuarios y obtén beneficios
               exclusivos al lanzar el producto!
             </span>
-            <form className="w-full grid grid-cols-[clamp(250px,50vw,300px)] gap-2 justify-center justify-items-center sm:grid-cols-[clamp(150px,100%,300px),100px] sm:gap-0 lg:grid-cols-1 lg:gap-2 lg:justify-items-end mx-auto">
+            <form
+              className="w-full grid grid-cols-[clamp(250px,50vw,300px)] gap-2 justify-center justify-items-center sm:grid-cols-[clamp(150px,100%,300px),100px] sm:gap-0 lg:grid-cols-1 lg:gap-2 lg:justify-items-end mx-auto"
+              onSubmit={handleSubmit(submitEmail)}
+            >
               <InputForm
                 typeInput={"email"}
                 placeholder={"Ingrese su email"}

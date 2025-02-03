@@ -5,4 +5,4 @@ const waitListEmailSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   });
 
-export default mongoose.model("WaitListEmail", waitListSchema);
+export default mongoose.model("WaitListEmail", waitListEmailSchema);
