@@ -135,7 +135,7 @@ export default function WeekTasks() {
   return (
     <div
       id={width >= 1024 ? "step-3" : null}
-      className="w-[100vw] h-[calc(100vh-145px)]  max-lg:relative max-lg:grid max-lg:grid-rows-[55px,38vh,33px,136px] px-5 max-lg:py-3 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full lg:h-full lg:pb-3"
+      className="w-[100vw] h-[calc(100vh-145px)]  max-lg:relative max-lg:grid max-lg:grid-rows-[55px,38dvh,33px,136px] px-5 max-lg:py-3 lg:row-start-3 lg:col-span-4 lg:bg-dark-400 lg:w-full lg:h-full lg:pb-3"
     >
       <div className="max-lg:hidden lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center lg:py-1">
         <h2 className="text-center hidden lg:block font-medium text-2xl my-2 lg:col-start-2">

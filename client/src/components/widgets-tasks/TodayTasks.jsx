@@ -46,7 +46,7 @@ export default function TodayTasks() {
   return (
     <div
       id={width >= 1024 ? "step-0" : null}
-      className={`max-lg:w-[100vw] max-lg:h-[calc(100vh-145px)] max-lg:grid max-lg:grid-rows-[25px,40vh,33px,136px] px-5 py-3 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll`}
+      className={`max-lg:w-[100vw] max-lg:h-[calc(100vh-145px)] max-lg:grid max-lg:grid-rows-[25px,40dvh,33px,136px] px-5 py-3 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll`}
       style={scrollbarStyles}
     >
       <span className="text-lg font-semibold">Tareas del dia</span>
