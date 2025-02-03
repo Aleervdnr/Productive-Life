@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/logo.png";
+import logo from "../assets/Logo.png";
 import desktopView from "../assets/desktop.png";
 import mobileView from "../assets/mobile.png";
 import mobileTaskSkew from "../assets/mobileTaskSkew.png";
