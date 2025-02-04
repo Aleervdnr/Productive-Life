@@ -52,7 +52,7 @@ function App() {
       <div
         className={`${
           overlayActive ? "opacity-45 z-[1000]" : "opacity-0 z-[-10]"
-        } absolute bottom-0 h-screen w-100vw bg-black transition-opacity duration-500`}
+        } absolute bottom-0 h-screen w-full bg-black transition-opacity duration-500`}
         onClick={handleClickOverlay}
       ></div>
       <Routes>
