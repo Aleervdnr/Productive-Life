@@ -87,7 +87,8 @@ export default function TaskFormModal() {
     setTaskFormActive(false);
     setTimeout(() => {
       dispatch({ type: "RESET" });
-      setSelected();
+      setSelectedMultiple(defaultSelectedMultiple)
+      setSelectedSingle(defaultSelectedSingle)
       dispatch({ type: "SET_STEP", payload: 1 });
     }, 600);
   };
@@ -116,45 +117,37 @@ export default function TaskFormModal() {
 
   const defaultSelectedSingle = pastMonth;
 
-  const defaultSelectedRange = [];
+  const defaultSelectedMultiple = [new Date(), new Date()];
 
-  const [selected, setSelected] = useState([new Date()]);
+  const [selectedSingle, setSelectedSingle] = useState(new Date());
+  const [selectedMultiple, setSelectedMultiple] = useState([new Date(), new Date()]);
 
   const handleSelected = (value) => {
-    if(value.length > 2){
-      if(isAfter(new Date(value[value.length - 1]), new Date(value[1])) ){
-        const newArray = value
-        newArray.splice(1,0,value[value.length - 1])
-        newArray.splice(value.length - 1,1)
-        setSelected(newArray)
+    if (value.length > 2) {
+      if (isAfter(new Date(value[value.length - 1]), new Date(value[1]))) {
+        const newArray = value;
+        newArray.splice(1, 0, value[value.length - 1]);
+        newArray.splice(value.length - 1, 1);
+        setSelectedMultiple(newArray);
         //console.log(value.splice(1,0,value[value.length - 1]))
-      }else if(isBefore(new Date(value[value.length - 1]), new Date(value[0]))) {
-        const newArray = value
-        newArray.splice(0,0,value[value.length - 1])
-        newArray.splice(value.length - 1,1)
-        newArray.splice(3,0,value[1])
-        newArray.splice(1,1)
-        setSelected(newArray)
-      }else{
-        setSelected(value)
+      } else if (
+        isBefore(new Date(value[value.length - 1]), new Date(value[0]))
+      ) {
+        const newArray = value;
+        newArray.splice(0, 0, value[value.length - 1]);
+        newArray.splice(value.length - 1, 1);
+        newArray.splice(3, 0, value[1]);
+        newArray.splice(1, 1);
+        setSelectedMultiple(newArray);
+      } else {
+        setSelectedMultiple(value);
       }
-    }else{
-      setSelected(value)
+    } else {
+      setSelectedMultiple(value);
     }
     //console.log(value)
-  }
-
-  const modifiers = {
-    start: selected.length > 0 ? selected[0] : undefined,
-    end: selected.length > 1 ? selected[1] : undefined,
-    between:
-      selected.length > 1
-        ? {
-            from: selected[0],
-            to: selected[1],
-          }
-        : undefined,
   };
+
 
   const modifiersClassNames = {
     start: "start-day",
@@ -167,28 +160,28 @@ export default function TaskFormModal() {
       Elige el día para la tarea.
     </p>
   );
-  if (!state.task.isRecurring && selected) {
+  if (!state.task.isRecurring && selectedSingle) {
     footer = (
       <p className="text-xs md:text-sm text-center mt-2">
         Elegiste el{" "}
         <span className="text-violet-main font-medium">
-          {format(selected, "yyyy-MM-dd")}{" "}
+          {format(selectedSingle, "yyyy-MM-dd")}{" "}
         </span>
       </p>
     );
-  } else if (state.task.isRecurring && selected) {
-    if (!selected.to) {
+  } else if (state.task.isRecurring && selectedMultiple) {
+    if (!selectedMultiple.to) {
       //footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
-    } else if (selected.to) {
+    } else if (selectedMultiple.to) {
       footer = (
         <p className="text-xs md:text-sm text-center mt-2">
           <span>Desde el </span>
           <span className="text-violet-main font-medium">
-            {format(selected.from, "yyyy-MM-dd")}{" "}
+            {format(selectedMultiple.from, "yyyy-MM-dd")}{" "}
           </span>
           <span>- Hasta el </span>
           <span className="text-violet-main font-medium">
-            {format(selected.to, "yyyy-MM-dd")}
+            {format(selectedMultiple.to, "yyyy-MM-dd")}
           </span>
         </p>
       );
@@ -197,12 +190,12 @@ export default function TaskFormModal() {
 
   //Effects
   useEffect(() => {
-    if (selected && !state.task.isRecurring) {
+    if (selectedSingle && !state.task.isRecurring) {
       dispatch({
         type: "UPDATE_TASK",
         payload: {
-          taskDate: format(selected, "yyyy-MM-dd"),
-          recurringEndDate: format(selected, "yyyy-MM-dd"),
+          taskDate: format(selectedSingle, "yyyy-MM-dd"),
+          recurringEndDate: format(selectedSingle, "yyyy-MM-dd"),
         },
       });
     }
@@ -215,7 +208,7 @@ export default function TaskFormModal() {
     //     },
     //   });
     // }
-  }, [selected]);
+  }, [selectedSingle]);
 
   useEffect(() => {
     if (state.step == 1)
@@ -238,8 +231,8 @@ export default function TaskFormModal() {
     ) {
       setTimeout(() => {
         state.task.isRecurring == false
-          ? setSelected(defaultSelectedSingle)
-          : setSelected(defaultSelectedRange);
+          ? setSelectedSingle(defaultSelectedSingle)
+          : setSelectedMultiple(defaultSelectedMultiple);
         dispatch({
           type: "SET_CAROUSEL_SIZE",
           payload: sizesCarousel.size3,
@@ -397,13 +390,29 @@ export default function TaskFormModal() {
             <>
               <DayPicker
                 mode={state.task.isRecurring == false ? "single" : "multiple"}
-                selected={selected}
+                selected={!state.task.isRecurring ? selectedSingle : selectedMultiple}
                 onSelect={handleSelected}
                 disabled={{ before: new Date("2025-01-13") }}
                 footer={footer}
                 locale={es}
-                modifiers={state.task.isRecurring ? modifiers : null}
-                modifiersClassNames={state.task.isRecurring ? modifiersClassNames : null}
+                modifiers={
+                  state.task.isRecurring
+                    ? {
+                        start: selectedMultiple.length > 0 ? selectedMultiple[0] : undefined,
+                        end: selectedMultiple.length > 1 ? selectedMultiple[1] : undefined,
+                        between:
+                          selectedMultiple.length > 1
+                            ? {
+                                from: selectedMultiple[0],
+                                to: selectedMultiple[1],
+                              }
+                            : undefined,
+                      }
+                    : null
+                }
+                modifiersClassNames={
+                  state.task.isRecurring ? modifiersClassNames : null
+                }
               />
               <div
                 className={`grid gap-1 justify-items-center ${
