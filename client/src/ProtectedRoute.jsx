@@ -6,7 +6,7 @@ export const ProtectedRoute = () => {
 
   if (loading)
     return (
-      <div className="h-dvh w-full grid place-content-center justify-items-center">
+      <div className="h-dvh w-full grid place-content-center justify-items-center lg:col-span-2">
         <h1 className="text-2xl font-semibold">
           Productive<span className="text-violet-main">Life</span>
         </h1>

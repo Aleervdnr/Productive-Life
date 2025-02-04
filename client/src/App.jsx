@@ -56,7 +56,7 @@ function App() {
         onClick={handleClickOverlay}
       ></div>
       <Routes>
-        <Route path="/" element={<Landing/>} />
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<LoginRegisterpage />} />
         <Route path="/verify-email-token" element={<VerifyEmailToken />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
@@ -77,7 +77,8 @@ function App() {
         </Route>
       </Routes>
       <Toaster theme="dark" richColors expand={true} />
-      {/* <NavBar activeItem={activeItem} /> */}
+
+      <NavBar activeItem={activeItem} />
     </main>
   );
 }

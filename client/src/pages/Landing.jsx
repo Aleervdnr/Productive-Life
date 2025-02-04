@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/Logo.png";
 import desktopView from "../assets/desktop.png";
 import mobileView from "../assets/mobile.png";
@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 import useWindowSize from "../hooks/useWindowSize";
 import { addEmailWaitListRequest } from "../api/waitList";
 import { toast } from "sonner";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Landing() {
   const { width } = useWindowSize();
@@ -52,6 +54,14 @@ export default function Landing() {
   const submitEmail = async (value) => {
     addEmailWaitList(value)
   };
+
+  const {isAuthenticated} = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(isAuthenticated) navigate("/tasks")
+  }, [isAuthenticated])
+  
 
   return (
     <div className="overflow-hidden">
