@@ -1,0 +1,70 @@
+{
+    "es": {
+      "heroSection": {
+        "title": "Organiza tu Vida, Alcanzando tu Máximo Potencial",
+        "subtitle": "Productive Life es la plataforma de gestión personal diseñada para ayudarte a optimizar tu día a día. Gestiona tus tareas, hábitos, gastos y proyectos en un solo lugar.",
+        "button": "Únete a la Lista de Espera"
+      },
+      "featuresSection": {
+        "title": "Todo lo que Necesitas para Organizar tu Vida",
+        "description": "Con Productive Life tendrás acceso a herramientas que te ayudarán a mantener el control de tus días. Desde tareas pendientes hasta objetivos a largo plazo, todo está a tu alcance.",
+        "featuresList": {
+          "taskManagement": "✅ Gestión de Tareas: Organiza tus pendientes con fechas, horarios y recordatorios.",
+          "habitTracking": "📊 Seguimiento de Hábitos: Establece hábitos saludables y monitorea tu progreso.",
+          "expenseControl": "💰 Control de Gastos: Registra tus finanzas y analiza tus gastos de forma inteligente.",
+          "projectPlanning": "🎯 Planificación de Proyectos: Divide tus metas en pasos accionables.",
+          "calendarIntegration": "📅 Calendario Integrado: Visualiza y planea tu semana o mes de forma sencilla."
+        }
+      },
+      "benefitsSection": {
+        "title": "Transforma tu Productividad en Resultados Reales",
+        "text": "Productive Life no es solo una herramienta, es tu compañero para alcanzar metas. Ya sea que quieras maximizar tu tiempo, establecer hábitos consistentes o mantener tus finanzas en orden, nuestra plataforma te da todo lo necesario para triunfar.",
+        "benefits": {
+          "dailyOptimization": "📅 Optimización diaria: Dedica tiempo a lo que realmente importa.",
+          "clearStatistics": "📈 Estadísticas claras: Visualiza tu progreso con reportes semanales.",
+          "timeSaving": "⏳ Ahorro de tiempo: Reduce el estrés con una planificación eficiente."
+        }
+      },
+      "whitelistForm": {
+        "title": "Sé el Primero en Probar Productive Life",
+        "subtitle": "Estamos a punto de lanzar nuestra versión inicial. Únete a la lista de espera para recibir actualizaciones exclusivas y ser parte del inicio de Productive Life.",
+        "emailPlaceholder": "Escribe tu email...",
+        "button": "¡Únete Ahora!",
+        "additionalMessage": "¡Forma parte de los primeros usuarios y obtén beneficios exclusivos al lanzar el producto!"
+      }
+    },
+    "en": {
+      "heroSection": {
+        "title": "Organize Your Life, Reach Your Full Potential",
+        "subtitle": "Productive Life is the personal management platform designed to help you optimize your day-to-day. Manage your tasks, habits, expenses, and projects all in one place.",
+        "button": "Join the Waiting List"
+      },
+      "featuresSection": {
+        "title": "Everything You Need to Organize Your Life",
+        "description": "With Productive Life, you'll have access to tools that will help you stay in control of your days. From pending tasks to long-term goals, everything is within your reach.",
+        "featuresList": {
+          "taskManagement": "✅ Task Management: Organize your to-dos with dates, times, and reminders.",
+          "habitTracking": "📊 Habit Tracking: Set healthy habits and monitor your progress.",
+          "expenseControl": "💰 Expense Control: Track your finances and analyze your spending intelligently.",
+          "projectPlanning": "🎯 Project Planning: Break down your goals into actionable steps.",
+          "calendarIntegration": "📅 Integrated Calendar: Visualize and plan your week or month easily."
+        }
+      },
+      "benefitsSection": {
+        "title": "Transform Your Productivity into Real Results",
+        "text": "Productive Life is not just a tool; it's your companion for achieving goals. Whether you want to maximize your time, establish consistent habits, or keep your finances in order, our platform gives you everything you need to succeed.",
+        "benefits": {
+          "dailyOptimization": "📅 Daily Optimization: Focus on what truly matters.",
+          "clearStatistics": "📈 Clear Statistics: Track your progress with weekly reports.",
+          "timeSaving": "⏳ Time Saving: Reduce stress with efficient planning."
+        }
+      },
+      "whitelistForm": {
+        "title": "Be the First to Try Productive Life",
+        "subtitle": "We're about to launch our initial version. Join the waiting list to receive exclusive updates and be part of the start of Productive Life.",
+        "emailPlaceholder": "Enter your email...",
+        "button": "Join Now!",
+        "additionalMessage": "Become one of the first users and get exclusive benefits when the product launches!"
+      }
+    }
+  }

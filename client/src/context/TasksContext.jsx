@@ -43,7 +43,7 @@ export function TasksProvider({ children }) {
     try {
       const session = { token: localStorage.getItem("token") };
       const res = await createTaskRequest(task, session.token);
-      setTasks([...tasks, res.data]);
+
       toast.success("Tarea creada con exito");
 
       if (res.data.isRecurring) {
@@ -63,6 +63,8 @@ export function TasksProvider({ children }) {
           })
         );
         setTasks((prevTasks) => [...prevTasks, ...recurrences]);
+      } else {
+        setTasks([...tasks, res.data]);
       }
     } catch (err) {
       toast.error("Ocurrio un error");
@@ -102,9 +104,11 @@ export function TasksProvider({ children }) {
         }
       }
 
-      setTasks([...res.data, ...recurrences]);
-      if(res.status == 200) setTasksIsLoading(false);
-      return res
+      const filteredSingleTasks = res.data.filter((task) => !task.isRecurring);
+
+      setTasks([...filteredSingleTasks, ...recurrences]);
+      if (res.status == 200) setTasksIsLoading(false);
+      return res;
     } catch (error) {
       console.error("Error obteniendo tareas:", error);
     }
@@ -146,8 +150,8 @@ export function TasksProvider({ children }) {
       } else {
         setTasks(
           tasks
-          .map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
-          .filter((taskMap) => taskMap.recurrenceOf != task._id)
+            .map((TaskMap) => (TaskMap._id == task._id ? res.data : TaskMap))
+            .filter((taskMap) => taskMap.recurrenceOf != task._id)
         );
       }
       if (!isStatus & !isRecurrenceDeleted)
@@ -176,7 +180,7 @@ export function TasksProvider({ children }) {
         : item
     );
     set(newArray);
-    return newArray
+    return newArray;
   };
 
   return (

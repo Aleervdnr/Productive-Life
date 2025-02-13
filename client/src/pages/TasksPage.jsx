@@ -237,7 +237,7 @@ export default function TasksPage({ setActiveItem }) {
   };
 
   return (
-    <div className="w-full h-[calc(100dvh-55px)] lg:h-screen overflow-hidden relative col-start-2">
+    <div className="w-full h-[calc(100dvh-55px)] lg:h-screen overflow-hidden relative lg:col-start-2">
       <Joyride
         callback={handleJoyrideCallback}
         steps={width >= 1024 ? stepsDesktop : stepsMobile}

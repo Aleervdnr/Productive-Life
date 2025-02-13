@@ -21,10 +21,8 @@ export const createTask = async (req, res) => {
       recurringDays,
       endTime,
       recurringEndDate,
+      recurrences,
     } = req.body;
-
-    const generatedOcurrences = generateOccurrences(req.body);
-    console.log(generatedOcurrences);
 
     const newTask = new Task({
       title,
@@ -35,7 +33,7 @@ export const createTask = async (req, res) => {
       isRecurring,
       recurringDays,
       recurringEndDate,
-      recurrences: generatedOcurrences,
+      recurrences,
       user: req.user.id,
     });
 
@@ -74,11 +72,8 @@ export const updateTask = async (req, res) => {
       recurrences,
       createdAt,
       updatedAt,
-      user
+      user,
     } = req.body;
-
-    
-    const generatedOcurrences = generateOccurrences(req.body)
 
     const newTask = {
       _id,
@@ -91,13 +86,13 @@ export const updateTask = async (req, res) => {
       isRecurring,
       recurringDays,
       recurringEndDate,
-      recurrences: recurrences? recurrences : generatedOcurrences,
+      recurrences,
       createdAt,
       updatedAt,
-      user
+      user,
     };
-    console.log("body",req.body)
-    console.log("new",newTask)
+    console.log("body", req.body);
+    console.log("new", newTask);
 
     const taskUpdated = await Task.findByIdAndUpdate(req.params.id, newTask, {
       new: true,
