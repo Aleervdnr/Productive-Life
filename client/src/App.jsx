@@ -52,11 +52,11 @@ function App() {
       <div
         className={`${
           overlayActive ? "opacity-45 z-[1000]" : "opacity-0 z-[-10]"
-        } absolute bottom-0 h-screen w-100vw bg-black transition-opacity duration-500`}
+        } absolute bottom-0 h-screen w-full bg-black transition-opacity duration-500`}
         onClick={handleClickOverlay}
       ></div>
       <Routes>
-        <Route path="/" element={<Landing/>} />
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<LoginRegisterpage />} />
         <Route path="/verify-email-token" element={<VerifyEmailToken />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
@@ -77,7 +77,8 @@ function App() {
         </Route>
       </Routes>
       <Toaster theme="dark" richColors expand={true} />
-      {/* <NavBar activeItem={activeItem} /> */}
+
+      <NavBar activeItem={activeItem} />
     </main>
   );
 }

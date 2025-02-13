@@ -281,6 +281,7 @@ export default function ItemTodayTask({ task }) {
       deleteTask(task._id);
     } else {
       console.log("isrecu");
+      console.log(task)
       const parentTask = tasks.find(
         (taskMap) => taskMap._id == task.recurrenceOf
       );

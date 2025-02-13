@@ -4,7 +4,20 @@ import { useUi } from "../../context/UiContext";
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
-import { format, isAfter, isBefore, lastDayOfMonth } from "date-fns";
+import {
+  addDays,
+  differenceInMilliseconds,
+  eachDayOfInterval,
+  eachWeekOfInterval,
+  format,
+  getDay,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isWithinInterval,
+  lastDayOfMonth,
+  isValid,
+} from "date-fns";
 import { es as esDateFns } from "date-fns/locale";
 import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
@@ -87,7 +100,8 @@ export default function TaskFormModal() {
     setTaskFormActive(false);
     setTimeout(() => {
       dispatch({ type: "RESET" });
-      setSelected();
+      setSelectedSingle(defaultSelectedSingle);
+      setSelectedMultiple(defaultSelectedMultiple);
       dispatch({ type: "SET_STEP", payload: 1 });
     }, 600);
   };
@@ -111,55 +125,131 @@ export default function TaskFormModal() {
     handleCloseMenu();
   };
 
+  const getSpecificDaysInRange = (start, end, targetDay) => {
+    const allDaysInRange = eachDayOfInterval({ start, end });
+    return allDaysInRange.filter((day) => getDay(day) === targetDay);
+  };
+
   // Day Picker
   const pastMonth = new Date();
 
   const defaultSelectedSingle = pastMonth;
 
-  const defaultSelectedRange = [];
+  const defaultSelectedMultiple = [new Date(), addDays(new Date(), 7)];
 
-  const [selected, setSelected] = useState([new Date()]);
+  const [selectedSingle, setSelectedSingle] = useState([pastMonth]);
+  const [selectedMultiple, setSelectedMultiple] = useState(
+    defaultSelectedMultiple
+  );
 
   const handleSelected = (value) => {
-    if(value.length > 2){
-      if(isAfter(new Date(value[value.length - 1]), new Date(value[1])) ){
-        const newArray = value
-        newArray.splice(1,0,value[value.length - 1])
-        newArray.splice(value.length - 1,1)
-        setSelected(newArray)
-        //console.log(value.splice(1,0,value[value.length - 1]))
-      }else if(isBefore(new Date(value[value.length - 1]), new Date(value[0]))) {
-        const newArray = value
-        newArray.splice(0,0,value[value.length - 1])
-        newArray.splice(value.length - 1,1)
-        newArray.splice(3,0,value[1])
-        newArray.splice(1,1)
-        setSelected(newArray)
-      }else{
-        setSelected(value)
-      }
-    }else{
-      setSelected(value)
+    //Si se agregan dias
+    if (value.length > selectedMultiple.length) {
+      // Determinar las fechas mínima y máxima en el array
+      const minDate = value.reduce(
+        (min, date) => (isBefore(date, min) ? date : min),
+        value[0]
+      );
+      const maxDate = value.reduce(
+        (max, date) => (isAfter(date, max) ? date : max),
+        value[0]
+      );
+
+      // Filtrar las fechas dentro del rango (excluyendo duplicados y ordenando)
+      const filteredDates = Array.from(
+        new Set( // Eliminar duplicados usando un Set
+          value
+            .filter(
+              (date) => isWithinInterval(date, { start: minDate, end: maxDate }) // Incluir solo fechas dentro del rango
+            )
+            .sort((a, b) => differenceInMilliseconds(a, b)) // Ordenar de menor a mayor
+        )
+      );
+
+      // Recalcular los días de recurrencia si hay días seleccionados en recurringDays
+      const updatedDatesWithRecurrence = addRecurringDays(
+        filteredDates,
+        minDate,
+        maxDate
+      );
+
+      // Actualizar el estado con las fechas filtradas y recalculadas
+      setSelectedMultiple(updatedDatesWithRecurrence);
+    } else {
+      //Si se quitan dias
+      const newArray = [];
+      const minDate = value.reduce(
+        (min, date) => (isBefore(date, min) ? date : min),
+        value[0]
+      );
+      const maxDate = value.reduce(
+        (max, date) => (isAfter(date, max) ? date : max),
+        value[0]
+      );
+
+      // Filtrar las fechas dentro del rango (excluyendo minDate y maxDate)
+      const filteredDates = Array.from(
+        new Set( // Eliminar duplicados usando un Set
+          value
+            .filter(
+              (date) =>
+                !isSameDay(date, minDate) && // Excluir minDate
+                !isSameDay(date, maxDate) && // Excluir maxDate
+                isWithinInterval(date, { start: minDate, end: maxDate }) // Incluir solo fechas dentro del rango
+            )
+            .sort((a, b) => differenceInMilliseconds(a, b)) // Ordenar de menor a mayor
+        )
+      );
+
+      newArray.push(minDate, ...filteredDates, maxDate);
+
+      // Actualizar el estado con las fechas filtradas
+      console.log(newArray);
+      setSelectedMultiple(newArray);
     }
-    //console.log(value)
-  }
+  };
+
+  // Función para agregar días de recurrencia dentro del rango
+  const addRecurringDays = (dates, startDate, endDate) => {
+    const recurringDays = state.task.recurringDays; // Días de recurrencia seleccionados (e.g., ["1", "2", "3"])
+
+    // Si no hay días de recurrencia seleccionados, devolver las fechas actuales
+    if (!recurringDays || recurringDays.length === 0) {
+      return dates;
+    }
+
+    // Calcular todos los días de recurrencia dentro del rango
+    const allRecurringDays = recurringDays.flatMap((day) => {
+      const targetDay = parseInt(day); // Convertir a número
+      return getSpecificDaysInRange(startDate, endDate, targetDay);
+    });
+
+    // Combinar las fechas actuales con los días de recurrencia, eliminar duplicados y ordenar
+    const combinedDates = Array.from(
+      new Set([
+        ...dates,
+        ...allRecurringDays.filter(
+          (day) =>
+            !dates.some((existingDay) => isSameDay(existingDay, day)) && // Evitar duplicados
+            !isSameDay(day, startDate) && // Excluir la fecha de inicio
+            !isSameDay(day, endDate) // Excluir la fecha de fin
+        ),
+      ])
+    ).sort((a, b) => differenceInMilliseconds(a, b)); // Ordenar de menor a mayor
+
+    return combinedDates;
+  };
 
   const modifiers = {
-    start: selected.length > 0 ? selected[0] : undefined,
-    end: selected.length > 1 ? selected[1] : undefined,
-    between:
-      selected.length > 1
-        ? {
-            from: selected[0],
-            to: selected[1],
-          }
-        : undefined,
+    first: selectedMultiple[0],
+    last: selectedMultiple[selectedMultiple.length - 1],
+    selected: selectedMultiple,
   };
 
   const modifiersClassNames = {
-    start: "start-day",
-    end: "end-day",
-    between: "between-days",
+    first: "first-day",
+    last: "end-day",
+    between: "between-class",
   };
 
   let footer = (
@@ -167,55 +257,100 @@ export default function TaskFormModal() {
       Elige el día para la tarea.
     </p>
   );
-  if (!state.task.isRecurring && selected) {
-    footer = (
-      <p className="text-xs md:text-sm text-center mt-2">
-        Elegiste el{" "}
-        <span className="text-violet-main font-medium">
-          {format(selected, "yyyy-MM-dd")}{" "}
-        </span>
-      </p>
-    );
-  } else if (state.task.isRecurring && selected) {
-    if (!selected.to) {
-      //footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
-    } else if (selected.to) {
-      footer = (
-        <p className="text-xs md:text-sm text-center mt-2">
-          <span>Desde el </span>
-          <span className="text-violet-main font-medium">
-            {format(selected.from, "yyyy-MM-dd")}{" "}
-          </span>
-          <span>- Hasta el </span>
-          <span className="text-violet-main font-medium">
-            {format(selected.to, "yyyy-MM-dd")}
-          </span>
-        </p>
-      );
-    }
-  }
+   if (!state.task.isRecurring && selectedSingle) {
+     footer = (
+       <p className="text-xs md:text-sm text-center mt-2">
+         Elegiste el{" "}
+         <span className="text-violet-main font-medium">
+           {format(selectedSingle, "yyyy-MM-dd")}{" "}
+         </span>
+       </p>
+     );
+   } //else if (state.task.isRecurring && selectedMultiple) {
+  //   if (!selectedMultiple.to) {
+  //     //footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
+  //   } else if (selectedMultiple.to) {
+  //     footer = (
+  //       <p className="text-xs md:text-sm text-center mt-2">
+  //         <span>Desde el </span>
+  //         <span className="text-violet-main font-medium">
+  //           {format(selectedMultiple.from, "yyyy-MM-dd")}{" "}
+  //         </span>
+  //         <span>- Hasta el </span>
+  //         <span className="text-violet-main font-medium">
+  //           {format(selectedMultiple.to, "yyyy-MM-dd")}
+  //         </span>
+  //       </p>
+  //     );
+  //   }
+  // }
+
+  //TimeInput
+  const [time, setTime] = useState({
+    startTime: "00:00:00",
+    endTime: "00:00:00",
+  });
+
+  useEffect(() => {
+    dispatch({
+      type: "UPDATE_TASK",
+      payload: { startTime: time.startTime, endTime: time.endTime },
+    });
+  }, [time]);
 
   //Effects
   useEffect(() => {
-    if (selected && !state.task.isRecurring) {
+    if (selectedSingle && !state.task.isRecurring) {
       dispatch({
         type: "UPDATE_TASK",
         payload: {
-          taskDate: format(selected, "yyyy-MM-dd"),
-          recurringEndDate: format(selected, "yyyy-MM-dd"),
+          taskDate: format(selectedSingle, "yyyy-MM-dd"),
+          recurringEndDate: format(selectedSingle, "yyyy-MM-dd"),
         },
       });
     }
-    // if (selected && state.task.isRecurring) {
-    //   dispatch({
-    //     type: "UPDATE_TASK",
-    //     payload: {
-    //       taskDate: format(selected.from, "yyyy-MM-dd"),
-    //       recurringEndDate: format(selected.to, "yyyy-MM-dd"),
-    //     },
-    //   });
-    // }
-  }, [selected]);
+  }, [selectedSingle]);
+
+  useEffect(() => {
+    // Validar que selectedMultiple tenga al menos una fecha válida
+    if (!Array.isArray(selectedMultiple) || selectedMultiple.length === 0) {
+      console.error("selectedMultiple está vacío o no es un array");
+      return;
+    }
+
+    // Validar que todos los elementos en selectedMultiple sean fechas válidas
+    const areAllDatesValid = selectedMultiple.every((date) =>
+      isValid(new Date(date))
+    );
+    if (!areAllDatesValid) {
+      console.error("selectedMultiple contiene valores no válidos");
+      return;
+    }
+
+    // Mapear las recurrencias
+    const recurrences = selectedMultiple.map((date) => {
+      const recurrence = {
+        taskDate: format(new Date(date), "yyyy-MM-dd"),
+        description: "",
+        startTime: time.startTime,
+        endTime: time.endTime,
+      };
+      return recurrence;
+    });
+
+    // Actualizar el estado
+    dispatch({
+      type: "UPDATE_TASK",
+      payload: {
+        taskDate: format(new Date(selectedMultiple[0]), "yyyy-MM-dd"), // Fecha de inicio
+        recurringEndDate: format(
+          new Date(selectedMultiple[selectedMultiple.length - 1]),
+          "yyyy-MM-dd"
+        ), // Fecha de fin
+        recurrences,
+      },
+    });
+  }, [selectedMultiple, time]);
 
   useEffect(() => {
     if (state.step == 1)
@@ -238,8 +373,8 @@ export default function TaskFormModal() {
     ) {
       setTimeout(() => {
         state.task.isRecurring == false
-          ? setSelected(defaultSelectedSingle)
-          : setSelected(defaultSelectedRange);
+          ? setSelectedSingle(defaultSelectedSingle)
+          : setSelectedMultiple(defaultSelectedMultiple);
         dispatch({
           type: "SET_CAROUSEL_SIZE",
           payload: sizesCarousel.size3,
@@ -345,20 +480,20 @@ export default function TaskFormModal() {
           />
           <TaskFormModalSelectTime
             title={"Fecha"}
-            placeholder={"Elegir Fecha"}
-            // placeholder={
-            //   !selected
-            //     ? "Elegir Fecha"
-            //     : state.task.isRecurring
-            //     ? `Del ${format(selected.from, "d 'de' MMMM", {
-            //         locale: esDateFns,
-            //       })} al ${format(selected.to, "d 'de' MMMM", {
-            //         locale: esDateFns,
-            //       })}`
-            //     : format(selected, "d 'de' MMMM", {
-            //         locale: esDateFns,
-            //       })
-            // }
+            //placeholder={"Elegir Fecha"}
+            placeholder={
+              !selectedSingle || !selectedMultiple
+                ? "Elegir Fecha"
+                : state.task.isRecurring
+                ? `Del ${format(selectedMultiple[0], "d 'de' MMMM", {
+                    locale: esDateFns,
+                  })} al ${format(selectedMultiple[selectedMultiple.length - 1], "d 'de' MMMM", {
+                    locale: esDateFns,
+                  })}`
+                : format(selectedSingle, "d 'de' MMMM", {
+                    locale: esDateFns,
+                  })
+            }
             handleClick={() => {
               dispatch({ type: "SET_STEP", payload: 3 });
               dispatch({ type: "SET_STEP_3_IS", payload: "Fecha" });
@@ -393,24 +528,33 @@ export default function TaskFormModal() {
           </button>
         </div>
         <div className="h-full w-full px-5 lg:px-10  grid gap-4">
-          {state.step3Is == "Fecha" && (
+          {state.step3Is == "Fecha" && !state.task.isRecurring && (
             <>
               <DayPicker
-                mode={state.task.isRecurring == false ? "single" : "multiple"}
-                selected={selected}
-                onSelect={handleSelected}
-                disabled={{ before: new Date("2025-01-13") }}
+                mode={"single"}
+                selected={selectedSingle}
+                onSelect={setSelectedSingle}
+                disabled={{ before: new Date() }}
                 footer={footer}
                 locale={es}
-                modifiers={state.task.isRecurring ? modifiers : null}
-                modifiersClassNames={state.task.isRecurring ? modifiersClassNames : null}
               />
-              <div
-                className={`grid gap-1 justify-items-center ${
-                  state.task.isRecurring == false ? "hidden" : ""
-                }`}
-              >
-                <label className=" font-semibold">Repetir todos los</label>
+              <AcceptButton onClick={handleAcceptButton} />
+            </>
+          )}
+          {state.step3Is == "Fecha" && state.task.isRecurring && (
+            <>
+              <DayPicker
+                mode={"multiple"}
+                selected={selectedMultiple}
+                onSelect={handleSelected}
+                disabled={{ before: new Date("2/1/2025") }}
+                footer={<p>Selecciona una fecha</p>}
+                locale={es}
+                modifiers={modifiers}
+                modifiersClassNames={modifiersClassNames}
+              />
+              <div className="grid gap-1 justify-items-center">
+                <label className="font-semibold">Repetir todos los</label>
                 <div className="flex gap-1 max-[425px]:max-w-[385px]">
                   {recurringDaysArray.map((item) => (
                     <ItemRecurringDays
@@ -423,10 +567,76 @@ export default function TaskFormModal() {
                         const updatedDays = currentDays.includes(value)
                           ? currentDays.filter((day) => day !== value)
                           : [...currentDays, value];
+
                         dispatch({
                           type: "UPDATE_TASK",
                           payload: { recurringDays: updatedDays },
                         });
+
+                        if (!currentDays.includes(value)) {
+                          // Si se activa un día de recurrencia
+                          if (selectedMultiple.length >= 2) {
+                            const startDate = selectedMultiple[0];
+                            const endDate =
+                              selectedMultiple[selectedMultiple.length - 1];
+                            const targetDay = parseInt(value);
+                            const specificDays = getSpecificDaysInRange(
+                              startDate,
+                              endDate,
+                              targetDay
+                            );
+
+                            // Agregar los días calculados, excluyendo las fechas de inicio y fin
+                            setSelectedMultiple((prev) => {
+                              const newDates = [
+                                ...prev,
+                                ...specificDays.filter(
+                                  (day) =>
+                                    !prev.some((existingDay) =>
+                                      isSameDay(existingDay, day)
+                                    ) &&
+                                    !isSameDay(day, startDate) &&
+                                    !isSameDay(day, endDate)
+                                ),
+                              ];
+
+                              // Ordenar las fechas en orden ascendente
+                              return newDates.sort((a, b) =>
+                                differenceInMilliseconds(a, b)
+                              );
+                            });
+                          }
+                        } else {
+                          // Si se desactiva un día de recurrencia
+                          if (selectedMultiple.length >= 2) {
+                            const startDate = selectedMultiple[0];
+                            const endDate =
+                              selectedMultiple[selectedMultiple.length - 1];
+                            const targetDay = parseInt(value);
+                            const specificDays = getSpecificDaysInRange(
+                              startDate,
+                              endDate,
+                              targetDay
+                            );
+
+                            // Eliminar los días calculados, pero mantener las fechas de inicio y fin
+                            setSelectedMultiple((prev) => {
+                              const newDates = prev.filter(
+                                (day) =>
+                                  !specificDays.some((specificDay) =>
+                                    isSameDay(specificDay, day)
+                                  ) ||
+                                  isSameDay(day, startDate) ||
+                                  isSameDay(day, endDate)
+                              );
+
+                              // Ordenar las fechas en orden ascendente
+                              return newDates.sort((a, b) =>
+                                differenceInMilliseconds(a, b)
+                              );
+                            });
+                          }
+                        }
                       }}
                     />
                   ))}
@@ -439,19 +649,13 @@ export default function TaskFormModal() {
             <>
               <TimeInput
                 onChange={(value) =>
-                  dispatch({
-                    type: "UPDATE_TASK",
-                    payload: { startTime: value },
-                  })
+                  setTime({ startTime: value, endTime: time.endTime })
                 }
                 title={"Desde Las"}
               />
               <TimeInput
                 onChange={(value) =>
-                  dispatch({
-                    type: "UPDATE_TASK",
-                    payload: { endTime: value },
-                  })
+                  setTime({ startTime: time.startTime, endTime: value })
                 }
                 title={"Hasta Las"}
               />

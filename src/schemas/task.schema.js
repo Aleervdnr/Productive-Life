@@ -11,4 +11,10 @@ export const taskSchema = z.object({
   isRecurring: z.boolean().optional(),
   recurringDays: z.string().array({ message: "array invalida" }).optional(),
   recurringEndDate: z.string().date({ message: "fecha invalida" }).optional(),
+  recurrences:z.array(z.object({
+    taskDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+    description: z.string(),
+    startTime: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, "Formato de hora inválido (HH:mm:ss)"),
+    endTime: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, "Formato de hora inválido (HH:mm:ss)")
+  }))
 });
