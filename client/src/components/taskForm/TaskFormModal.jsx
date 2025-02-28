@@ -257,16 +257,16 @@ export default function TaskFormModal() {
       Elige el día para la tarea.
     </p>
   );
-   if (!state.task.isRecurring && selectedSingle) {
-     footer = (
-       <p className="text-xs md:text-sm text-center mt-2">
-         Elegiste el{" "}
-         <span className="text-violet-main font-medium">
-           {format(selectedSingle, "yyyy-MM-dd")}{" "}
-         </span>
-       </p>
-     );
-   } //else if (state.task.isRecurring && selectedMultiple) {
+  if (!state.task.isRecurring && selectedSingle) {
+    footer = (
+      <p className="text-xs md:text-sm text-center mt-2">
+        Elegiste el{" "}
+        <span className="text-violet-main font-medium">
+          {format(selectedSingle, "yyyy-MM-dd")}{" "}
+        </span>
+      </p>
+    );
+  } //else if (state.task.isRecurring && selectedMultiple) {
   //   if (!selectedMultiple.to) {
   //     //footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
   //   } else if (selectedMultiple.to) {
@@ -312,45 +312,47 @@ export default function TaskFormModal() {
   }, [selectedSingle]);
 
   useEffect(() => {
-    // Validar que selectedMultiple tenga al menos una fecha válida
-    if (!Array.isArray(selectedMultiple) || selectedMultiple.length === 0) {
-      console.error("selectedMultiple está vacío o no es un array");
-      return;
+    if (state.task.isRecurring) {
+      // Validar que selectedMultiple tenga al menos una fecha válida
+      if (!Array.isArray(selectedMultiple) || selectedMultiple.length === 0) {
+        console.error("selectedMultiple está vacío o no es un array");
+        return;
+      }
+
+      // Validar que todos los elementos en selectedMultiple sean fechas válidas
+      const areAllDatesValid = selectedMultiple.every((date) =>
+        isValid(new Date(date))
+      );
+      if (!areAllDatesValid) {
+        console.error("selectedMultiple contiene valores no válidos");
+        return;
+      }
+
+      // Mapear las recurrencias
+      const recurrences = selectedMultiple.map((date) => {
+        const recurrence = {
+          taskDate: format(new Date(date), "yyyy-MM-dd"),
+          description: "",
+          startTime: time.startTime,
+          endTime: time.endTime,
+        };
+        return recurrence;
+      });
+
+      // Actualizar el estado
+      dispatch({
+        type: "UPDATE_TASK",
+        payload: {
+          taskDate: format(new Date(selectedMultiple[0]), "yyyy-MM-dd"), // Fecha de inicio
+          recurringEndDate: format(
+            new Date(selectedMultiple[selectedMultiple.length - 1]),
+            "yyyy-MM-dd"
+          ), // Fecha de fin
+          recurrences,
+        },
+      });
     }
-
-    // Validar que todos los elementos en selectedMultiple sean fechas válidas
-    const areAllDatesValid = selectedMultiple.every((date) =>
-      isValid(new Date(date))
-    );
-    if (!areAllDatesValid) {
-      console.error("selectedMultiple contiene valores no válidos");
-      return;
-    }
-
-    // Mapear las recurrencias
-    const recurrences = selectedMultiple.map((date) => {
-      const recurrence = {
-        taskDate: format(new Date(date), "yyyy-MM-dd"),
-        description: "",
-        startTime: time.startTime,
-        endTime: time.endTime,
-      };
-      return recurrence;
-    });
-
-    // Actualizar el estado
-    dispatch({
-      type: "UPDATE_TASK",
-      payload: {
-        taskDate: format(new Date(selectedMultiple[0]), "yyyy-MM-dd"), // Fecha de inicio
-        recurringEndDate: format(
-          new Date(selectedMultiple[selectedMultiple.length - 1]),
-          "yyyy-MM-dd"
-        ), // Fecha de fin
-        recurrences,
-      },
-    });
-  }, [selectedMultiple, time]);
+  }, [selectedMultiple,time]);
 
   useEffect(() => {
     if (state.step == 1)
@@ -487,9 +489,13 @@ export default function TaskFormModal() {
                 : state.task.isRecurring
                 ? `Del ${format(selectedMultiple[0], "d 'de' MMMM", {
                     locale: esDateFns,
-                  })} al ${format(selectedMultiple[selectedMultiple.length - 1], "d 'de' MMMM", {
-                    locale: esDateFns,
-                  })}`
+                  })} al ${format(
+                    selectedMultiple[selectedMultiple.length - 1],
+                    "d 'de' MMMM",
+                    {
+                      locale: esDateFns,
+                    }
+                  )}`
                 : format(selectedSingle, "d 'de' MMMM", {
                     locale: esDateFns,
                   })
