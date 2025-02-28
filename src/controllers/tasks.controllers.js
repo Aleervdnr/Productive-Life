@@ -10,6 +10,15 @@ export const getTasks = async (req, res) => {
   }
 };
 
+export const getTask = async (req,res) => {
+  try{
+    const task = await Task.findOne({_id: req.params.id})
+    res.json(task)
+  }catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 export const createTask = async (req, res) => {
   try {
     const {

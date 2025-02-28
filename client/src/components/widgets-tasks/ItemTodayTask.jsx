@@ -15,7 +15,7 @@ import generateOccurrences from "../../libs/generateOcurrences.js";
 
 export default function ItemTodayTask({ task }) {
   const { title, startTime, endTime, status, _id, recurrences } = task;
-  const { tasks, updateTask, deleteTask, handleCheckRecurringDays } =
+  const { tasks, getTask, updateTask, deleteTask, handleCheckRecurringDays } =
     useTasks();
   const { register, setValue, handleSubmit, watch } = useForm();
   const { nowDate, daysOfWeek } = useDate();
@@ -121,10 +121,7 @@ export default function ItemTodayTask({ task }) {
       .map((item) => item.status == true && item.isoDay)
       .map(Number);
 
-    const generateNewRecurrences = (
-      newRecurringDays,
-      existingRecurrences
-    ) => {
+    const generateNewRecurrences = (newRecurringDays, existingRecurrences) => {
       const forRecurrences = {
         taskDate,
         recurringEndDate,
@@ -132,11 +129,7 @@ export default function ItemTodayTask({ task }) {
         endTime: endTime,
         recurringDays: newRecurringDays,
       };
-      return generateOccurrences(
-        forRecurrences,
-        existingRecurrences,
-        false
-      );
+      return generateOccurrences(forRecurrences, existingRecurrences, false);
     };
 
     const updatedTask = {
@@ -149,7 +142,7 @@ export default function ItemTodayTask({ task }) {
       endTime: formatTime(endTime),
       recurringDays: filteredRecurringDays ? filteredRecurringDays : [],
       isRecurring: filteredRecurringDays.length >= 1 && true,
-      recurrences: generateNewRecurrences(filteredRecurringDays,recurrences),
+      recurrences: generateNewRecurrences(filteredRecurringDays, recurrences),
       status: task.status,
       createdAt: task.createdAt,
       updatedAt: new Date().toISOString(),
@@ -276,35 +269,41 @@ export default function ItemTodayTask({ task }) {
     setIsDisabled(true);
   };
 
-  const handleDeleteTask = () => {
-    if (!task.recurrenceOf) {
-      deleteTask(task._id);
-    } else {
-      console.log("isrecu");
-      console.log(task)
-      const parentTask = tasks.find(
-        (taskMap) => taskMap._id == task.recurrenceOf
+  const handleDeleteTask = async () => {
+    try {
+      // Si la tarea no es parte de una recurrencia, simplemente elimínala
+      if (!task.recurrenceOf) {
+        await deleteTask(task._id);
+        return;
+      }
+  
+      console.log("Es una tarea recurrente");
+      console.log(task);
+  
+      // Obtener la tarea padre
+      const parentTask = await getTask(task.recurrenceOf);
+      if (!parentTask) {
+        throw new Error("La tarea padre no existe");
+      }
+  
+      console.log("Tarea padre obtenida:", parentTask);
+  
+      // Filtrar las recurrencias para eliminar la tarea actual
+      const updatedRecurrences = parentTask.recurrences.filter(
+        (recurrence) => recurrence._id !== task._id
       );
-      const newArray = parentTask.recurrences.filter(
-        (taskMap) => taskMap._id != task._id
-      );
-      const newTask = {
-        _id: parentTask._id,
-        title: parentTask.title,
-        description: parentTask.description,
-        taskDate: parentTask.taskDate,
-        recurringEndDate: parentTask.recurringEndDate,
-        startTime: parentTask.startTime,
-        endTime: parentTask.endTime,
-        recurringDays: parentTask.recurringDays,
-        isRecurring: parentTask.isRecurring,
-        recurrences: newArray,
-        status: parentTask.status,
-        createdAt: parentTask.createdAt,
-        updatedAt: parentTask.updatedAt,
-        user: parentTask.user,
+  
+      // Crear un nuevo objeto con las recurrencias actualizadas
+      const updatedTask = {
+        ...parentTask, // Copia todas las propiedades de la tarea padre
+        recurrences: updatedRecurrences, // Actualiza solo las recurrencias
       };
-      updateTask(newTask, false, true);
+  
+      // Actualizar la tarea padre
+      await updateTask(updatedTask, false, true);
+    } catch (error) {
+      console.error("Error al eliminar la tarea:", error.message);
+      // Opcional: Mostrar un mensaje de error al usuario
     }
   };
 

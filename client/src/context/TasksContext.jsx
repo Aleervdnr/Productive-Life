@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import {
   createTaskRequest,
   deleteTasksRequest,
+  getTaskRequest,
   getTasksRequest,
   updateTasksRequest,
 } from "../api/tasks";
@@ -71,6 +72,16 @@ export function TasksProvider({ children }) {
       console.log(err);
     }
   };
+
+  const getTask = async (id) => {
+    try {
+      const session = { token: localStorage.getItem("token") };
+      const res = await getTaskRequest(id, session.token)
+      return res.data
+    } catch (error) {
+      console.error("Error obteniendo tarea:", error);
+    }
+  }
 
   //Obtener tareas
   const getTasks = async () => {
@@ -190,6 +201,7 @@ export function TasksProvider({ children }) {
         setTasks,
         createTask,
         getTasks,
+        getTask,
         updateTask,
         deleteTask,
         weeklyTasks,
