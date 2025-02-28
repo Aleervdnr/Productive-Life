@@ -84,9 +84,9 @@ export default function Landing() {
                 La plataforma de gestión personal diseñada para ayudarte a
                 optimizar tu día a día.
               </p>
-              <button className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-4 py-2 w-fit rounded-lg">
+              <a href="#email" className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-4 py-2 w-fit rounded-lg">
                 Únete a la Lista de Espera
-              </button>
+              </a>
             </div>
           </motion.div>
         </section>
@@ -449,7 +449,7 @@ export default function Landing() {
             </div>
           </div>
         </section>
-        <section className="grid gap-4 text-center pb-6 lg:flex lg:bg-dark-400 lg:py-12 lg:px-10 lg:rounded-md lg:mb-14">
+        <section id="email" className="grid gap-4 text-center pb-6 lg:flex lg:bg-dark-400 lg:py-12 lg:px-10 lg:rounded-md lg:mb-14">
           <div className="text-center lg:grid lg:place-content-center lg:gap-2">
             <h3 className="text-white font-semibold text-2xl lg:text-xl">
               Sé el Primero en Probar Productive
