@@ -16,5 +16,5 @@ export const taskSchema = z.object({
     description: z.string(),
     startTime: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, "Formato de hora inválido (HH:mm:ss)"),
     endTime: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, "Formato de hora inválido (HH:mm:ss)")
-  }))
+  })).optional()
 });
