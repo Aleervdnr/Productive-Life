@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import useWindowSize from "../../hooks/useWindowSize.jsx";
 import { useUi } from "../../context/UiContext.jsx";
 import { AnimatedCounter } from "../AnimatedCounter.jsx";
+import ItemTask from "../ItemTask.jsx/ItemTask.jsx";
 
 export default function TodayTasks() {
   const { tasks, tasksIsLoading } = useTasks();
@@ -69,7 +70,7 @@ export default function TodayTasks() {
           </>
         ) : filteredTasks.length ? (
           filteredTasks.map((task) => (
-            <ItemTodayTask task={task} key={task._id} />
+            <ItemTask task={task} key={task._id} />
           ))
         ) : (
           <p className="text-sm text-center">{motivationalMessage}</p>

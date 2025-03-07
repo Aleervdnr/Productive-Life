@@ -22,6 +22,7 @@ export const useTasks = () => {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
+  const [parentTasks, setParentTasks] = useState([]);
   const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
   const [dailyTasks, setDailyTasks] = useState([]);
@@ -64,6 +65,7 @@ export function TasksProvider({ children }) {
           })
         );
         setTasks((prevTasks) => [...prevTasks, ...recurrences]);
+        setParentTasks([...parentTasks, res.data]);
       } else {
         setTasks([...tasks, res.data]);
       }
@@ -76,12 +78,12 @@ export function TasksProvider({ children }) {
   const getTask = async (id) => {
     try {
       const session = { token: localStorage.getItem("token") };
-      const res = await getTaskRequest(id, session.token)
-      return res.data
+      const res = await getTaskRequest(id, session.token);
+      return res.data;
     } catch (error) {
       console.error("Error obteniendo tarea:", error);
     }
-  }
+  };
 
   //Obtener tareas
   const getTasks = async () => {
@@ -118,6 +120,7 @@ export function TasksProvider({ children }) {
       const filteredSingleTasks = res.data.filter((task) => !task.isRecurring);
 
       setTasks([...filteredSingleTasks, ...recurrences]);
+      setParentTasks(filteredRecurringTasks);
       if (res.status == 200) setTasksIsLoading(false);
       return res;
     } catch (error) {
@@ -126,7 +129,11 @@ export function TasksProvider({ children }) {
   };
 
   //Actualizar tareas
-  const updateTask = async (task, isStatus, isRecurrenceDeleted) => {
+  const updateTask = async (
+    task,
+    isStatus = false,
+    isRecurrenceDeleted = false
+  ) => {
     try {
       const session = { token: localStorage.getItem("token") };
       const res = await updateTasksRequest(task, session.token);
@@ -168,19 +175,23 @@ export function TasksProvider({ children }) {
       if (!isStatus & !isRecurrenceDeleted)
         toast.success("Tarea actualizada con exito");
       if (isRecurrenceDeleted) toast.warning("Recurrencia Eliminada");
+      return res;
     } catch (error) {
       console.log(error);
+      toast.error("Ocurrio un error");
     }
   };
 
   const deleteTask = async (id) => {
     try {
       const session = { token: localStorage.getItem("token") };
-      await deleteTasksRequest(id, session.token);
+      const res = await deleteTasksRequest(id, session.token);
       setTasks(tasks.filter((taskMap) => taskMap._id !== id));
       toast.warning("Tarea Eliminada");
+      return res;
     } catch (err) {
       console.log(err);
+      toast.error("Ocurrio un error");
     }
   };
 
@@ -199,6 +210,8 @@ export function TasksProvider({ children }) {
       value={{
         tasks,
         setTasks,
+        parentTasks,
+        setParentTasks,
         createTask,
         getTasks,
         getTask,
