@@ -289,7 +289,7 @@ export default function TasksPage({ setActiveItem }) {
         </div>
       </div>
       <div
-        className={`z-10 grid grid-cols-[repeat(3,1fr)] transition-transform ease-in duration-300 ${
+        className={`z-[1001] grid grid-cols-[repeat(3,1fr)] transition-transform ease-in duration-300 ${
           tabActive == "semana" && "max-lg:translate-x-[calc(-100vw)]"
         } ${
           tabActive == "mes" && "max-lg:translate-x-[calc(-200vw)]"

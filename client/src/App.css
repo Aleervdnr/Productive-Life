@@ -48,3 +48,8 @@
     transform: translateX(24px);
   }
 }
+
+.modal-task[open]{
+  visibility: visible;
+  opacity: 1;
+}

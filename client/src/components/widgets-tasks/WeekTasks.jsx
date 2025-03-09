@@ -14,6 +14,7 @@ import TaskFormButton from "../taskForm/TaskFormButton";
 import useWindowSize from "../../hooks/useWindowSize";
 import ItemTodayTask from "./ItemTodayTask";
 import { AnimatedCounter } from "../AnimatedCounter";
+import ItemTask from "../ItemTask.jsx/ItemTask";
 
 export default function WeekTasks() {
   const [tabActive, setTabActive] = useState({ name: "Lunes", isoDay: 1 });
@@ -94,7 +95,7 @@ export default function WeekTasks() {
 
   useEffect(() => {
     filterCurrentTabTasks(tabActive.currentDay);
-  }, [tasks,tabActive]);
+  }, [tasks, tabActive]);
 
   useEffect(() => {
     const now = new Date();
@@ -129,8 +130,8 @@ export default function WeekTasks() {
   }, []);
 
   const handleChangeTab = (name) => {
-    console.log(name)
-    setTabActive(name)
+    console.log(name);
+    setTabActive(name);
   };
   return (
     <div
@@ -150,8 +151,7 @@ export default function WeekTasks() {
         weeklyTasks={weeklyTasks}
       />
       <div
-        className={`${width > 1024 &&
-          "hidden"} ${
+        className={`${width > 1024 && "hidden"} ${
           tasksIsLoading
             ? "flex flex-col gap-2"
             : `${
@@ -169,53 +169,53 @@ export default function WeekTasks() {
           </>
         ) : currentTabTasks.length ? (
           currentTabTasks.map((task) => (
-            <ItemTodayTask task={task} key={task._id} />
+              <ItemTask task={task} key={task._id} />
           ))
         ) : (
           <p className="text-sm text-center">{motivationalMessage}</p>
         )}
       </div>
-            <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
-            <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
-              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-                <span className="text-xs">Tareas Completadas</span>
-                <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-                  {weeklyTasks.filter((task) => task.status == "completed").length}{" "}
-                  <span className="lg:text-sm xl:text-lg">de</span>{" "}
-                  {weeklyTasks.length}
-                </span>
-              </div>
-              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-                <span className="text-xs">Tareas Para Hacer</span>
-                <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-                  {weeklyTasks.filter((task) => task.status == "pending").length}{" "}
-                  <span className="lg:text-sm xl:text-lg">de</span>{" "}
-                  {weeklyTasks.length}
-                </span>
-              </div>
-              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-                <span className="text-xs">Tareas Atrasadas</span>
-                <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
-                  {weeklyTasks.filter((task) => task.status == "overdue").length}{" "}
-                  <span className="lg:text-sm xl:text-lg">de</span>{" "}
-                  {weeklyTasks.length}
-                </span>
-              </div>
-              <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-                <span className="text-xs">Progreso Semanal</span>
-                <AnimatedCounter
-                  value={
-                    weeklyTasks.length > 0
-                      ? (weeklyTasks.filter((task) => task.status === "completed")
-                          .length /
-                          weeklyTasks.length) *
-                        100
-                      : 0
-                  }
-                  duration={200}
-                />
-              </div>
-            </div>
+      <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
+      <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Tareas Completadas</span>
+          <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+            {weeklyTasks.filter((task) => task.status == "completed").length}{" "}
+            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            {weeklyTasks.length}
+          </span>
+        </div>
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Tareas Para Hacer</span>
+          <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+            {weeklyTasks.filter((task) => task.status == "pending").length}{" "}
+            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            {weeklyTasks.length}
+          </span>
+        </div>
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Tareas Atrasadas</span>
+          <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
+            {weeklyTasks.filter((task) => task.status == "overdue").length}{" "}
+            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            {weeklyTasks.length}
+          </span>
+        </div>
+        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
+          <span className="text-xs">Progreso Semanal</span>
+          <AnimatedCounter
+            value={
+              weeklyTasks.length > 0
+                ? (weeklyTasks.filter((task) => task.status === "completed")
+                    .length /
+                    weeklyTasks.length) *
+                  100
+                : 0
+            }
+            duration={200}
+          />
+        </div>
+      </div>
     </div>
   );
 }

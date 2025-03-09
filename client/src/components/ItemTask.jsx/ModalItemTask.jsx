@@ -210,205 +210,205 @@ export default function ModalItemTask({
   };
 
   return (
-    <div
-      className={`
-        ${
-          modalIsActive
-            ? "opacity-100 z-[1001] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-dark-500 rounded-md w-[calc(100vw-20px)] max-w-[620px] "
-            : "invisible opacity-0"
-        } absolute transition-opacity delay-300`}
-    >
-      {/* Header con tabs y botón de cerrar */}
-      <div className="border-b border-gray-700">
-        <div className="flex items-center justify-between px-4">
-          <div className="flex">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`flex items-center px-4 py-3 border-b-2 transition-colors w-fit ${
-                  activeTab === tab.id
-                    ? "border-[#7E73FF] text-[#7E73FF]"
-                    : "border-transparent text-gray-400 hover:text-gray-300"
-                }`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.icon}
-
-                <span
-                  className={`${
-                    width < 720 && activeTab !== tab.id ? "hidden" : ""
-                  } ${activeTab == tab.id && "text-white"} pl-1 `}
+    <dialog
+      id={`modal_task_${task._id}`}
+      className={`fixed w-screen h-screen max-w-none max-h-none z-[999] m-0 overflow-hidden bg-[#0006] grid place-content-center opacity-0 modal-task invisible transition-opacity`}
+      >
+      <div
+        className={`transition-opacity delay-300 bg-dark-500 rounded-md w-[calc(100vw-20px)] max-w-[620px] h-fit
+         `}
+      >
+        {/* Header con tabs y botón de cerrar */}
+        <div className="border-b border-gray-700">
+          <div className="flex items-center justify-between px-4">
+            <div className="flex">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`flex items-center px-4 py-3 border-b-2 transition-colors w-fit ${
+                    activeTab === tab.id
+                      ? "border-[#7E73FF] text-[#7E73FF]"
+                      : "border-transparent text-gray-400 hover:text-gray-300"
+                  }`}
+                  onClick={() => setActiveTab(tab.id)}
                 >
-                  {tab.title}
-                </span>
-              </button>
-            ))}
+                  {tab.icon}
+
+                  <span
+                    className={`${
+                      width < 720 && activeTab !== tab.id ? "hidden" : ""
+                    } ${activeTab == tab.id && "text-white"} pl-1 `}
+                  >
+                    {tab.title}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={handleClose}
+              className="p-2 text-gray-400 hover:text-gray-300"
+              title="Cerrar"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button
-            onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-gray-300"
-            title="Cerrar"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
-      </div>
-      {/* Contenido de los tabs */}
-      <div className="overflow-hidden max-h-dvh ">
-        {/* Tab 1: Información */}
-        {activeTab === 0 && (
-          <div
-            className={`grid grid-cols-[100%,100%] justify-items-center transition-transform duration-500 ${
-              translateTab1Active ? "translate-x-[-100%]" : ""
-            } `}
-          >
-            <div className="w-full space-y-4 p-4">
-              <div className="space-y-2">
-                <InputItemTask
-                  label={"Título"}
-                  value={state.title}
-                  onChange={(value) =>
-                    dispatch({ type: "SET_TITLE", payload: value })
-                  }
-                />
-                <InputItemTask
-                  label={"Descripción"}
-                  value={state.description}
-                  onChange={(value) =>
-                    dispatch({ type: "SET_DESCRIPTION", payload: value })
-                  }
-                />
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  <DropDownItemTask
-                    status={state.status}
-                    onChange={handleStatusChange}
+        {/* Contenido de los tabs */}
+        <div className="overflow-hidden max-h-dvh ">
+          {/* Tab 1: Información */}
+          {activeTab === 0 && (
+            <div
+              className={`grid grid-cols-[100%,100%] justify-items-center transition-transform duration-500 ${
+                translateTab1Active ? "translate-x-[-100%]" : ""
+              } `}
+            >
+              <div className="w-full space-y-4 p-4">
+                <div className="space-y-2">
+                  <InputItemTask
+                    label={"Título"}
+                    value={state.title}
+                    onChange={(value) =>
+                      dispatch({ type: "SET_TITLE", payload: value })
+                    }
                   />
-                  <div
-                    className="relative max-sm:row-start-2 cursor-pointer"
-                    onClick={() => handleEditDateTime("Date")}
-                  >
-                    <label className="absolute px-3 top-1 text-violet-main block text-xs font-bold">
-                      Fecha
-                    </label>
-                    <div className="p-3 pb-1 pt-5 bg-[#2A2B31] rounded-lg text-white focus:outline-none">
-                      {format(`${state.taskDate}T00:00:00`, "d 'de' MMMM", {
-                        locale: esDateFns,
-                      })}
+                  <InputItemTask
+                    label={"Descripción"}
+                    value={state.description}
+                    onChange={(value) =>
+                      dispatch({ type: "SET_DESCRIPTION", payload: value })
+                    }
+                  />
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    <DropDownItemTask
+                      status={task.status}
+                      onChange={handleStatusChange}
+                    />
+                    <div
+                      className="relative max-sm:row-start-2 cursor-pointer"
+                      onClick={() => handleEditDateTime("Date")}
+                    >
+                      <label className="absolute px-3 top-1 text-violet-main block text-xs font-bold">
+                        Fecha
+                      </label>
+                      <div className="p-3 pb-1 pt-5 bg-[#2A2B31] rounded-lg text-white focus:outline-none">
+                        {format(`${state.taskDate}T00:00:00`, "d 'de' MMMM", {
+                          locale: esDateFns,
+                        })}
+                      </div>
+                    </div>
+                    <div
+                      className="relative max-sm:row-start-2 cursor-pointer"
+                      onClick={() => handleEditDateTime("Time")}
+                    >
+                      <label className="absolute px-3 top-1 text-violet-main block text-xs font-bold">
+                        Hora
+                      </label>
+                      <div className="p-3 pb-1 pt-5 bg-[#2A2B31] rounded-lg text-white focus:outline-none">
+                        {state.startTime.slice(0, 5)} -{" "}
+                        {state.endTime.slice(0, 5)}
+                      </div>
                     </div>
                   </div>
-                  <div
-                    className="relative max-sm:row-start-2 cursor-pointer"
-                    onClick={() => handleEditDateTime("Time")}
+                </div>
+
+                {/* Botones de acción para Tab 1 */}
+                <div className="flex justify-end gap-4">
+                  <button
+                    //onClick={() => handleDelete("single")}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center text-sm font-medium"
+                    onClick={() => setShowDeleteModal(true)}
                   >
-                    <label className="absolute px-3 top-1 text-violet-main block text-xs font-bold">
-                      Hora
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Eliminar
+                  </button>
+                  <button
+                    //onClick={handleSave}
+                    className="px-4 py-2 bg-violet-main text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center text-sm font-medium"
+                    onClick={handleSaveButton}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Guardar
+                  </button>
+                </div>
+              </div>
+              <div className="p-4">
+                {translateTab1Active && tab1EditIs == "Date" && (
+                  <div className="max-w-[354px]">
+                    <DayPicker
+                      mode={"single"}
+                      selected={selectedSingle}
+                      onSelect={handleSelectedDate}
+                      disabled={{ before: new Date() }}
+                      footer={footer}
+                      locale={es}
+                    />
+                    <AcceptButton onClick={handleAcceptButton} />
+                  </div>
+                )}
+                {translateTab1Active && tab1EditIs == "Time" && (
+                  <div className="grid gap-4">
+                    <TimeInput
+                      onChange={(value) =>
+                        dispatch({ type: "SET_STARTTIME", payload: value })
+                      }
+                      title={"Desde Las"}
+                      value={state.startTime}
+                    />
+                    <TimeInput
+                      onChange={(value) =>
+                        dispatch({ type: "SET_ENDTIME", payload: value })
+                      }
+                      title={"Hasta Las"}
+                      value={state.endTime}
+                    />
+                    <AcceptButton onClick={handleAcceptButton} />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {/* Tab 2: Tarea Padre */}
+          {activeTab === 1 && task.recurrenceOf && (
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    Título
+                  </label>
+                  <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
+                    {task.title}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    Repetir
+                  </label>
+                  <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
+                    {task.recurringDays}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">
+                      Fecha de Inicio
                     </label>
-                    <div className="p-3 pb-1 pt-5 bg-[#2A2B31] rounded-lg text-white focus:outline-none">
-                      {state.startTime.slice(0, 5)} -{" "}
-                      {state.endTime.slice(0, 5)}
+                    <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
+                      {task.taskDate}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">
+                      Fecha de Fin
+                    </label>
+                    <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
+                      {task.recurringEndDate}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Botones de acción para Tab 1 */}
-              <div className="flex justify-end gap-4">
-                <button
-                  //onClick={() => handleDelete("single")}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center text-sm font-medium"
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Eliminar
-                </button>
-                <button
-                  //onClick={handleSave}
-                  className="px-4 py-2 bg-violet-main text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center text-sm font-medium"
-                  onClick={handleSaveButton}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Guardar
-                </button>
-              </div>
-            </div>
-            <div className="p-4">
-              {translateTab1Active && tab1EditIs == "Date" && (
-                <div className="max-w-[354px]">
-                  <DayPicker
-                    mode={"single"}
-                    selected={selectedSingle}
-                    onSelect={handleSelectedDate}
-                    disabled={{ before: new Date() }}
-                    footer={footer}
-                    locale={es}
-                  />
-                  <AcceptButton onClick={handleAcceptButton} />
-                </div>
-              )}
-              {translateTab1Active && tab1EditIs == "Time" && (
-                <div className="grid gap-4">
-                  <TimeInput
-                    onChange={(value) =>
-                      dispatch({ type: "SET_STARTTIME", payload: value })
-                    }
-                    title={"Desde Las"}
-                    value={state.startTime}
-                  />
-                  <TimeInput
-                    onChange={(value) =>
-                      dispatch({ type: "SET_ENDTIME", payload: value })
-                    }
-                    title={"Hasta Las"}
-                    value={state.endTime}
-                  />
-                  <AcceptButton onClick={handleAcceptButton} />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-        {/* Tab 2: Tarea Padre */}
-        {activeTab === 1 && task.recurrenceOf && (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">
-                  Título
-                </label>
-                <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                  {task.title}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">
-                  Repetir
-                </label>
-                <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                  {task.recurringDays}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">
-                    Fecha de Inicio
-                  </label>
-                  <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                    {task.taskDate}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">
-                    Fecha de Fin
-                  </label>
-                  <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                    {task.recurringEndDate}
-                  </div>
-                </div>
-              </div>
-
-              {/* <div className="bg-[#2A2B31] rounded-lg p-4">
+                {/* <div className="bg-[#2A2B31] rounded-lg p-4">
                 <div className="text-center mb-4">
                   <div className="flex items-center justify-between mb-4">
                     <button className="text-gray-400 hover:text-white">
@@ -485,57 +485,58 @@ export default function ModalItemTask({
                   </div>
                 </div>
               </div> */}
-            </div>
+              </div>
 
-            {/* Botones de acción para Tab 2 */}
-            <div className="flex justify-end space-x-4 mt-6">
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Eliminar Todas las Recurrencias
-              </button>
-              <button
-                onClick={handleSaveButton}
-                className="px-4 py-2 bg-[#7E73FF] text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Guardar Cambios
-              </button>
+              {/* Botones de acción para Tab 2 */}
+              <div className="flex justify-end space-x-4 mt-6">
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Eliminar Todas las Recurrencias
+                </button>
+                <button
+                  onClick={handleSaveButton}
+                  className="px-4 py-2 bg-[#7E73FF] text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Guardar Cambios
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Modal de confirmación para eliminar */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-dark-500 p-6 rounded-lg max-w-sm w-full">
+              <h3 className="text-xl font-bold mb-4">Confirmar Eliminación</h3>
+              <p className="mb-6">
+                {!task.isRecurring && !task.recurrenceOf
+                  ? "¿Estás seguro de que quieres eliminar esta Tarea?"
+                  : task.recurrenceOf
+                  ? "¿Estás seguro de que quieres eliminar esta recurrencia?"
+                  : "¿Estás seguro de que quieres eliminar todas las recurrencias?"}
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleDeleteButton}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                >
+                  Eliminar
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
-      {/* Modal de confirmación para eliminar */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-dark-500 p-6 rounded-lg max-w-sm w-full">
-            <h3 className="text-xl font-bold mb-4">Confirmar Eliminación</h3>
-            <p className="mb-6">
-              {!task.isRecurring && !task.recurrenceOf
-                ? "¿Estás seguro de que quieres eliminar esta Tarea?"
-                : task.recurrenceOf
-                ? "¿Estás seguro de que quieres eliminar esta recurrencia?"
-                : "¿Estás seguro de que quieres eliminar todas las recurrencias?"}
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleDeleteButton}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </dialog>
   );
 }
