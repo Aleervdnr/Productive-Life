@@ -18,17 +18,17 @@ export const DateProvider = ({ children }) => {
 
   const daysOfWeek = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"]
 
-  useEffect(() => {
-    const intervalDateTime = setInterval(() => {
-      setNowDateTime(new Date());
-      setNowHourAndMinutes(`${getHours(new Date()) <= 9 ? `0${getHours(new Date())}` : getHours(new Date())}:${getMinutes(new Date()) <= 9 ? `0${getMinutes(new Date())}` : getMinutes(new Date())}`)
-      setNowDate(format(new Date(), "yyyy-MM-dd"))
-    }, 1000);
+  // useEffect(() => {
+  //   const intervalDateTime = setInterval(() => {
+  //     setNowDateTime(new Date());
+  //     setNowHourAndMinutes(`${getHours(new Date()) <= 9 ? `0${getHours(new Date())}` : getHours(new Date())}:${getMinutes(new Date()) <= 9 ? `0${getMinutes(new Date())}` : getMinutes(new Date())}`)
+  //     setNowDate(format(new Date(), "yyyy-MM-dd"))
+  //   }, 1000);
 
-    return () => {
-      clearInterval(intervalDateTime);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(intervalDateTime);
+  //   };
+  // }, []);
 
   return (
     <DateContext.Provider value={{ nowDateTime, nowHourAndMinutes, nowDate, daysOfWeek }}>

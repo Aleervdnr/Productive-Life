@@ -7,18 +7,21 @@ import { TasksProvider } from "./context/TasksContext.jsx";
 import { DateProvider } from "./context/DateContext.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { UiProvider } from "./context/UiContext.jsx";
+import { LanguageProvider } from "./context/LanguageContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <DateProvider>
-          <TasksProvider>
-            <UiProvider>
-              <App />
-            </UiProvider>
-          </TasksProvider>
-        </DateProvider>
+        <LanguageProvider>
+          <DateProvider>
+            <TasksProvider>
+              <UiProvider>
+                <App />
+              </UiProvider>
+            </TasksProvider>
+          </DateProvider>
+        </LanguageProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>

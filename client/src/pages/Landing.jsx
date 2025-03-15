@@ -16,9 +16,15 @@ import { addEmailWaitListRequest } from "../api/waitList";
 import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "../hooks/UseTranslation";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Landing() {
   const { width } = useWindowSize();
+
+  const { t } = useTranslation();
+  const { language,changeLanguage } = useLanguage();
+  console.log(language)
 
   const refImg1 = useRef(null);
   const isInViewImg1 = useInView(refImg1, {
@@ -52,21 +58,24 @@ export default function Landing() {
   };
 
   const submitEmail = async (value) => {
-    addEmailWaitList(value)
+    addEmailWaitList(value);
   };
 
-  const {isAuthenticated} = useAuth()
-  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if(isAuthenticated) navigate("/tasks")
-  }, [isAuthenticated])
-  
+    if (isAuthenticated) navigate("/tasks");
+  }, [isAuthenticated]);
 
   return (
     <div className="overflow-hidden">
-      <header className="px-5 md:px-16 xl:px-20 h-[75px] grid items-center ">
+      <header className="px-5 md:px-16 xl:px-20 h-[75px] w-full grid items-center grid-cols-2 ">
         <img src={logo} alt="logo productive life" className="max-w-[150px] " />
+        <div className="justify-self-end flex items-center gap-2 rounded-lg bg-dark-400 p-1 px-2 text-sm">
+          <button onClick={() => changeLanguage("en")} className={`p-2 ${language == "en" && "bg-violet-main text-white rounded-lg"}`}>English</button>
+          <button onClick={() => changeLanguage("es")} className={`p-2 ${language == "es" && "bg-violet-main text-white rounded-lg"}`}>Español</button>
+        </div>
       </header>
       <main className="px-5 md:px-16 xl:px-20">
         <section className="py-12">
@@ -78,14 +87,16 @@ export default function Landing() {
           >
             <div className="text-center grid justify-items-center gap-4 ">
               <h1 className="text-4xl font-bold sm:max-w-[600px] ">
-                Organiza Tu Vida, Alcanzando Tu Máximo Potencial
+                {t("heroSection.title")}
               </h1>
               <p className="text-dark-100 text-lg sm:max-w-[600px] ">
-                La plataforma de gestión personal diseñada para ayudarte a
-                optimizar tu día a día.
+                {t("heroSection.subtitle")}
               </p>
-              <a href="#email" className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-4 py-2 w-fit rounded-lg">
-                Únete a la Lista de Espera
+              <a
+                href="#email"
+                className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-4 py-2 w-fit rounded-lg"
+              >
+                {t("heroSection.button")}
               </a>
             </div>
           </motion.div>
@@ -132,7 +143,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-2xl font-bold">
-                Todo lo que Necesitas para Organizar tu Vida
+                {t("featuresSection.title")}
               </h2>
             </motion.div>
             <motion.div
@@ -142,10 +153,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <p className="text-dark-100 text-sm sm:max-w-[550px]">
-                Con Productive Life tendrás acceso a herramientas que te
-                ayudarán a mantener el control de tus días. Desde tareas
-                pendientes hasta objetivos a largo plazo, todo está a tu
-                alcance.
+                {t("featuresSection.description")}
               </p>
             </motion.div>
           </div>
@@ -166,7 +174,7 @@ export default function Landing() {
                   >
                     <span className="text-3xl">✅</span>
                     <h3 className="font-bold text-lg py-1">
-                      Gestión de Tareas
+                      {t("featuresSection.featuresList.taskManagement.title")}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -176,9 +184,9 @@ export default function Landing() {
                     transition={{ duration: 0.8 }}
                   >
                     <p className="text-dark-100 text-sm">
-                      {" "}
-                      Organiza tus pendientes con fechas, horarios y
-                      recordatorios.
+                      {t(
+                        "featuresSection.featuresList.taskManagement.description"
+                      )}
                     </p>
                   </motion.div>
                 </div>
@@ -216,7 +224,7 @@ export default function Landing() {
                   >
                     <span className="text-3xl">📊</span>
                     <h3 className="font-bold text-lg py-1">
-                      Seguimiento de Hábitos
+                      {t("featuresSection.featuresList.habitTracking.title")}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -226,7 +234,9 @@ export default function Landing() {
                     transition={{ duration: 0.8 }}
                   >
                     <p className="text-dark-100 text-sm">
-                      Establece hábitos saludables y monitorea tu progreso.
+                      {t(
+                        "featuresSection.featuresList.habitTracking.description"
+                      )}
                     </p>
                   </motion.div>
                 </div>
@@ -257,7 +267,9 @@ export default function Landing() {
                   >
                     <span className="text-3xl">📅</span>
                     <h3 className="font-bold text-lg py-1">
-                      Calendario Integrado
+                      {t(
+                        "featuresSection.featuresList.calendarIntegration.title"
+                      )}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -267,7 +279,9 @@ export default function Landing() {
                     transition={{ duration: 0.8 }}
                   >
                     <p className="text-dark-100 text-sm">
-                      Visualiza y planea tu semana o mes de forma sencilla.
+                      {t(
+                        "featuresSection.featuresList.calendarIntegration.description"
+                      )}
                     </p>
                   </motion.div>
                 </div>
@@ -298,7 +312,7 @@ export default function Landing() {
                   >
                     <span className="text-3xl">💰</span>
                     <h3 className="font-bold text-lg py-1">
-                      Control de Gastos
+                      {t("featuresSection.featuresList.expenseControl.title")}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -308,8 +322,9 @@ export default function Landing() {
                     transition={{ duration: 0.8 }}
                   >
                     <p className="text-dark-100 text-sm">
-                      Registra tus finanzas y analiza tus gastos de forma
-                      inteligente.
+                      {t(
+                        "featuresSection.featuresList.expenseControl.description"
+                      )}
                     </p>
                   </motion.div>
                 </div>
@@ -341,7 +356,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-2xl font-bold">
-                Transforma tu Productividad en Resultados Reales
+                {t("benefitsSection.title")}
               </h2>
             </motion.div>
             <motion.div
@@ -351,10 +366,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <p className="text-dark-100 text-sm md:max-w-[640px]">
-                Productive Life no es solo una herramienta, es tu compañero para
-                alcanzar metas. Ya sea que quieras maximizar tu tiempo,
-                establecer hábitos consistentes o mantener tus finanzas en
-                orden, nuestra plataforma te da todo lo necesario para triunfar.
+                {t("benefitsSection.text")}
               </p>
             </motion.div>
           </div>
@@ -367,11 +379,14 @@ export default function Landing() {
             >
               <div className="text-dark-100 grid gap-2">
                 <h4 className="text-white font-semibold">
-                  Análisis de Productividad
+                  {t("benefitsSection.benefits.clearStatistics.title")}
                 </h4>
-                <span className="text-3xl">📊</span>
+                <span className="text-3xl">
+                  {" "}
+                  {t("benefitsSection.benefits.clearStatistics.icon")}
+                </span>
                 <p className="text-xs">
-                  Estadísticas semanales sobre tu rendimiento.
+                  {t("benefitsSection.benefits.clearStatistics.description")}
                 </p>
               </div>
             </motion.div>
@@ -383,11 +398,14 @@ export default function Landing() {
               transition={{ duration: 1.2 }}
             >
               <div className="text-dark-100 grid gap-2">
-                <h4 className="text-white font-semibold">Modo Enfoque</h4>
-                <span className="text-3xl">🎯</span>
+                <h4 className="text-white font-semibold">
+                  {t("benefitsSection.benefits.focusMode.title")}
+                </h4>
+                <span className="text-3xl">
+                  {t("benefitsSection.benefits.focusMode.icon")}
+                </span>
                 <p className="text-xs">
-                  Integración con el Reloj Pomodoro para mejorar la
-                  concentración.
+                  {t("benefitsSection.benefits.focusMode.description")}
                 </p>
               </div>
             </motion.div>
@@ -413,12 +431,14 @@ export default function Landing() {
             >
               <div className="text-dark-100 grid gap-2">
                 <h4 className="text-white font-semibold">
-                  Planificación Avanzada
+                  {t("benefitsSection.benefits.advancedPlanning.title")}
                 </h4>
-                <span className="text-3xl">📆</span>
+                <span className="text-3xl">
+                  {" "}
+                  {t("benefitsSection.benefits.advancedPlanning.icon")}
+                </span>
                 <p className="text-xs">
-                  Organiza eventos, proyectos y hábitos a largo plazo con un
-                  calendario intuitivo.
+                  {t("benefitsSection.benefits.advancedPlanning.description")}
                 </p>
               </div>
             </motion.div>
@@ -429,11 +449,16 @@ export default function Landing() {
               transition={{ duration: 1.2 }}
             >
               <div className="text-dark-100 grid gap-2">
-                <h4 className="text-white font-semibold"> Todo en Uno</h4>
-                <span className="text-3xl">🌀</span>
+                <h4 className="text-white font-semibold">
+                  {" "}
+                  {t("benefitsSection.benefits.allInOne.title")}
+                </h4>
+                <span className="text-3xl">
+                  {" "}
+                  {t("benefitsSection.benefits.allInOne.icon")}
+                </span>
                 <p className="text-xs">
-                  Productive Life combina gestión de tareas, hábitos, finanzas y
-                  planificación en una sola plataforma intuitiva y eficiente.
+                  {t("benefitsSection.benefits.allInOne.description")}
                 </p>
               </div>
             </motion.div>
@@ -449,22 +474,22 @@ export default function Landing() {
             </div>
           </div>
         </section>
-        <section id="email" className="grid gap-4 text-center pb-6 lg:flex lg:bg-dark-400 lg:py-12 lg:px-10 lg:rounded-md lg:mb-14">
+        <section
+          id="email"
+          className="grid gap-4 text-center pb-6 lg:flex lg:bg-dark-400 lg:py-12 lg:px-10 lg:rounded-md lg:mb-14"
+        >
           <div className="text-center lg:grid lg:place-content-center lg:gap-2">
             <h3 className="text-white font-semibold text-2xl lg:text-xl">
-              Sé el Primero en Probar Productive
+              {t("whitelistForm.title")} Productive
               <span className="text-violet-main">Life</span>{" "}
             </h3>
             <p className="text-dark-100 text-sm max-w-[480px] mx-auto">
-              Estamos a punto de lanzar nuestra versión inicial. Únete a la
-              lista de espera para recibir actualizaciones exclusivas y ser
-              parte del inicio de Productive Life.
+              {t("whitelistForm.subtitle")}
             </p>
           </div>
           <div className="grid gap-2 bg-dark-400 p-4 rounded-md w-fit lg:w-1/2 mx-auto">
             <span className="text-xs font-semibold py-2 ">
-              ¡Forma parte de los primeros usuarios y obtén beneficios
-              exclusivos al lanzar el producto!
+              {t("whitelistForm.additionalMessage")}
             </span>
             <form
               className="w-full grid grid-cols-[clamp(250px,50vw,300px)] gap-2 justify-center justify-items-center sm:grid-cols-[clamp(150px,100%,300px),100px] sm:gap-0 lg:grid-cols-1 lg:gap-2 lg:justify-items-end mx-auto"
@@ -472,13 +497,13 @@ export default function Landing() {
             >
               <InputForm
                 typeInput={"email"}
-                placeholder={"Ingrese su email"}
+                placeholder={t("whitelistForm.emailPlaceholder")}
                 name={"email"}
                 register={register}
               />
 
               <button className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-2 py-2 w-fit h-[44px]  rounded-md sm:rounded-none sm:rounded-tr-md sm:rounded-br-md lg:rounded-md lg:h-fit  text-xs font-semibold">
-                ¡Únete Ahora!
+                {t("whitelistForm.button")}
               </button>
             </form>
           </div>
