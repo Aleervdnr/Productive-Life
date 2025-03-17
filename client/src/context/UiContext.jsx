@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const UiContext = createContext();
 
@@ -13,6 +13,7 @@ export const useUi = () => {
 export const UiProvider = ({ children }) => {
   const [overlayActive, setOverlayActive] = useState(false);
   const [taskFormActive, setTaskFormActive] = useState(false);
+  const [taskModalActive, setTaskModalActive] = useState(false);
   const [overlayIsClicked, setOverlayIsClicked] = useState(false);
 
   const scrollbarStyles = {
@@ -22,6 +23,8 @@ export const UiProvider = ({ children }) => {
     scrollbarColor: "#6b7280 transparent", // Firefox
   };
 
+  //TaskModal  
+
   return (
     <UiContext.Provider
       value={{
@@ -29,6 +32,8 @@ export const UiProvider = ({ children }) => {
         setOverlayActive,
         taskFormActive,
         setTaskFormActive,
+        taskModalActive,
+        setTaskModalActive,
         overlayIsClicked,
         setOverlayIsClicked,
         scrollbarStyles

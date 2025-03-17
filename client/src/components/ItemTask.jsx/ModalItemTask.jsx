@@ -10,7 +10,19 @@ import {
   Save,
 } from "lucide-react";
 import useWindowSize from "../../hooks/useWindowSize";
-import { format, formatDate } from "date-fns";
+import {
+  addDays,
+  differenceInMilliseconds,
+  eachDayOfInterval,
+  format,
+  formatDate,
+  getDay,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isWithinInterval,
+  parseISO,
+} from "date-fns";
 import { es as esDateFns } from "date-fns/locale";
 import InputItemTask from "./InputItemTask";
 import { DayPicker } from "react-day-picker";
@@ -19,30 +31,34 @@ import { AcceptButton } from "../Buttons/ButtonsModal";
 import TimeInput from "../Inputs/TimeInput";
 import DropDownItemTask from "./DropDownItemTask";
 import { useTasks } from "../../context/TasksContext";
+import ItemRecurringDays from "../ItemRecurringDays";
 
 export default function ModalItemTask({
-  task,
-  parentTask,
-  modalIsActive,
-  onClose,
+  parentTask = null,
+  modalIsActive = false,
 }) {
   const [activeTab, setActiveTab] = useState(0);
   const [translateTab1Active, setTranslateTab1Active] = useState(false);
   const [tab1EditIs, setTab1EditIs] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteMode, setDeleteMode] = useState("");
   const { width } = useWindowSize();
+  const { setTaskModalActive } = useUi();
+  const { setCurrentTask } = useTasks();
   const [time, setTime] = useState({
     startTime: "00:00:00",
     endTime: "00:00:00",
   });
-  const { updateTask, deleteTask } = useTasks();
+  const { updateTask, deleteTask, currentTask } = useTasks();
   let tabs = [
     { id: 0, title: "Información", icon: <Info className="w-4 h-4" /> },
-    { id: 1, title: "Tarea Padre", icon: <CalendarDays className="w-4 h-4" /> },
+    {
+      id: 1,
+      title: "Recurrencias",
+      icon: <CalendarDays className="w-4 h-4" />,
+    },
     { id: 2, title: "Estadísticas", icon: <BarChart3 className="w-4 h-4" /> },
   ];
-  if (!task.isRecurring && !task.recurrenceOf) {
+  if (!currentTask.isRecurring && !currentTask.recurrenceOf) {
     tabs = [
       { id: 0, title: "Información", icon: <Info className="w-4 h-4" /> },
     ];
@@ -51,23 +67,41 @@ export default function ModalItemTask({
   useEffect(() => {
     document.addEventListener(
       "keydown",
-      (e) => e.key === "Escape" && onClose()
+      (e) => e.key === "Escape" && handleClose()
     );
-    return () => document.removeEventListener("keydown", onClose);
+    console.log(currentTask);
+    return () => document.removeEventListener("keydown", handleClose);
   }, []);
 
   useEffect(() => {
-    if (!modalIsActive) setShowDeleteModal(false);
+    if (modalIsActive) {
+      console.log(currentTask);
+      document.getElementById(`modal_task_${currentTask._id}`).showModal();
+    }
+    if (!modalIsActive) {
+      handleClose();
+    }
   }, [modalIsActive]);
+
+  const recurringDaysArray = [
+    { name: "Lunes", isoDay: "1" },
+    { name: "Martes", isoDay: "2" },
+    { name: "Miercoles", isoDay: "3" },
+    { name: "Jueves", isoDay: "4" },
+    { name: "Viernes", isoDay: "5" },
+    { name: "Sabado", isoDay: "6" },
+    { name: "Domingo", isoDay: "0" },
+  ];
 
   //Reducer
   const initialState = {
-    title: task.title,
-    description: task.description,
-    taskDate: task.taskDate,
-    startTime: task.startTime,
-    endTime: task.endTime,
-    status: task.status,
+    title: currentTask.title,
+    description: currentTask.description,
+    taskDate: currentTask.taskDate,
+    startTime: currentTask.startTime,
+    endTime: currentTask.endTime,
+    status: currentTask.status,
+    recurringDays: currentTask.recurringDays.map((iso) => iso.toString()),
   };
   const reducer = (state, action) => {
     switch (action.type) {
@@ -113,8 +147,18 @@ export default function ModalItemTask({
   const [state, dispatch] = useReducer(reducer, initialState);
 
   //DayPicker
-  const currentDate = new Date(`${task.taskDate}T00:00:00`);
+  const currentDate = new Date(`${currentTask.taskDate}T00:00:00`);
+  let currentRecurrences = [];
+  if (currentTask.recurrenceOf) {
+    console.log(currentTask);
+    console.log(parentTask);
+    currentRecurrences = parentTask.recurrences.map(
+      (recu) => new Date(`${recu.taskDate}T00:00:00`)
+    );
+  }
+
   const [selectedSingle, setSelectedSingle] = useState([currentDate]);
+  const [selectedMultiple, setSelectedMultiple] = useState(currentRecurrences);
 
   let footer = (
     <p className="text-xs md:text-sm text-center mt-2">
@@ -133,10 +177,68 @@ export default function ModalItemTask({
       </p>
     );
   }
+  const getSpecificDaysInRange = (start, end, targetDay) => {
+    const allDaysInRange = eachDayOfInterval({ start, end });
+    return allDaysInRange.filter((day) => getDay(day) === targetDay);
+  };
+
+  // Función para agregar días de recurrencia dentro del rango
+  const addRecurringDays = (dates, startDate, endDate) => {
+    const recurringDays = state.recurringDays; // Días de recurrencia seleccionados (e.g., ["1", "2", "3"])
+
+    // Si no hay días de recurrencia seleccionados, devolver las fechas actuales
+    if (!recurringDays || recurringDays.length === 0) {
+      return dates;
+    }
+
+    // Calcular todos los días de recurrencia dentro del rango
+    const allRecurringDays = recurringDays.flatMap((day) => {
+      const targetDay = parseInt(day); // Convertir a número
+      return getSpecificDaysInRange(startDate, endDate, targetDay);
+    });
+
+    // Combinar las fechas actuales con los días de recurrencia, eliminar duplicados y ordenar
+    const combinedDates = Array.from(
+      new Set([
+        ...dates,
+        ...allRecurringDays.filter(
+          (day) =>
+            (!dates.some((existingDay) => isSameDay(existingDay, day)) && // Evitar duplicados
+              !isSameDay(day, startDate) && // Excluir la fecha de inicio
+              !isSameDay(day, endDate) && // Excluir la fecha de fin
+              isSameDay(day, new Date())) ||
+            isAfter(day, new Date()) // Solo incluir días actuales o futuros
+        ),
+      ])
+    ).sort((a, b) => differenceInMilliseconds(a, b)); // Ordenar de menor a mayor
+
+    return combinedDates;
+  };
+
+  const modifiers = {
+    first: selectedMultiple[0], // Primer día seleccionado
+    last: selectedMultiple[selectedMultiple.length - 1], // Último día seleccionado
+    between: (date) => {
+      if (!selectedMultiple || selectedMultiple.length < 2) return false; // No hay rango válido
+      const startDate = new Date(selectedMultiple[0]);
+      const endDate = new Date(selectedMultiple[selectedMultiple.length - 1]);
+      return date > startDate && date < endDate; // Días entre el primero y el último
+    },
+    selected: selectedMultiple,
+  };
+
+  const modifiersClassNames = {
+    first: "first-day", // Clase para el primer día
+    last: "end-day", // Clase para el último día
+    between: "between-days", // Clase para los días intermedios
+    selected: "selected-days",
+  };
 
   //Handlers
   const handleClose = () => {
-    onClose();
+    setTaskModalActive(false);
+    setCurrentTask(null);
+    document.getElementById(`modal_task_${currentTask._id}`).close();
     setShowDeleteModal(false);
     setTranslateTab1Active(false);
     setTab1EditIs("");
@@ -164,19 +266,19 @@ export default function ModalItemTask({
   };
 
   const handleSaveButton = () => {
-    if (!task.recurrenceOf) {
+    if (!currentTask.recurrenceOf) {
       const updatedTask = {
-        ...task, // Copia todas las propiedades de la tarea padre
+        ...currentTask, // Copia todas las propiedades de la tarea padre
         ...state,
       };
       updateTask(updatedTask);
     } else {
       const oldRecurrence = parentTask.recurrences.find(
-        (recu) => recu._id == task._id
+        (recu) => recu._id == currentTask._id
       );
       const newRecurrence = { ...oldRecurrence, ...state };
       const updatedRecurrences = parentTask.recurrences.map((recu) =>
-        recu._id == task._id ? newRecurrence : recu
+        recu._id == currentTask._id ? newRecurrence : recu
       );
 
       const updatedTask = {
@@ -189,14 +291,14 @@ export default function ModalItemTask({
 
   const handleDeleteButton = async () => {
     //Si no es una recurrencia elimnamos directo de la BD
-    if (!task.recurrenceOf) {
-      const res = await deleteTask(task._id);
-      if (res.status == 204) onClose();
+    if (!currentTask.recurrenceOf) {
+      const res = await deleteTask(currentTask._id);
+      if (res.status == 204) handleClose();
       return;
     } else {
       //Si es una recurrencia eliminamos elemento de la tarea padre y actualizamos la tarea padre
       const updatedRecurrences = parentTask.recurrences.filter(
-        (tasks) => tasks._id != task._id
+        (tasks) => tasks._id != currentTask._id
       );
 
       const updatedTask = {
@@ -205,15 +307,97 @@ export default function ModalItemTask({
       };
 
       const res = await updateTask(updatedTask, false, true);
-      if (res.status == 200) onClose();
+      if (res.status == 200) handleClose();
     }
+  };
+
+  const handleSelected = (value) => {
+    //Si se agregan dias
+    if (value.length > selectedMultiple.length) {
+      // Determinar las fechas mínima y máxima en el array
+      const minDate = value.reduce(
+        (min, date) => (isBefore(date, min) ? date : min),
+        value[0]
+      );
+      const maxDate = value.reduce(
+        (max, date) => (isAfter(date, max) ? date : max),
+        value[0]
+      );
+
+      // Filtrar las fechas dentro del rango (excluyendo duplicados y ordenando)
+      const filteredDates = Array.from(
+        new Set( // Eliminar duplicados usando un Set
+          value
+            .filter(
+              (date) => isWithinInterval(date, { start: minDate, end: maxDate }) // Incluir solo fechas dentro del rango
+            )
+            .sort((a, b) => differenceInMilliseconds(a, b)) // Ordenar de menor a mayor
+        )
+      );
+
+      // Recalcular los días de recurrencia si hay días seleccionados en recurringDays
+      const updatedDatesWithRecurrence = addRecurringDays(
+        filteredDates,
+        minDate,
+        maxDate
+      );
+
+      // Actualizar el estado con las fechas filtradas y recalculadas
+      setSelectedMultiple(updatedDatesWithRecurrence);
+    } else {
+      //Si se quitan dias
+      const newArray = [];
+      const minDate = value.reduce(
+        (min, date) => (isBefore(date, min) ? date : min),
+        value[0]
+      );
+      const maxDate = value.reduce(
+        (max, date) => (isAfter(date, max) ? date : max),
+        value[0]
+      );
+
+      // Filtrar las fechas dentro del rango (excluyendo minDate y maxDate)
+      const filteredDates = Array.from(
+        new Set( // Eliminar duplicados usando un Set
+          value
+            .filter(
+              (date) =>
+                !isSameDay(date, minDate) && // Excluir minDate
+                !isSameDay(date, maxDate) && // Excluir maxDate
+                isWithinInterval(date, { start: minDate, end: maxDate }) // Incluir solo fechas dentro del rango
+            )
+            .sort((a, b) => differenceInMilliseconds(a, b)) // Ordenar de menor a mayor
+        )
+      );
+
+      newArray.push(minDate, ...filteredDates, maxDate);
+
+      // Actualizar el estado con las fechas filtradas
+      console.log(newArray);
+      setSelectedMultiple(newArray);
+    }
+  };
+
+  const handleSaveRecurrencesButton = () => {
+    const formatedRecurrences = selectedMultiple.map((date) =>
+      format(date, "yyyy-MM-dd")
+    );
+    const existingRecurrences = parentTask.recurrences.map((date) => {
+      if (formatedRecurrences.includes(date.taskDate)) return date.taskDate;
+    });
+    // Filtrar las fechas que NO están en `existingRecurrences`
+    const updatedRecurrences = formatedRecurrences.filter(
+      (date) => !existingRecurrences.includes(date)
+    );
+
+    console.log(updatedRecurrences);
   };
 
   return (
     <dialog
-      id={`modal_task_${task._id}`}
+      id={`modal_task_${currentTask._id}`}
       className={`fixed w-screen h-screen max-w-none max-h-none z-[999] m-0 overflow-hidden bg-[#0006] grid place-content-center opacity-0 modal-task invisible transition-opacity`}
-      >
+    >
       <div
         className={`transition-opacity delay-300 bg-dark-500 rounded-md w-[calc(100vw-20px)] max-w-[620px] h-fit
          `}
@@ -225,10 +409,10 @@ export default function ModalItemTask({
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  className={`flex items-center px-4 py-3 border-b-2 transition-colors w-fit ${
+                  className={`flex items-center px-4 py-3 border-b-2 transition-colors w-fit focus:outline-none ${
                     activeTab === tab.id
                       ? "border-[#7E73FF] text-[#7E73FF]"
-                      : "border-transparent text-gray-400 hover:text-gray-300"
+                      : "border-transparent text-gray-400 hover:text-gray-300 "
                   }`}
                   onClick={() => setActiveTab(tab.id)}
                 >
@@ -280,7 +464,7 @@ export default function ModalItemTask({
                   />
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     <DropDownItemTask
-                      status={task.status}
+                      status={currentTask.status}
                       onChange={handleStatusChange}
                     />
                     <div
@@ -367,142 +551,110 @@ export default function ModalItemTask({
               </div>
             </div>
           )}
-          {/* Tab 2: Tarea Padre */}
-          {activeTab === 1 && task.recurrenceOf && (
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">
-                    Título
-                  </label>
-                  <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                    {task.title}
+          {/* Tab 2: Recurrencias */}
+          {activeTab === 1 && currentTask.recurrenceOf && (
+            <div className="space-y-4 p-4">
+              <div className="space-y-2">
+                <DayPicker
+                  mode={"multiple"}
+                  selected={selectedMultiple}
+                  onSelect={handleSelected}
+                  disabled={{ before: new Date("2/1/2025") }}
+                  footer={<p>Selecciona una fecha</p>}
+                  locale={es}
+                  modifiers={modifiers}
+                  modifiersClassNames={modifiersClassNames}
+                />
+                <div className="grid gap-1 justify-items-center">
+                  <label className="font-semibold">Repetir todos los</label>
+                  <div className="flex gap-1 max-[425px]:max-w-[385px]">
+                    {recurringDaysArray.map((item) => (
+                      <ItemRecurringDays
+                        key={item.isoDay}
+                        name={item.name}
+                        isoDay={item.isoDay}
+                        isActive={state.recurringDays.includes(item.isoDay)}
+                        handleToggle={(value) => {
+                          const currentDays = state.recurringDays;
+                          const updatedDays = currentDays.includes(value)
+                            ? currentDays.filter((day) => day !== value)
+                            : [...currentDays, value];
+
+                          dispatch({
+                            type: "UPDATE_TASK",
+                            payload: { recurringDays: updatedDays },
+                          });
+
+                          if (!currentDays.includes(value)) {
+                            // Si se activa un día de recurrencia
+                            if (selectedMultiple.length >= 2) {
+                              const startDate = selectedMultiple[0];
+                              const endDate =
+                                selectedMultiple[selectedMultiple.length - 1];
+                              const targetDay = parseInt(value);
+                              const specificDays = getSpecificDaysInRange(
+                                new Date(),
+                                endDate,
+                                targetDay
+                              );
+
+                              // Agregar los días calculados, excluyendo las fechas de inicio y fin
+                              setSelectedMultiple((prev) => {
+                                const newDates = [
+                                  ...prev,
+                                  ...specificDays.filter(
+                                    (day) =>
+                                      !prev.some((existingDay) =>
+                                        isSameDay(existingDay, day)
+                                      ) &&
+                                      !isSameDay(day, startDate) &&
+                                      !isSameDay(day, endDate)
+                                  ),
+                                ];
+
+                                // Ordenar las fechas en orden ascendente
+                                return newDates.sort((a, b) =>
+                                  differenceInMilliseconds(a, b)
+                                );
+                              });
+                            }
+                          } else {
+                            // Si se desactiva un día de recurrencia
+                            if (selectedMultiple.length >= 2) {
+                              const startDate = selectedMultiple[0];
+                              const endDate =
+                                selectedMultiple[selectedMultiple.length - 1];
+                              const targetDay = parseInt(value);
+                              const specificDays = getSpecificDaysInRange(
+                                startDate,
+                                endDate,
+                                targetDay
+                              );
+
+                              // Eliminar los días calculados, pero mantener las fechas de inicio y fin
+                              setSelectedMultiple((prev) => {
+                                const newDates = prev.filter(
+                                  (day) =>
+                                    !specificDays.some((specificDay) =>
+                                      isSameDay(specificDay, day)
+                                    ) ||
+                                    isSameDay(day, startDate) ||
+                                    isSameDay(day, endDate)
+                                );
+
+                                // Ordenar las fechas en orden ascendente
+                                return newDates.sort((a, b) =>
+                                  differenceInMilliseconds(a, b)
+                                );
+                              });
+                            }
+                          }
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
-
-                <div>
-                  <label className="block text-sm text-gray-400 mb-1">
-                    Repetir
-                  </label>
-                  <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                    {task.recurringDays}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-1">
-                      Fecha de Inicio
-                    </label>
-                    <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                      {task.taskDate}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-400 mb-1">
-                      Fecha de Fin
-                    </label>
-                    <div className="p-3 bg-[#2A2B31] rounded-lg text-white">
-                      {task.recurringEndDate}
-                    </div>
-                  </div>
-                </div>
-
-                {/* <div className="bg-[#2A2B31] rounded-lg p-4">
-                <div className="text-center mb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <button className="text-gray-400 hover:text-white">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
-                      </svg>
-                    </button>
-                    <h3 className="text-lg font-medium">
-                      {new Date(task.taskDate).toLocaleString("es-ES", {
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </h3>
-                    <button className="text-gray-400 hover:text-white">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-7 gap-1 text-sm mb-2">
-                    {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map(
-                      (day) => (
-                        <div key={day} className="text-gray-400">
-                          {day}
-                        </div>
-                      )
-                    )}
-                  </div>
-                  <div className="grid grid-cols-7 gap-1">
-                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => {
-                      const currentDate = new Date(
-                        new Date(task.taskDate).getFullYear(),
-                        new Date(task.taskDate).getMonth(),
-                        day
-                      );
-                      const recurrence = task.recurrences.find(
-                        (r) =>
-                          new Date(r.taskDate).toDateString() ===
-                          currentDate.toDateString()
-                      );
-                      return (
-                        <div
-                          key={day}
-                          className={`p-2 rounded-full ${
-                            recurrence
-                              ? "bg-[#7E73FF] text-white"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {day}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div> */}
-              </div>
-
-              {/* Botones de acción para Tab 2 */}
-              <div className="flex justify-end space-x-4 mt-6">
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Eliminar Todas las Recurrencias
-                </button>
-                <button
-                  onClick={handleSaveButton}
-                  className="px-4 py-2 bg-[#7E73FF] text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Guardar Cambios
-                </button>
+                <AcceptButton onClick={handleSaveRecurrencesButton} />
               </div>
             </div>
           )}
@@ -513,9 +665,9 @@ export default function ModalItemTask({
             <div className="bg-dark-500 p-6 rounded-lg max-w-sm w-full">
               <h3 className="text-xl font-bold mb-4">Confirmar Eliminación</h3>
               <p className="mb-6">
-                {!task.isRecurring && !task.recurrenceOf
+                {!currentTask.isRecurring && !currentTask.recurrenceOf
                   ? "¿Estás seguro de que quieres eliminar esta Tarea?"
-                  : task.recurrenceOf
+                  : currentTask.recurrenceOf
                   ? "¿Estás seguro de que quieres eliminar esta recurrencia?"
                   : "¿Estás seguro de que quieres eliminar todas las recurrencias?"}
               </p>

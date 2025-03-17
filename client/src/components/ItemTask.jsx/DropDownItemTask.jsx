@@ -44,7 +44,7 @@ export default function DropDownItemTask({ status = "pending", onChange }) {
 
   // Find the current status object
   const currentStatus =
-    statusOptions.find((option) => option.value === status) || statusOptions[1];
+    statusOptions.find((option) => option.value === dropDownState) || statusOptions[1];
   const Icon = currentStatus.icon;
 
   // Handle status change

@@ -7,27 +7,40 @@ import { useTasks } from "../../context/TasksContext";
 
 export default function ItemTask({ task }) {
   const { title, status, startTime, endTime } = task;
-  const [modalIsActive, setModalIsActive] = useState(false);
-  const [parentTask, setparentTask] = useState();
-  const { setOverlayActive } = useUi();
-  const {updateTask} = useTasks()
-  const { parentTasks } = useTasks();
-
-  const handleCloseModal = () => {
-    setModalIsActive(false);
-    setOverlayActive(false);
-    document.getElementById(`modal_task_${task._id}`).close();
-  };
+  const { setOverlayActive, setTaskModalActive, taskModalActive } = useUi();
+  const { updateTask, parentTasks, setCurrentTask, currentTask } = useTasks();
+  const [parentTask, setparentTask] = useState(
+    parentTasks.find((tasks) => tasks._id == task.recurrenceOf)
+  );
 
   const handleChangeStatus = () => {
     if (!task.recurrenceOf) {
       const newTask = task;
       if (status == "completed") newTask.status = "pending";
       if (status == "pending") newTask.status = "completed";
-
       updateTask(newTask, true);
-    }else{
-      console.log(task)
+    } else {
+      const parent = parentTasks.find(
+        (pTask) => pTask._id == task.recurrenceOf
+      );
+
+      const newTask = {
+        description: task.description,
+        startTime: task.startTime,
+        endTime: task.endTime,
+        taskDate: task.taskDate,
+        status: task.status,
+        _id: task._id,
+      };
+      if (status == "completed") newTask.status = "pending";
+      if (status == "pending") newTask.status = "completed";
+
+      const updatedRecurrences = parent.recurrences.map((recu) =>
+        recu._id != newTask._id ? recu : newTask
+      );
+
+      parent.recurrences = updatedRecurrences;
+      updateTask(parent, true, false);
     }
   };
 
@@ -38,22 +51,14 @@ export default function ItemTask({ task }) {
     ) {
       e.preventDefault();
     } else {
-      setModalIsActive(true)
-      document.getElementById(`modal_task_${task._id}`).showModal();
+      setCurrentTask(task)
+      setTaskModalActive(true);
     }
   };
 
   useEffect(() => {
-    if (modalIsActive) setOverlayActive(true);
-  }, [modalIsActive]);
-
-  useEffect(() => {
-    if (task.recurrenceOf) {
-      setparentTask(
-        parentTasks.find((tasks) => tasks._id == task.recurrenceOf)
-      );
-    }
-  }, []);
+    if (taskModalActive) setOverlayActive(true);
+  }, [taskModalActive]);
 
   return (
     <>
@@ -94,12 +99,6 @@ export default function ItemTask({ task }) {
           )}
         </div>
       </div>
-      <ModalItemTask
-        task={task}
-        parentTask={parentTask}
-        modalIsActive={modalIsActive}
-        onClose={handleCloseModal}
-      />
     </>
   );
 }

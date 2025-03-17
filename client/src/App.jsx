@@ -14,16 +14,18 @@ import { initializeAnalytics, trackPageView } from "./libs/analytics";
 import { useUi } from "./context/UiContext";
 import Landing from "./pages/Landing";
 import ModalItemTask from "./components/ItemTask.jsx/ModalItemTask";
+import { useTasks } from "./context/TasksContext";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
   const { isAuthenticated } = useAuth();
   const {
-    overlayActive,
-    setOverlayActive,
     setTaskFormActive,
     setOverlayIsClicked,
+    taskModalActive,
   } = useUi();
+
+  const { currentTask, parentTasks } = useTasks();
 
   const location = useLocation();
 
@@ -50,6 +52,19 @@ function App() {
           : ""
       } `}
     >
+      {
+        /* Verificar primero si currentTask está vacío */
+        !currentTask ? null : currentTask.recurrenceOf ? (
+          <ModalItemTask
+            parentTask={parentTasks.find((pTask) => pTask._id == currentTask.recurrenceOf)}
+            modalIsActive={taskModalActive}
+          />
+        ) : (
+          <ModalItemTask
+            modalIsActive={taskModalActive}
+          />
+        )
+      }
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<LoginRegisterpage />} />

@@ -1,18 +1,37 @@
 .first-day {
-  background-color: #6c5ce7;
+  background: linear-gradient(#7e73ff 30%, #4c4599 84%);
   color: white;
   border-radius: 50%;
 }
 
 .end-day {
-  background-color: #6c5ce7;
+  background: linear-gradient(#7e73ff 30%, #4c4599 84%);
   color: white;
   border-radius: 50%;
 }
 
-.between-days {
-  background-color: #dfe6e9;
-  color: black;
+/* .between-days {
+  border-top: 6px solid rgb(35, 36, 41);
+  border-bottom: 6px solid rgb(35, 36, 41);
+  border-right: 4px solid rgb(35, 36, 41);
+  border-left: 4px solid rgb(35, 36, 41);
+} */
+
+.selected-days {
+  background-color: rgba(126, 115, 255, 0.5);
+  border-radius: 50%;
+  color: white;
+}
+
+/* Espaciado entre columnas */
+.react-day-picker .rdp-day {
+  padding: 4px; /* Espacio interno dentro de cada día */
+  margin: 2px; /* Espacio externo entre los días */
+}
+
+/* Espaciado entre filas */
+.react-day-picker .rdp-week {
+  margin-bottom: 8px; /* Espacio entre cada fila (semana) */
 }
 
 .card-3d {
@@ -21,35 +40,35 @@
   border-radius: 2px;
 }
 
-.card-1{
+.card-1 {
   animation: fadeIn linear;
   animation-timeline: view();
 }
 
 @keyframes fadeInScale {
-  0%{
+  0% {
     opacity: 1;
     scale: 0.2;
   }
-  
-  100%{
+
+  100% {
     opacity: 1;
     scale: 1;
   }
 }
 @keyframes fadeIn {
-  0%{
+  0% {
     opacity: 0;
     transform: translateX(1000px);
   }
-  
-  100%{
+
+  100% {
     opacity: 1;
     transform: translateX(24px);
   }
 }
 
-.modal-task[open]{
+.modal-task[open] {
   visibility: visible;
   opacity: 1;
 }

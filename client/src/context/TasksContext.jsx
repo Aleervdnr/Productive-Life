@@ -22,6 +22,7 @@ export const useTasks = () => {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
+  const [currentTask, setCurrentTask] = useState(null)
   const [parentTasks, setParentTasks] = useState([]);
   const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
@@ -209,6 +210,8 @@ export function TasksProvider({ children }) {
       value={{
         tasks,
         setTasks,
+        currentTask,
+        setCurrentTask,
         parentTasks,
         setParentTasks,
         createTask,
