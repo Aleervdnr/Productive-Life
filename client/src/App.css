@@ -34,6 +34,10 @@
   margin-bottom: 8px; /* Espacio entre cada fila (semana) */
 }
 
+.rdp-months{
+  flex-wrap: nowrap;
+}
+
 .card-3d {
   transform: perspective(1000px) rotateX(4deg) rotateY(-16deg) rotateZ(4deg);
   box-shadow: 24px 16px 64px 0 rgba(0, 0, 0, 0.08);

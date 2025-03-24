@@ -13,7 +13,7 @@ import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { initializeAnalytics, trackPageView } from "./libs/analytics";
 import { useUi } from "./context/UiContext";
 import Landing from "./pages/Landing";
-import ModalItemTask from "./components/ItemTask.jsx/ModalItemTask";
+import ModalItemTask from "./components/ItemTask/ModalItemTask"
 import { useTasks } from "./context/TasksContext";
 
 function App() {
@@ -54,16 +54,7 @@ function App() {
     >
       {
         /* Verificar primero si currentTask está vacío */
-        !currentTask ? null : currentTask.recurrenceOf ? (
-          <ModalItemTask
-            parentTask={parentTasks.find((pTask) => pTask._id == currentTask.recurrenceOf)}
-            modalIsActive={taskModalActive}
-          />
-        ) : (
-          <ModalItemTask
-            modalIsActive={taskModalActive}
-          />
-        )
+        !currentTask ? null : <ModalItemTask/>
       }
       <Routes>
         <Route path="/" element={<Landing />} />

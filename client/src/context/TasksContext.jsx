@@ -159,6 +159,9 @@ export function TasksProvider({ children }) {
         const recurrences = createRecurrences(updatedTask);
         const filteredTasks = filterOldRecurrences(tasks, updatedTask._id);
         setTasks([...filteredTasks, ...recurrences]);
+        console.log(parentTasks)
+        setParentTasks((prev) => (prev.map((rec) => rec._id == updatedTask._id ? updatedTask : rec)))
+        console.log(parentTasks)
       } else {
         const updatedTasks = tasks
           .map((t) => (t._id === task._id ? updatedTask : t))

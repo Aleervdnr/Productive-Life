@@ -22,6 +22,7 @@ import {
   isSameDay,
   isWithinInterval,
   parseISO,
+  subDays,
 } from "date-fns";
 import { es as esDateFns } from "date-fns/locale";
 import InputItemTask from "./InputItemTask";
@@ -33,55 +34,70 @@ import DropDownItemTask from "./DropDownItemTask";
 import { useTasks } from "../../context/TasksContext";
 import ItemRecurringDays from "../ItemRecurringDays";
 
-export default function ModalItemTask({
-  parentTask = null,
-  modalIsActive = false,
-}) {
-  const [activeTab, setActiveTab] = useState(0);
+export default function ModalItemTask() {
+  const [activeTab, setActiveTab] = useState(1);
   const [translateTab1Active, setTranslateTab1Active] = useState(false);
   const [tab1EditIs, setTab1EditIs] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { width } = useWindowSize();
-  const { setTaskModalActive } = useUi();
-  const { setCurrentTask } = useTasks();
+  const { taskModalActive,setTaskModalActive } = useUi();
+  const {
+    tasks,
+    setTasks,
+    setCurrentTask,
+    setParentTasks,
+    parentTasks,
+    updateTask,
+    deleteTask,
+    currentTask,
+  } = useTasks();
+  const [parentTask, setparentTask] = useState(
+    parentTasks.find((tasks) => tasks._id == currentTask.recurrenceOf)
+  );
   const [time, setTime] = useState({
     startTime: "00:00:00",
     endTime: "00:00:00",
   });
-  const { updateTask, deleteTask, currentTask } = useTasks();
   let tabs = [
-    { id: 0, title: "Información", icon: <Info className="w-4 h-4" /> },
+    { id: 1, title: "Información", icon: <Info className="w-4 h-4" /> },
     {
-      id: 1,
+      id: 2,
       title: "Recurrencias",
       icon: <CalendarDays className="w-4 h-4" />,
     },
-    { id: 2, title: "Estadísticas", icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 3, title: "Estadísticas", icon: <BarChart3 className="w-4 h-4" /> },
   ];
   if (!currentTask.isRecurring && !currentTask.recurrenceOf) {
     tabs = [
-      { id: 0, title: "Información", icon: <Info className="w-4 h-4" /> },
+      { id: 1, title: "Información", icon: <Info className="w-4 h-4" /> },
     ];
   }
 
   useEffect(() => {
-    document.addEventListener(
-      "keydown",
-      (e) => e.key === "Escape" && handleClose()
-    );
-    console.log(currentTask);
-    return () => document.removeEventListener("keydown", handleClose);
-  }, []);
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+  
+    if (taskModalActive) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+  
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [taskModalActive]);
 
   useEffect(() => {
-    if (modalIsActive) {
+    if (taskModalActive) {
       console.log(currentTask);
       document.getElementById(`modal_task_${currentTask._id}`).showModal();
     }
-    if (!modalIsActive) {
+    if (!taskModalActive) {
       handleClose();
     }
-  }, [modalIsActive]);
+  }, [taskModalActive]);
 
   const recurringDaysArray = [
     { name: "Lunes", isoDay: "1" },
@@ -196,6 +212,7 @@ export default function ModalItemTask({
       const targetDay = parseInt(day); // Convertir a número
       return getSpecificDaysInRange(startDate, endDate, targetDay);
     });
+    console.log(allRecurringDays);
 
     // Combinar las fechas actuales con los días de recurrencia, eliminar duplicados y ordenar
     const combinedDates = Array.from(
@@ -211,7 +228,7 @@ export default function ModalItemTask({
         ),
       ])
     ).sort((a, b) => differenceInMilliseconds(a, b)); // Ordenar de menor a mayor
-
+    console.log(combinedDates);
     return combinedDates;
   };
 
@@ -236,14 +253,18 @@ export default function ModalItemTask({
 
   //Handlers
   const handleClose = () => {
-    setTaskModalActive(false);
-    setCurrentTask(null);
-    document.getElementById(`modal_task_${currentTask._id}`).close();
-    setShowDeleteModal(false);
-    setTranslateTab1Active(false);
-    setTab1EditIs("");
-    dispatch({ type: "RESET" });
-    setSelectedSingle([currentDate]);
+    if (!taskModalActive) return;
+    const modal =document.getElementById(`modal_task_${currentTask._id}`)
+    if (modal) {
+      modal.close();
+      setTaskModalActive(false);
+      setCurrentTask(null);
+      setShowDeleteModal(false);
+      setTranslateTab1Active(false);
+      setTab1EditIs("");
+      dispatch({ type: "RESET" });
+      setSelectedSingle([currentDate]);
+    }
   };
 
   const handleEditDateTime = (value) => {
@@ -295,7 +316,7 @@ export default function ModalItemTask({
       const res = await deleteTask(currentTask._id);
       if (res.status == 204) handleClose();
       return;
-    } else {
+    } else if (activeTab == 1) {
       //Si es una recurrencia eliminamos elemento de la tarea padre y actualizamos la tarea padre
       const updatedRecurrences = parentTask.recurrences.filter(
         (tasks) => tasks._id != currentTask._id
@@ -308,6 +329,16 @@ export default function ModalItemTask({
 
       const res = await updateTask(updatedTask, false, true);
       if (res.status == 200) handleClose();
+    } else if (activeTab == 2) {
+      const res = await deleteTask(parentTask._id);
+      if (res.status == 204) {
+        handleClose();
+        const newTasks = tasks.filter(
+          (task) => !task.recurrenceOf || task.recurrenceOf != parentTask._id
+        );
+        setTasks(newTasks);
+      }
+      return;
     }
   };
 
@@ -324,26 +355,42 @@ export default function ModalItemTask({
         value[0]
       );
 
-      // Filtrar las fechas dentro del rango (excluyendo duplicados y ordenando)
-      const filteredDates = Array.from(
-        new Set( // Eliminar duplicados usando un Set
-          value
-            .filter(
-              (date) => isWithinInterval(date, { start: minDate, end: maxDate }) // Incluir solo fechas dentro del rango
-            )
-            .sort((a, b) => differenceInMilliseconds(a, b)) // Ordenar de menor a mayor
-        )
+      const maxDateOfState = selectedMultiple.reduce(
+        (max, date) => (isAfter(date, max) ? date : max),
+        value[0]
       );
 
-      // Recalcular los días de recurrencia si hay días seleccionados en recurringDays
-      const updatedDatesWithRecurrence = addRecurringDays(
-        filteredDates,
-        minDate,
-        maxDate
-      );
+      if (isAfter(maxDate, addDays(maxDateOfState, 1))) {
+        // Filtrar las fechas dentro del rango (excluyendo duplicados y ordenando)
+        const filteredDates = Array.from(
+          new Set( // Eliminar duplicados usando un Set
+            value
+              .filter(
+                (date) =>
+                  isWithinInterval(date, { start: minDate, end: maxDate }) // Incluir solo fechas dentro del rango
+              )
+              .sort((a, b) => differenceInMilliseconds(a, b)) // Ordenar de menor a mayor
+          )
+        );
 
-      // Actualizar el estado con las fechas filtradas y recalculadas
-      setSelectedMultiple(updatedDatesWithRecurrence);
+        // Recalcular los días de recurrencia si hay días seleccionados en recurringDays
+        const updatedDatesWithRecurrence = addRecurringDays(
+          filteredDates,
+          addDays(maxDateOfState, 1),
+          subDays(maxDate, 1)
+        );
+
+        const filtered = [...new Set(updatedDatesWithRecurrence)];
+        console.log(filtered, value);
+
+        // Actualizar el estado con las fechas filtradas y recalculadas
+        setSelectedMultiple(updatedDatesWithRecurrence);
+      } else {
+        const orderedDates = value.sort((a, b) =>
+          differenceInMilliseconds(a, b)
+        );
+        setSelectedMultiple(orderedDates);
+      }
     } else {
       //Si se quitan dias
       const newArray = [];
@@ -382,24 +429,51 @@ export default function ModalItemTask({
     const formatedRecurrences = selectedMultiple.map((date) =>
       format(date, "yyyy-MM-dd")
     );
-    const existingRecurrences = parentTask.recurrences.map((date) => {
-      if (formatedRecurrences.includes(date.taskDate)) return date.taskDate;
-    });
-    // Filtrar las fechas que NO están en `existingRecurrences`
-    const updatedRecurrences = formatedRecurrences.filter(
-      (date) => !existingRecurrences.includes(date)
+
+    const existingRecurrences = parentTask.recurrences.filter((date) =>
+      formatedRecurrences.includes(date.taskDate)
     );
 
-    console.log(updatedRecurrences);
+    // Crear un mapa para acceder rápidamente a los objetos en existingRecurrences
+    const existingRecurrencesMap = new Map(
+      existingRecurrences.map((item) => [item.taskDate, item])
+    );
+
+    // Construir el nuevo array
+    const updatedRecurrences = formatedRecurrences.map((date) =>
+      existingRecurrencesMap.has(date)
+        ? existingRecurrencesMap.get(date)
+        : {
+            taskDate: date,
+            description: "",
+            startTime: currentTask.startTime,
+            endTime: currentTask.endTime,
+          }
+    );
+
+    const updatedTask = {
+      ...parentTask, // Copia todas las propiedades de la tarea padre
+      recurrences: updatedRecurrences, // Actualiza solo las recurrencias
+    };
+    updateTask(updatedTask);
   };
+
+  const handleClickOverlay = (e) => {
+    if (e.target.id == `modal_task_${currentTask._id}`) {
+      handleClose();
+    }
+  };
+
+  const paddingContent = "py-4 px-6";
 
   return (
     <dialog
       id={`modal_task_${currentTask._id}`}
       className={`fixed w-screen h-screen max-w-none max-h-none z-[999] m-0 overflow-hidden bg-[#0006] grid place-content-center opacity-0 modal-task invisible transition-opacity`}
+      onClick={(e) => handleClickOverlay(e)}
     >
       <div
-        className={`transition-opacity delay-300 bg-dark-500 rounded-md w-[calc(100vw-20px)] max-w-[620px] h-fit
+        className={`transition-opacity delay-300 bg-dark-500 rounded-md w-[calc(100vw-20px)] lg:w-fit h-fit
          `}
       >
         {/* Header con tabs y botón de cerrar */}
@@ -438,15 +512,15 @@ export default function ModalItemTask({
           </div>
         </div>
         {/* Contenido de los tabs */}
-        <div className="overflow-hidden max-h-dvh ">
+        <div className="overflow-hidden max-h-dvh max-w-[720px] ">
           {/* Tab 1: Información */}
-          {activeTab === 0 && (
+          {activeTab === 1 && (
             <div
               className={`grid grid-cols-[100%,100%] justify-items-center transition-transform duration-500 ${
                 translateTab1Active ? "translate-x-[-100%]" : ""
               } `}
             >
-              <div className="w-full space-y-4 p-4">
+              <div className={`w-full space-y-4 ${paddingContent}`}>
                 <div className="space-y-2">
                   <InputItemTask
                     label={"Título"}
@@ -515,7 +589,7 @@ export default function ModalItemTask({
                   </button>
                 </div>
               </div>
-              <div className="p-4">
+              <div className={`w-fit ${paddingContent}`}>
                 {translateTab1Active && tab1EditIs == "Date" && (
                   <div className="max-w-[354px]">
                     <DayPicker
@@ -552,8 +626,8 @@ export default function ModalItemTask({
             </div>
           )}
           {/* Tab 2: Recurrencias */}
-          {activeTab === 1 && currentTask.recurrenceOf && (
-            <div className="space-y-4 p-4">
+          {activeTab === 2 && currentTask.recurrenceOf && (
+            <div className={`space-y-4 ${paddingContent} `}>
               <div className="space-y-2">
                 <DayPicker
                   mode={"multiple"}
@@ -564,6 +638,7 @@ export default function ModalItemTask({
                   locale={es}
                   modifiers={modifiers}
                   modifiersClassNames={modifiersClassNames}
+                  numberOfMonths={width >= 1024 ? 2 : 1}
                 />
                 <div className="grid gap-1 justify-items-center">
                   <label className="font-semibold">Repetir todos los</label>
@@ -639,7 +714,8 @@ export default function ModalItemTask({
                                       isSameDay(specificDay, day)
                                     ) ||
                                     isSameDay(day, startDate) ||
-                                    isSameDay(day, endDate)
+                                    isSameDay(day, endDate) ||
+                                    isBefore(day, new Date())
                                 );
 
                                 // Ordenar las fechas en orden ascendente
@@ -654,7 +730,26 @@ export default function ModalItemTask({
                     ))}
                   </div>
                 </div>
-                <AcceptButton onClick={handleSaveRecurrencesButton} />
+                {/* <AcceptButton onClick={handleSaveRecurrencesButton} /> */}
+                {/* Botones de acción para Tab 2 */}
+                <div className="flex justify-end gap-4 mt-2">
+                  <button
+                    //onClick={() => handleDelete("single")}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center text-sm font-medium"
+                    onClick={() => setShowDeleteModal(true)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Eliminar Todo
+                  </button>
+                  <button
+                    //onClick={handleSave}
+                    className="px-4 py-2 bg-violet-main text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center text-sm font-medium"
+                    onClick={handleSaveButton}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Guardar
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -667,7 +762,7 @@ export default function ModalItemTask({
               <p className="mb-6">
                 {!currentTask.isRecurring && !currentTask.recurrenceOf
                   ? "¿Estás seguro de que quieres eliminar esta Tarea?"
-                  : currentTask.recurrenceOf
+                  : activeTab == 1
                   ? "¿Estás seguro de que quieres eliminar esta recurrencia?"
                   : "¿Estás seguro de que quieres eliminar todas las recurrencias?"}
               </p>

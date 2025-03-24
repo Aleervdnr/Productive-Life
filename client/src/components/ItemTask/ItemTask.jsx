@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 
-import ModalItemTask from "./ModalItemTask";
 import { useUi } from "../../context/UiContext";
 import { useTasks } from "../../context/TasksContext";
 
 export default function ItemTask({ task }) {
   const { title, status, startTime, endTime } = task;
   const { setOverlayActive, setTaskModalActive, taskModalActive } = useUi();
-  const { updateTask, parentTasks, setCurrentTask, currentTask } = useTasks();
-  const [parentTask, setparentTask] = useState(
-    parentTasks.find((tasks) => tasks._id == task.recurrenceOf)
-  );
+  const { updateTask, parentTasks, setCurrentTask } = useTasks();
 
   const handleChangeStatus = () => {
     if (!task.recurrenceOf) {

@@ -14,9 +14,9 @@ export default function ItemRecurringDays({
 
   return (
     <div
-      className={`border px-[8px] rounded-full  transition-colors text-sm cursor-pointer ${
+      className={`border px-[8px] py-[2px] rounded-full  transition-colors text-sm cursor-pointer ${
         isActive
-          ? `bg-violet-main text-white`
+          ? `bg-violet-main text-white border-violet-main`
           : ` text-dark-100 border-violet-main`
       }`}
       onClick={handleClick}
