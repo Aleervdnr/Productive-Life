@@ -49,6 +49,11 @@
   animation-timeline: view();
 }
 
+textarea{
+  field-sizing: content;
+  max-height: 240px;
+}
+
 @keyframes fadeInScale {
   0% {
     opacity: 1;
