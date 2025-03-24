@@ -40,7 +40,7 @@ export default function ModalItemTask() {
   const [tab1EditIs, setTab1EditIs] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { width } = useWindowSize();
-  const { taskModalActive,setTaskModalActive } = useUi();
+  const { taskModalActive, setTaskModalActive } = useUi();
   const {
     tasks,
     setTasks,
@@ -79,11 +79,11 @@ export default function ModalItemTask() {
         handleClose();
       }
     };
-  
+
     if (taskModalActive) {
       document.addEventListener("keydown", handleKeyDown);
     }
-  
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -254,7 +254,7 @@ export default function ModalItemTask() {
   //Handlers
   const handleClose = () => {
     if (!taskModalActive) return;
-    const modal =document.getElementById(`modal_task_${currentTask._id}`)
+    const modal = document.getElementById(`modal_task_${currentTask._id}`);
     if (modal) {
       modal.close();
       setTaskModalActive(false);
@@ -453,6 +453,7 @@ export default function ModalItemTask() {
 
     const updatedTask = {
       ...parentTask, // Copia todas las propiedades de la tarea padre
+      recurringDays: state.recurringDays,
       recurrences: updatedRecurrences, // Actualiza solo las recurrencias
     };
     updateTask(updatedTask);
@@ -529,13 +530,16 @@ export default function ModalItemTask() {
                       dispatch({ type: "SET_TITLE", payload: value })
                     }
                   />
-                  <InputItemTask
-                    label={"Descripción"}
-                    value={state.description}
-                    onChange={(value) =>
-                      dispatch({ type: "SET_DESCRIPTION", payload: value })
-                    }
-                  />
+                  <div className="relative  p-3 pb-1 pt-5 bg-[#2A2B31]">
+                    <label className="absolute top-1 text-violet-main block text-xs font-bold">
+                      {"Descripción"}
+                    </label>
+                    <textarea
+                      value={state.description}
+                      className="w-full bg-[#2A2B31] rounded-lg text-white focus:outline-none"
+                      onChange={(e) => dispatch({ type: "SET_DESCRIPTION", payload: e.target.value })}
+                    ></textarea>
+                  </div>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     <DropDownItemTask
                       status={currentTask.status}
@@ -744,7 +748,7 @@ export default function ModalItemTask() {
                   <button
                     //onClick={handleSave}
                     className="px-4 py-2 bg-violet-main text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center text-sm font-medium"
-                    onClick={handleSaveButton}
+                    onClick={handleSaveRecurrencesButton}
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Guardar
