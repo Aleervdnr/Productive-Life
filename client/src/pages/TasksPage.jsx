@@ -13,11 +13,13 @@ import useWindowSize from "../hooks/useWindowSize.jsx";
 import { useDate } from "../context/DateContext.jsx";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useTranslation } from "../hooks/UseTranslation.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks } = useTasks();
   const { nowDateTime } = useDate();
   const { completeTour, user } = useAuth();
+  const { t } = useTranslation();
 
   const { width } = useWindowSize();
 
@@ -256,8 +258,12 @@ export default function TasksPage({ setActiveItem }) {
         continuous
       />
       <div className="grid mb-3 px-5 lg:hidden">
-        <span className="text-2xl capitalize">Hola, {user.name.split(" ")[0]}! </span>
-        <span className="text-xs text-dark-100">{format(nowDateTime, "d 'de' MMMM yyyy", { locale: es })}</span>
+        <span className="text-2xl capitalize">
+        {t("tasks.greeting")}, {user.name.split(" ")[0]}!{" "}
+        </span>
+        <span className="text-xs text-dark-100">
+          {format(nowDateTime, "d 'de' MMMM yyyy", { locale: es })}
+        </span>
       </div>
       <div className="font-medium flex gap-2 px-5 lg:hidden">
         <div
@@ -267,7 +273,7 @@ export default function TasksPage({ setActiveItem }) {
           onClick={() => handleChangeTab("hoy")}
           id={width < 1024 ? "step-0" : null}
         >
-          Hoy
+          {t("tasks.tabMenu.today")}
         </div>
         <div
           className={`px-[5px] py-[3px] rounded ${
@@ -276,7 +282,7 @@ export default function TasksPage({ setActiveItem }) {
           onClick={() => handleChangeTab("semana")}
           id={width < 1024 ? "step-1" : null}
         >
-          Semana
+          {t("tasks.tabMenu.week")}
         </div>
         <div
           className={`px-[5px] py-[3px] rounded ${
@@ -285,7 +291,7 @@ export default function TasksPage({ setActiveItem }) {
           onClick={() => handleChangeTab("mes")}
           id={width < 1024 ? "step-2" : null}
         >
-          Mes
+          {t("tasks.tabMenu.month")}
         </div>
       </div>
       <div

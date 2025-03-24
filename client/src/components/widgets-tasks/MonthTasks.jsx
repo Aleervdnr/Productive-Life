@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
 import { getDate, getDay, getDaysInMonth, getMonth, getYear } from "date-fns";
-import { months } from "../../libs/Dates.js";
+import { monthsEs, monthsEn } from "../../libs/Dates.js";
 import MonthDayItem from "./MonthDayItem";
 import { useDate } from "../../context/DateContext.jsx";
 import { RiArrowRightSLine } from "react-icons/ri";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { useTasks } from "../../context/TasksContext.jsx";
 import useWindowSize from "../../hooks/useWindowSize.jsx";
+import { useTranslation } from "../../hooks/UseTranslation.jsx";
+import { useLanguage } from "../../context/LanguageContext.jsx";
 
 export default function MonthTasks() {
   const { tasksIsLoading } = useTasks();
-  const {width} = useWindowSize()
+  const { width } = useWindowSize();
 
   const [days, setDays] = useState([]);
   const { nowDateTime } = useDate();
 
   const [month, setMonth] = useState(getMonth(nowDateTime) + 1);
   const [year, setYear] = useState(getYear(nowDateTime));
+
+  const { t } = useTranslation();
+  const {language} = useLanguage()
+  const months = language == "en" ? monthsEn : monthsEs
 
   const daysInMonth = getDaysInMonth(
     new Date(`${year}-${month < 10 ? `0${month}` : month}-01T00:00:00`)
@@ -55,7 +61,10 @@ export default function MonthTasks() {
   };
 
   return (
-    <div id={width >= 1024 ? "step-1" : null} className="w-[100vw] px-5 max-lg:py-3 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[24px,24px,repeat(auto-fill,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[24px,24px,repeat(auto-fit,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg ">
+    <div
+      id={width >= 1024 ? "step-1" : null}
+      className="w-[100vw] px-5 max-lg:py-3 z-[-10] relative grid  grid-cols-[repeat(7,clamp(35px,calc((100vw-64px)/7),50px))] grid-rows-[24px,24px,repeat(auto-fill,clamp(35px,calc((100vw-64px)/7),50px))] justify-items-center gap-y-2 gap-1 lg:w-full lg:col-start-2 lg:px-0 lg:z-0 lg:grid-cols-[repeat(7,clamp(26px,2.5vw,30px))] lg:grid-rows-[24px,24px,repeat(auto-fit,clamp(26px,2.5vw,30px))] lg:place-content-center lg:gap-y-[2px] lg:gap-x-1 lg:border-[2px] lg:border-dark-400 lg:rounded-lg "
+    >
       <div className="col-span-7 w-full flex justify-between">
         <span className="text-md font-semibold">
           {months[month - 1]}, {year}
@@ -71,13 +80,13 @@ export default function MonthTasks() {
           />
         </div>
       </div>
-      <span>L</span>
-      <span>M</span>
-      <span>X</span>
-      <span>J</span>
-      <span>V</span>
-      <span>S</span>
-      <span>D</span>
+      <span>{t("tasks.days.monday").charAt(0)}</span>
+      <span>{t("tasks.days.tuesday").charAt(0)}</span>
+      <span>{t("tasks.days.wednesday").charAt(0)}</span>
+      <span>{t("tasks.days.thursday").charAt(0)}</span>
+      <span>{t("tasks.days.friday").charAt(0)}</span>
+      <span>{t("tasks.days.saturday").charAt(0)}</span>
+      <span>{t("tasks.days.sunday").charAt(0)}</span>
 
       {/* Si el dia empieza en lunes, martes, miercoles o el dia que sea, mediante esta logica se acomoda el primer dia del mes en el dia que es mediante unos espacios vacios, ejemplo: si la semana empieza en martes en el lunes va haber un espacio vacio, sin esto todos los meses se mostrarian como primer dia el lunes*/}
       <div
@@ -132,7 +141,6 @@ export default function MonthTasks() {
           ))}
         </>
       ) : (
-
         <>
           {days.map((day) => (
             <MonthDayItem key={day} day={day}>

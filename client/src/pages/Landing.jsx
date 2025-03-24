@@ -24,7 +24,6 @@ export default function Landing() {
 
   const { t } = useTranslation();
   const { language,changeLanguage } = useLanguage();
-  console.log(language)
 
   const refImg1 = useRef(null);
   const isInViewImg1 = useInView(refImg1, {
@@ -87,16 +86,16 @@ export default function Landing() {
           >
             <div className="text-center grid justify-items-center gap-4 ">
               <h1 className="text-4xl font-bold sm:max-w-[600px] ">
-                {t("heroSection.title")}
+                {t("landing.heroSection.title")}
               </h1>
               <p className="text-dark-100 text-lg sm:max-w-[600px] ">
-                {t("heroSection.subtitle")}
+                {t("landing.heroSection.subtitle")}
               </p>
               <a
                 href="#email"
                 className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-4 py-2 w-fit rounded-lg"
               >
-                {t("heroSection.button")}
+                {t("landing.heroSection.button")}
               </a>
             </div>
           </motion.div>
@@ -143,7 +142,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-2xl font-bold">
-                {t("featuresSection.title")}
+                {t("landing.featuresSection.title")}
               </h2>
             </motion.div>
             <motion.div
@@ -153,7 +152,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <p className="text-dark-100 text-sm sm:max-w-[550px]">
-                {t("featuresSection.description")}
+                {t("landing.featuresSection.description")}
               </p>
             </motion.div>
           </div>
@@ -174,7 +173,7 @@ export default function Landing() {
                   >
                     <span className="text-3xl">✅</span>
                     <h3 className="font-bold text-lg py-1">
-                      {t("featuresSection.featuresList.taskManagement.title")}
+                      {t("landing.featuresSection.featuresList.taskManagement.title")}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -185,7 +184,7 @@ export default function Landing() {
                   >
                     <p className="text-dark-100 text-sm">
                       {t(
-                        "featuresSection.featuresList.taskManagement.description"
+                        "landing.featuresSection.featuresList.taskManagement.description"
                       )}
                     </p>
                   </motion.div>
@@ -224,7 +223,7 @@ export default function Landing() {
                   >
                     <span className="text-3xl">📊</span>
                     <h3 className="font-bold text-lg py-1">
-                      {t("featuresSection.featuresList.habitTracking.title")}
+                      {t("landing.featuresSection.featuresList.habitTracking.title")}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -235,7 +234,7 @@ export default function Landing() {
                   >
                     <p className="text-dark-100 text-sm">
                       {t(
-                        "featuresSection.featuresList.habitTracking.description"
+                        "landing.featuresSection.featuresList.habitTracking.description"
                       )}
                     </p>
                   </motion.div>
@@ -268,7 +267,7 @@ export default function Landing() {
                     <span className="text-3xl">📅</span>
                     <h3 className="font-bold text-lg py-1">
                       {t(
-                        "featuresSection.featuresList.calendarIntegration.title"
+                        "landing.featuresSection.featuresList.calendarIntegration.title"
                       )}
                     </h3>
                   </motion.div>
@@ -280,7 +279,7 @@ export default function Landing() {
                   >
                     <p className="text-dark-100 text-sm">
                       {t(
-                        "featuresSection.featuresList.calendarIntegration.description"
+                        "landing.featuresSection.featuresList.calendarIntegration.description"
                       )}
                     </p>
                   </motion.div>
@@ -312,7 +311,7 @@ export default function Landing() {
                   >
                     <span className="text-3xl">💰</span>
                     <h3 className="font-bold text-lg py-1">
-                      {t("featuresSection.featuresList.expenseControl.title")}
+                      {t("landing.featuresSection.featuresList.expenseControl.title")}
                     </h3>
                   </motion.div>
                   <motion.div
@@ -323,7 +322,7 @@ export default function Landing() {
                   >
                     <p className="text-dark-100 text-sm">
                       {t(
-                        "featuresSection.featuresList.expenseControl.description"
+                        "landing.featuresSection.featuresList.expenseControl.description"
                       )}
                     </p>
                   </motion.div>
@@ -356,7 +355,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-2xl font-bold">
-                {t("benefitsSection.title")}
+                {t("landing.benefitsSection.title")}
               </h2>
             </motion.div>
             <motion.div
@@ -366,7 +365,7 @@ export default function Landing() {
               transition={{ duration: 0.8 }}
             >
               <p className="text-dark-100 text-sm md:max-w-[640px]">
-                {t("benefitsSection.text")}
+                {t("landing.benefitsSection.text")}
               </p>
             </motion.div>
           </div>
@@ -379,14 +378,14 @@ export default function Landing() {
             >
               <div className="text-dark-100 grid gap-2">
                 <h4 className="text-white font-semibold">
-                  {t("benefitsSection.benefits.clearStatistics.title")}
+                  {t("landing.benefitsSection.benefits.clearStatistics.title")}
                 </h4>
                 <span className="text-3xl">
                   {" "}
-                  {t("benefitsSection.benefits.clearStatistics.icon")}
+                  {t("landing.benefitsSection.benefits.clearStatistics.icon")}
                 </span>
                 <p className="text-xs">
-                  {t("benefitsSection.benefits.clearStatistics.description")}
+                  {t("landing.benefitsSection.benefits.clearStatistics.description")}
                 </p>
               </div>
             </motion.div>
@@ -399,13 +398,13 @@ export default function Landing() {
             >
               <div className="text-dark-100 grid gap-2">
                 <h4 className="text-white font-semibold">
-                  {t("benefitsSection.benefits.focusMode.title")}
+                  {t("landing.benefitsSection.benefits.focusMode.title")}
                 </h4>
                 <span className="text-3xl">
-                  {t("benefitsSection.benefits.focusMode.icon")}
+                  {t("landing.benefitsSection.benefits.focusMode.icon")}
                 </span>
                 <p className="text-xs">
-                  {t("benefitsSection.benefits.focusMode.description")}
+                  {t("landing.benefitsSection.benefits.focusMode.description")}
                 </p>
               </div>
             </motion.div>
@@ -431,14 +430,14 @@ export default function Landing() {
             >
               <div className="text-dark-100 grid gap-2">
                 <h4 className="text-white font-semibold">
-                  {t("benefitsSection.benefits.advancedPlanning.title")}
+                  {t("landing.benefitsSection.benefits.advancedPlanning.title")}
                 </h4>
                 <span className="text-3xl">
                   {" "}
-                  {t("benefitsSection.benefits.advancedPlanning.icon")}
+                  {t("landing.benefitsSection.benefits.advancedPlanning.icon")}
                 </span>
                 <p className="text-xs">
-                  {t("benefitsSection.benefits.advancedPlanning.description")}
+                  {t("landing.benefitsSection.benefits.advancedPlanning.description")}
                 </p>
               </div>
             </motion.div>
@@ -451,14 +450,14 @@ export default function Landing() {
               <div className="text-dark-100 grid gap-2">
                 <h4 className="text-white font-semibold">
                   {" "}
-                  {t("benefitsSection.benefits.allInOne.title")}
+                  {t("landing.benefitsSection.benefits.allInOne.title")}
                 </h4>
                 <span className="text-3xl">
                   {" "}
-                  {t("benefitsSection.benefits.allInOne.icon")}
+                  {t("landing.benefitsSection.benefits.allInOne.icon")}
                 </span>
                 <p className="text-xs">
-                  {t("benefitsSection.benefits.allInOne.description")}
+                  {t("landing.benefitsSection.benefits.allInOne.description")}
                 </p>
               </div>
             </motion.div>
@@ -480,16 +479,16 @@ export default function Landing() {
         >
           <div className="text-center lg:grid lg:place-content-center lg:gap-2">
             <h3 className="text-white font-semibold text-2xl lg:text-xl">
-              {t("whitelistForm.title")} Productive
+              {t("landing.whitelistForm.title")} Productive
               <span className="text-violet-main">Life</span>{" "}
             </h3>
             <p className="text-dark-100 text-sm max-w-[480px] mx-auto">
-              {t("whitelistForm.subtitle")}
+              {t("landing.whitelistForm.subtitle")}
             </p>
           </div>
           <div className="grid gap-2 bg-dark-400 p-4 rounded-md w-fit lg:w-1/2 mx-auto">
             <span className="text-xs font-semibold py-2 ">
-              {t("whitelistForm.additionalMessage")}
+              {t("landing.whitelistForm.additionalMessage")}
             </span>
             <form
               className="w-full grid grid-cols-[clamp(250px,50vw,300px)] gap-2 justify-center justify-items-center sm:grid-cols-[clamp(150px,100%,300px),100px] sm:gap-0 lg:grid-cols-1 lg:gap-2 lg:justify-items-end mx-auto"
@@ -497,13 +496,13 @@ export default function Landing() {
             >
               <InputForm
                 typeInput={"email"}
-                placeholder={t("whitelistForm.emailPlaceholder")}
+                placeholder={t("landing.whitelistForm.emailPlaceholder")}
                 name={"email"}
                 register={register}
               />
 
               <button className="bg-gradient-to-bl from-violet-main to-[#4C4599] px-2 py-2 w-fit h-[44px]  rounded-md sm:rounded-none sm:rounded-tr-md sm:rounded-br-md lg:rounded-md lg:h-fit  text-xs font-semibold">
-                {t("whitelistForm.button")}
+                {t("landing.whitelistForm.button")}
               </button>
             </form>
           </div>

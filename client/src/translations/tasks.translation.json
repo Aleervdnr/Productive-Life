@@ -1,0 +1,60 @@
+{
+  "es": {
+    "greeting": "Hola",
+    "tabMenu": { "today": "Hoy", "week": "Semana", "month": "Mes" },
+    "todayTasks": {
+      "title": "Tareas del Dia"
+    },
+    "weeklyTasks": {
+      "title": "Mi Semana"
+    },
+    "cardProgress": {
+      "completed": "Completadp",
+      "toDo": "Para Hacer",
+      "overdue": "Atrasado",
+      "dailyProgress": "Progreso Diario",
+      "weeklyProgress": "Progreso Semanal",
+      "monthlyProgress": "Progreso Mensual",
+      "of": "de"
+    },
+    "days": {
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miercoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    },
+    "addTaskButton":"Agregar Tarea"
+  },
+  "en": {
+    "greeting": "Hi",
+    "tabMenu": { "today": "Today", "week": "Week", "month": "Month" },
+    "todayTasks": {
+      "title": "Today Tasks"
+    },
+    "weeklyTasks": {
+      "title": "My Week"
+    },
+    "cardProgress": {
+      "completed": "Completed",
+      "toDo": "To Do",
+      "overdue": "Overdue",
+      "dailyProgress": "Daily Progress",
+      "weeklyProgress": "Weekly Progress",
+      "monthlyProgress": "Monthly Progress",
+      "of": "of"
+    },
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "addTaskButton":"Add Task"
+  }
+}

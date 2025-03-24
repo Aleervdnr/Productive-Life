@@ -6,17 +6,20 @@ import ItemNavBar from "./ItemNavBar";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+
 //import icons
 import { FaHome } from "react-icons/fa";
 import { FaTasks } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
+import { useTranslation } from "../hooks/UseTranslation";
 
 function NavBar({ activeItem }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const { isAuthenticated, logout, user, loading } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     logout();
@@ -52,7 +55,7 @@ function NavBar({ activeItem }) {
                 className="max-w-[150px] "
               />
             </Link>
-            <li className="grid justify-items-center my-4">
+            <li className="grid justify-items-center my-4 capitalize">
               {user ? <AvatarIcon name={user.name} /> : <AvatarIconSkeleton />}
             </li>
             {/* <ItemNavBar name={"home"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose} >
@@ -61,11 +64,11 @@ function NavBar({ activeItem }) {
             </ItemNavBar> */}
             <ItemNavBar name={"tasks"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaTasks className="text-[18px]" />
-              <span>Tareas</span>
+              <span>{t("nav.navSections.tasks")}</span>
             </ItemNavBar>
             <ItemNavBar name={"gastos"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaWallet className="text-[18px]" />
-              <span>Gastos</span>
+              <span>{t("nav.navSections.expenses")}</span>
             </ItemNavBar>
             {/* <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaCartShopping className="text-[18px]" />
@@ -82,7 +85,7 @@ function NavBar({ activeItem }) {
               className={` capitalize relative flex gap-4  px-4 py-2 items-center  max-lg:rounded-lg lg:rounded-r-lg text-dark-100 font-semibold max-lg:before:hidden lg:text-sm`}
             >
               <FaArrowRightFromBracket className="text-sm" />
-              Cerrar sesion
+              {t("nav.logoutButton")}
             </span>
           </li>
         </ul>

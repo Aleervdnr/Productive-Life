@@ -5,33 +5,16 @@ import { useEffect, useState } from "react";
 import useWindowSize from "../../hooks/useWindowSize.jsx";
 import { useUi } from "../../context/UiContext.jsx";
 import { AnimatedCounter } from "../AnimatedCounter.jsx";
-import ItemTask from "../ItemTask.jsx/ItemTask.jsx";
+import ItemTask from "../ItemTask/ItemTask.jsx";
+import { useTranslation } from "../../hooks/UseTranslation.jsx";
+import { useLanguage } from "../../context/LanguageContext.jsx";
+import useMessageNoTasks from "../../hooks/useMessageNoTasks.jsx";
 
 export default function TodayTasks() {
   const { tasks, tasksIsLoading } = useTasks();
-
+  const { t } = useTranslation();
+  const {randomMessage} = useMessageNoTasks()
   const { width } = useWindowSize();
-
-  const [motivationalMessage, setMotivationalMessage] = useState("");
-
-  useEffect(() => {
-    const messages = [
-      "¡Hoy está en blanco! 🎨 ¿Qué te gustaría lograr hoy? Agrega una tarea y comienza a avanzar.",
-      "¡Es un buen día para empezar algo nuevo! 🌱 Añade una tarea y alcanza tus metas.",
-      "Sin tareas por aquí... ¿Listo para hacer del día algo productivo? ✨ Planifica tu siguiente paso.",
-      "Nada en la lista por ahora, ¡pero hoy puede ser un gran día! 🌞 ¿Qué te gustaría conseguir?",
-      "Tu día está esperando... 📝 ¿Qué tal si le damos un propósito? ¡Agrega tu primera tarea!",
-      "¡Todo despejado por aquí! Pero recuerda: las grandes metas se logran paso a paso. ¿Qué harás hoy?",
-      "Parece que no tienes nada por hacer… ¡Es la oportunidad perfecta para iniciar algo nuevo! 🎉",
-      "Un día sin tareas, ¿quizá quieras cambiar eso? Añade una actividad y alcanza algo importante.",
-    ];
-
-    // Generar un índice aleatorio
-    const randomIndex = Math.floor(Math.random() * messages.length);
-
-    // Guardar el mensaje aleatorio en el estado
-    setMotivationalMessage(messages[randomIndex]);
-  }, []); // Solo se ejecuta una vez al montar el componente
 
   const filteredTasks = tasks
     .filter((task) => task.taskDate == todayDate)
@@ -50,7 +33,7 @@ export default function TodayTasks() {
       className={`max-lg:w-[100vw] max-lg:h-[calc(100vh-145px)] max-lg:grid max-lg:grid-rows-[25px,40dvh,33px,136px] px-5 py-3 lg:w-full lg:row-start-1 lg:row-end-3 lg:border-[2px] lg:border-dark-400 lg:rounded-lg lg:p-3 overflow-scroll`}
       style={scrollbarStyles}
     >
-      <span className="text-lg font-semibold">Tareas del dia</span>
+      <span className="text-lg font-semibold">{t("tasks.todayTasks.title")}</span>
       <div
         className={`${
           tasksIsLoading
@@ -58,7 +41,7 @@ export default function TodayTasks() {
             : `${
                 tasks.filter((task) => task.taskDate == todayDate).length > 0
                   ? "flex flex-col gap-2"
-                  : " w-full h-fit py-8 grid place-content-center"
+                  : " w-full h-full lg:h-[calc(100%-49px)] py-8 grid place-content-center"
               }`
         } mt-2 overflow-auto`}
       >
@@ -69,41 +52,39 @@ export default function TodayTasks() {
             <div className="w-full h-[68px] rounded-xl bg-dark-400 animate-pulse"></div>
           </>
         ) : filteredTasks.length ? (
-          filteredTasks.map((task) => (
-            <ItemTask task={task} key={task._id} />
-          ))
+          filteredTasks.map((task) => <ItemTask task={task} key={task._id} />)
         ) : (
-          <p className="text-sm text-center">{motivationalMessage}</p>
+          <p className="text-sm text-center h-full">{randomMessage}</p>
         )}
       </div>
       <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
       <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Tareas Completadas</span>
+          <span className="text-xs">{t("tasks.cardProgress.completed")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {filteredTasks.filter((task) => task.status == "completed").length}{" "}
-            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {filteredTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Tareas Para Hacer</span>
+          <span className="text-xs">{t("tasks.cardProgress.toDo")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {filteredTasks.filter((task) => task.status == "pending").length}{" "}
-            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {filteredTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Tareas Atrasadas</span>
+          <span className="text-xs">{t("tasks.cardProgress.overdue")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {filteredTasks.filter((task) => task.status == "overdue").length}{" "}
-            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {filteredTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Progreso Diario</span>
+          <span className="text-xs">{t("tasks.cardProgress.dailyProgress")}</span>
           <AnimatedCounter
             value={
               filteredTasks.length > 0

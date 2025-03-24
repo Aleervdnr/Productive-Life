@@ -1,21 +1,32 @@
-// useTranslation.js
-import { useContext } from "react";
-import translations from "../translations/landing.translation.json"; // Importa tu archivo JSON
-import { LanguageProvider, useLanguage} from "../context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
+import landingTranslations from "../translations/landing.translation.json"
+import navTranslations from "../translations/nav.translation.json"
+import tasksTranslations from "../translations/tasks.translation.json"
+
+const allTranslations = {
+  landing: landingTranslations,
+  nav: navTranslations,
+  tasks: tasksTranslations
+};
 
 export const useTranslation = () => {
   const { language } = useLanguage();
 
-  // Función para obtener una traducción específica
   const t = (key) => {
-    const keys = key.split(".");
-    let translation = translations?.[language];
-    keys.forEach((k) => {
-      translation = translation?.[k];
-    });
+    try {
+      const [file, ...keys] = key.split(".");
 
-    return translation || "Traducción no encontrada";
+      let translation = allTranslations[file]?.[language];
+      keys.forEach((k) => {
+        translation = translation?.[k];
+      });
+
+      return translation || "Traducción no encontrada";
+    } catch (error) {
+      console.error("Error al cargar la traducción:", error);
+      return "Error en la traducción";
+    }
   };
 
   return { t };
-};
+};;

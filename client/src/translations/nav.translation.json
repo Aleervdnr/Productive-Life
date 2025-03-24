@@ -1,0 +1,10 @@
+{
+  "es": {
+    "navSections": { "tasks": "Tareas", "expenses": "Gastos" },
+    "logoutButton": "Cerrar Sesión"
+  },
+  "en": {
+    "navSections": { "tasks": "Tasks", "expenses": "Expenses" },
+    "logoutButton": "Logout"
+  }
+}

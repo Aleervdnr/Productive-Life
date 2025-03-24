@@ -12,9 +12,11 @@ import {
 } from "date-fns";
 import TaskFormButton from "../taskForm/TaskFormButton";
 import useWindowSize from "../../hooks/useWindowSize";
-import ItemTodayTask from "./ItemTodayTask";
 import { AnimatedCounter } from "../AnimatedCounter";
-import ItemTask from "../ItemTask.jsx/ItemTask";
+import ItemTask from "../ItemTask/ItemTask";
+import useMessageNoTasks from "../../hooks/useMessageNoTasks";
+import { useTranslation } from "../../hooks/UseTranslation";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function WeekTasks() {
   const [tabActive, setTabActive] = useState({ name: "Lunes", isoDay: 1 });
@@ -29,29 +31,11 @@ export default function WeekTasks() {
     { name: "Domingo", isoDay: 7, day: "..." },
   ]);
   const { tasks, tasksIsLoading, setWeeklyTasks, weeklyTasks } = useTasks();
+  const { randomMessage } = useMessageNoTasks();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const { width } = useWindowSize();
-
-  const [motivationalMessage, setMotivationalMessage] = useState("");
-
-  useEffect(() => {
-    const messages = [
-      "¡Hoy está en blanco! 🎨 ¿Qué te gustaría lograr hoy? Agrega una tarea y comienza a avanzar.",
-      "¡Es un buen día para empezar algo nuevo! 🌱 Añade una tarea y alcanza tus metas.",
-      "Sin tareas por aquí... ¿Listo para hacer del día algo productivo? ✨ Planifica tu siguiente paso.",
-      "Nada en la lista por ahora, ¡pero hoy puede ser un gran día! 🌞 ¿Qué te gustaría conseguir?",
-      "Tu día está esperando... 📝 ¿Qué tal si le damos un propósito? ¡Agrega tu primera tarea!",
-      "¡Todo despejado por aquí! Pero recuerda: las grandes metas se logran paso a paso. ¿Qué harás hoy?",
-      "Parece que no tienes nada por hacer… ¡Es la oportunidad perfecta para iniciar algo nuevo! 🎉",
-      "Un día sin tareas, ¿quizá quieras cambiar eso? Añade una actividad y alcanza algo importante.",
-    ];
-
-    // Generar un índice aleatorio
-    const randomIndex = Math.floor(Math.random() * messages.length);
-
-    // Guardar el mensaje aleatorio en el estado
-    setMotivationalMessage(messages[randomIndex]);
-  }, []); // Solo se ejecuta una vez al montar el componente
 
   // Filtrar tareas de la semana actual
   const filterWeeklyTasks = () => {
@@ -103,7 +87,7 @@ export default function WeekTasks() {
 
     const weekDays = Array.from({ length: 7 }, (_, i) => {
       const currentDay = addDays(startOfCurrentWeek, i); // Sumar días desde el inicio de la semana
-      const dayNames = [
+      let dayNames = [
         "Lunes",
         "Martes",
         "Miércoles",
@@ -112,6 +96,17 @@ export default function WeekTasks() {
         "Sábado",
         "Domingo",
       ];
+      if(language == "en"){
+        dayNames = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
+      }
 
       const day = {
         name: dayNames[i],
@@ -140,7 +135,7 @@ export default function WeekTasks() {
     >
       <div className="max-lg:hidden lg:grid lg:w-full lg:grid-cols-3 lg:justify-items-center lg:content-center lg:py-1">
         <h2 className="text-center hidden lg:block font-medium text-2xl my-2 lg:col-start-2">
-          Mi Semana
+          {t("tasks.weeklyTasks.title")}
         </h2>
         <TaskFormButton styles={"max-lg:hidden text-xxs"} />
       </div>
@@ -168,41 +163,39 @@ export default function WeekTasks() {
             <div className="w-full h-[68px] rounded-xl bg-dark-400 animate-pulse"></div>
           </>
         ) : currentTabTasks.length ? (
-          currentTabTasks.map((task) => (
-              <ItemTask task={task} key={task._id} />
-          ))
+          currentTabTasks.map((task) => <ItemTask task={task} key={task._id} />)
         ) : (
-          <p className="text-sm text-center">{motivationalMessage}</p>
+          <p className="text-sm text-center">{randomMessage}</p>
         )}
       </div>
       <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
       <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Tareas Completadas</span>
+          <span className="text-xs">{t("tasks.cardProgress.completed")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {weeklyTasks.filter((task) => task.status == "completed").length}{" "}
-            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {weeklyTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Tareas Para Hacer</span>
+          <span className="text-xs">{t("tasks.cardProgress.toDo")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {weeklyTasks.filter((task) => task.status == "pending").length}{" "}
-            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {weeklyTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Tareas Atrasadas</span>
+          <span className="text-xs">{t("tasks.cardProgress.overdue")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {weeklyTasks.filter((task) => task.status == "overdue").length}{" "}
-            <span className="lg:text-sm xl:text-lg">de</span>{" "}
+            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {weeklyTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">Progreso Semanal</span>
+          <span className="text-xs">{t("tasks.cardProgress.weeklyProgress")}</span>
           <AnimatedCounter
             value={
               weeklyTasks.length > 0
