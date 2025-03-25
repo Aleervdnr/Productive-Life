@@ -12,7 +12,10 @@ import {
 import useWindowSize from "../../hooks/useWindowSize";
 import {
   addDays,
+  differenceInDays,
   differenceInMilliseconds,
+  differenceInMonths,
+  differenceInWeeks,
   eachDayOfInterval,
   format,
   formatDate,
@@ -193,6 +196,32 @@ export default function ModalItemTask() {
       </p>
     );
   }
+
+  let footerRecurrences = (
+    <p className="text-xs md:text-sm text-center mt-2">
+      Elige el día para la tarea.
+    </p>
+  );
+
+  if (currentTask.recurrenceOf) {
+    footerRecurrences = (
+      <p className="text-xs md:text-sm text-center mt-2">
+        Desde el{" "}
+        <span className="text-violet-main font-semibold">
+          {format(new Date(selectedMultiple[0]), "d 'de' MMMM", {
+            locale: esDateFns,
+          }) }{" "}
+        </span>
+        hasta el{" "}
+        <span className="text-violet-main font-semibold">
+          {format(new Date (selectedMultiple[selectedMultiple.length-1]), "d 'de' MMMM", {
+            locale: esDateFns,
+          })}
+        </span>
+      </p>
+    );
+  }
+
   const getSpecificDaysInRange = (start, end, targetDay) => {
     const allDaysInRange = eachDayOfInterval({ start, end });
     return allDaysInRange.filter((day) => getDay(day) === targetDay);
@@ -304,6 +333,7 @@ export default function ModalItemTask() {
 
       const updatedTask = {
         ...parentTask, // Copia todas las propiedades de la tarea padre
+        title: state.title,
         recurrences: updatedRecurrences,
       };
       updateTask(updatedTask);
@@ -453,6 +483,8 @@ export default function ModalItemTask() {
 
     const updatedTask = {
       ...parentTask, // Copia todas las propiedades de la tarea padre
+      recurringEndDate:
+        updatedRecurrences[updatedRecurrences.length - 1].taskDate,
       recurringDays: state.recurringDays,
       recurrences: updatedRecurrences, // Actualiza solo las recurrencias
     };
@@ -465,7 +497,72 @@ export default function ModalItemTask() {
     }
   };
 
-  const paddingContent = "py-4 px-6";
+  const paddingContent = "px-4 py-4 lg:px-6";
+
+  //Estadisticas
+  const completed = tasks.filter(
+    (recu) =>
+      recu.recurrenceOf == currentTask.recurrenceOf &&
+      recu.status == "completed"
+  ).length;
+
+  const pending = tasks.filter(
+    (recu) =>
+      recu.recurrenceOf == currentTask.recurrenceOf && recu.status == "pending"
+  ).length;
+
+  const overdue = tasks.filter(
+    (recu) =>
+      recu.recurrenceOf == currentTask.recurrenceOf && recu.status == "overdue"
+  ).length;
+
+  const total = tasks.filter(
+    (recu) => recu.recurrenceOf == currentTask.recurrenceOf
+  ).length;
+  const total1 = tasks.filter(
+    (recu) => recu.recurrenceOf == currentTask.recurrenceOf
+  );
+
+  console.log(total1);
+
+  const porcentajeCompleted = ((completed / total) * 100).toFixed(2);
+
+  // Obtener la primera fecha y la última fecha
+  const firstTaskDate = new Date(total1[0].taskDate); // Primera fecha
+  const lastRecurringEndDate = new Date(total1[total1.length - 1].taskDate); // Última fecha
+
+  console.log(firstTaskDate, lastRecurringEndDate);
+
+  // Calcular la diferencia en días, semanas y meses
+  const daysDifference = differenceInDays(lastRecurringEndDate, firstTaskDate);
+  const weeksDifference = differenceInWeeks(
+    lastRecurringEndDate,
+    firstTaskDate
+  );
+  const monthsDifference = differenceInMonths(
+    lastRecurringEndDate,
+    firstTaskDate
+  );
+
+  console.log(`Diferencia en días: ${daysDifference} días`);
+  console.log(`Diferencia en semanas: ${weeksDifference} semanas`);
+  console.log(`Diferencia en meses: ${monthsDifference} meses`);
+
+  let formattedDifference;
+
+  if (monthsDifference > 0) {
+    formattedDifference = `${monthsDifference} mes${
+      monthsDifference > 1 ? "es" : ""
+    }`;
+  } else if (weeksDifference > 0) {
+    formattedDifference = `${weeksDifference} semana${
+      weeksDifference > 1 ? "s" : ""
+    }`;
+  } else {
+    formattedDifference = `${daysDifference} día${
+      daysDifference > 1 ? "s" : ""
+    }`;
+  }
 
   return (
     <dialog
@@ -537,12 +634,17 @@ export default function ModalItemTask() {
                     <textarea
                       value={state.description}
                       className="w-full bg-[#2A2B31] rounded-lg text-white focus:outline-none"
-                      onChange={(e) => dispatch({ type: "SET_DESCRIPTION", payload: e.target.value })}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_DESCRIPTION",
+                          payload: e.target.value,
+                        })
+                      }
                     ></textarea>
                   </div>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     <DropDownItemTask
-                      status={currentTask.status}
+                      status={state.status}
                       onChange={handleStatusChange}
                     />
                     <div
@@ -638,7 +740,7 @@ export default function ModalItemTask() {
                   selected={selectedMultiple}
                   onSelect={handleSelected}
                   disabled={{ before: new Date("2/1/2025") }}
-                  footer={<p>Selecciona una fecha</p>}
+                  footer={footerRecurrences}
                   locale={es}
                   modifiers={modifiers}
                   modifiersClassNames={modifiersClassNames}
@@ -753,6 +855,93 @@ export default function ModalItemTask() {
                     <Save className="w-4 h-4 mr-2" />
                     Guardar
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {activeTab === 3 && currentTask.recurrenceOf && (
+            <div className={`space-y-4 ${paddingContent} `}>
+              <div className="flex justify-between text-violet-main font-semibold gap-3">
+                <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
+                  Efectividad
+                  <span className="text-white text-3xl">
+                    {porcentajeCompleted}%
+                  </span>
+                  <span className="">{`${completed} de ${total}`}</span>
+                </div>
+                <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
+                  Total Recurrencias
+                  <span className="text-white text-3xl">{total}</span>
+                  <span className="">{`En ${formattedDifference}`}</span>
+                </div>
+              </div>
+              <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
+                <span className="text-violet-main font-semibold">
+                  Estado de Recurrencias
+                </span>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-[#22C55E]"></div>
+                        <span className="">Completadas</span>
+                      </div>
+                      <span>{completed}</span>
+                    </div>
+                    <progress
+                      className="w-full h-2 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-zinc-800 
+                [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-[#22C55E]
+                [&::-moz-progress-bar]:bg-[#22C55E]"
+                      value={completed}
+                      max={total}
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-[#EAB308]"></div>
+                        <span className="">Pendientes</span>
+                      </div>
+                      <span>{pending}</span>
+                    </div>
+                    <progress
+                      className="w-full h-2 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-zinc-800 
+                [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-[#EAB308]
+                [&::-moz-progress-bar]:bg-[#EAB308]"
+                      value={pending}
+                      max={total}
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-[#EF4444]"></div>
+                        <span className="">Canceladas</span>
+                      </div>
+                      <span>{overdue}</span>
+                    </div>
+                    <progress
+                      className="w-full h-2 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-zinc-800 
+                [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-[#EF4444]
+                [&::-moz-progress-bar]:bg-[#EF4444]"
+                      value={overdue}
+                      max={total}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between text-violet-main font-semibold gap-3">
+                <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
+                  Promedio de Tiempo
+                  <span className="text-white text-3xl">0Min</span>
+                  <span className="">Por tarea completada</span>
+                </div>
+                <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
+                  Horas Dedicadas
+                  <span className="text-white text-3xl">0hs</span>
+                  <span className="">{`En ${formattedDifference}`}</span>
                 </div>
               </div>
             </div>
