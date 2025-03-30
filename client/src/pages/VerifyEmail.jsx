@@ -30,7 +30,7 @@ export default function VerifyEmailToken() {
         // Llama al backend para verificar el token
         const res = await verifyEmailRequest(token);
         toast.success(res.data.message); // Notificación de éxito
-        navigate("/"); // Redirige al login tras verificar
+        navigate("/login"); // Redirige al login tras verificar
       } catch (error) {
         toast.error(
           error.response?.data?.message || "Error al verificar el email."

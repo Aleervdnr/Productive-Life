@@ -13,6 +13,6 @@ export const ProtectedRoute = () => {
         <span className="loading loading-spinner text-primary"></span>{" "}
       </div>
     );
-  if (!isAuthenticated && !loading) return <Navigate to="/" replace />;
+  if (!isAuthenticated && !loading) return <Navigate to="/login" replace />;
   return <Outlet />;
 };

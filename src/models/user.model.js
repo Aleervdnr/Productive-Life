@@ -15,7 +15,17 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false, // Ya no es obligatorio
+    },
+    googleId: {
+      type: String,
+      unique: true, // Asegura que el ID de Google sea único
+      sparse: true, // Permite valores nulos
+    },
+    provider: {
+      type: String,
+      enum: ["email", "google"], // Solo permitir estos valores
+      default: "email", // Valor predeterminado para usuarios tradicionales
     },
     isVerified: {
       type: Boolean,
@@ -27,17 +37,19 @@ const userSchema = new mongoose.Schema(
     tourCompleted: {
       taskTour: { type: Boolean, default: false },
       gastosTour: { type: Boolean, default: false },
-    },    
+    },
   },
   {
     timestamps: true,
   }
 );
 
+// Transformación para eliminar campos sensibles del objeto JSON
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     delete returnedObject.__v;
-    delete returnedObject.password;
+    delete returnedObject.password; // No exponer la contraseña
+    delete returnedObject.googleId; // No exponer el ID de Google
   },
 });
 

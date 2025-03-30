@@ -13,17 +13,15 @@ import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { initializeAnalytics, trackPageView } from "./libs/analytics";
 import { useUi } from "./context/UiContext";
 import Landing from "./pages/Landing";
-import ModalItemTask from "./components/ItemTask/ModalItemTask"
+import ModalItemTask from "./components/ItemTask/ModalItemTask";
 import { useTasks } from "./context/TasksContext";
+import NotFound from "./pages/NotFound";
+import AuthCallback from "./pages/AuthCallback";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
   const { isAuthenticated } = useAuth();
-  const {
-    setTaskFormActive,
-    setOverlayIsClicked,
-    taskModalActive,
-  } = useUi();
+  const { setTaskFormActive, setOverlayIsClicked, taskModalActive } = useUi();
 
   const { currentTask, parentTasks } = useTasks();
 
@@ -54,13 +52,14 @@ function App() {
     >
       {
         /* Verificar primero si currentTask está vacío */
-        !currentTask ? null : <ModalItemTask/>
+        !currentTask ? null : <ModalItemTask />
       }
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<LoginRegisterpage />} />
         <Route path="/verify-email-token" element={<VerifyEmailToken />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/auth/callback" element={<AuthCallback />}></Route>
         <Route element={<ProtectedRoute />}>
           {/* <Route
               path="/home"
@@ -76,6 +75,8 @@ function App() {
           />
           {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
         </Route>
+        {/* Ruta de error para rutas desconocidas */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster theme="dark" richColors expand={true} />
 

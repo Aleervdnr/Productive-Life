@@ -21,4 +21,3 @@ export const completeTourRequest = (tourType,userId) =>
     tourType: tourType, // Nombre del tour, por ejemplo: "taskTour" o "gastosPage"
     value: true, // El nuevo valor, en este caso siempre "true"
   });
-

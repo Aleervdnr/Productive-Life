@@ -27,6 +27,15 @@ function LoginRegisterpage() {
           <LoginForm handleSetIsLogin={handleSetIsLogin} isLogin={isLogin} />
           <RegisterForm handleSetIsLogin={handleSetIsLogin} isLogin={isLogin} />
         </div>
+
+        <div className="w-full flex justify-center">
+          <a
+            href="http://localhost:3000/auth/google"
+            className="login-with-google-btn"
+          >
+            Sign in with Google
+          </a>
+        </div>
       </div>
       <div className="hidden lg:flex w-2/4 h-dvh bg-violet-main lg:items-center lg:justify-center ">
         <EmblaCarousel />

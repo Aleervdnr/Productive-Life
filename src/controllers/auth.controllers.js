@@ -109,6 +109,33 @@ export const register = async (req, res) => {
   }
 };
 
+export const registerWithGoogle = async (profile) => {
+  try {
+    const { id: googleId, displayName: name, emails } = profile;
+    const email = emails[0].value;
+
+    // Verificar si el usuario ya existe
+    const userFound = await User.findOne({ $or: [{ email }, { googleId }] });
+
+    if (userFound) return userFound;
+
+    // Crear nuevo usuario
+    const newUser = new User({
+      name,
+      email,
+      googleId,
+      isVerified: true, // Usuarios de Google están verificados automáticamente
+      provider:"google"
+    });
+
+    const userSaved = await newUser.save();
+    return userSaved;
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error al registrar usuario con Google.");
+  }
+};
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -140,11 +167,18 @@ export const verifyToken = async (req, res) => {
   if (!token) return res.status(401).json(["No Autorizado"]);
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
-    if (err) return res.status(401).json(["No Autorizado"]);
-
+    if (err) {
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ error: "El token ha expirado." });
+      }
+      return res.status(401).json({ error: "Token inválido." });
+    }
+  console.log(user)
     const userFound = await User.findById(user.id);
-    if (!userFound) return res.status(401).json(["No Autorizado"]);
-
+    if (!userFound) {
+      return res.status(401).json({ error: "Usuario no encontrado." });
+    }
+  
     return res.json(userFound);
   });
 };
