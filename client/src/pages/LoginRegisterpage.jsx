@@ -30,7 +30,7 @@ function LoginRegisterpage() {
 
         <div className="w-full flex justify-center">
           <a
-            href="http://localhost:3000/auth/google"
+            href="https://productive-life-api.onrender.com/auth/google"
             className="login-with-google-btn"
           >
             Sign in with Google
