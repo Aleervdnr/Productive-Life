@@ -74,7 +74,7 @@ app.get(
   async (req, res) => {
     // Generar un token JWT para el frontend
     const token = await createAccessToken({ id: req.user._id }); // Implementa esta función para generar tokens
-    res.redirect(`https://productivelife.site/auth/google/callback/auth/callback?token=${token}`);
+    res.redirect(`https://productivelife.site/auth/callback?token=${token}`);
   }
 );
 
