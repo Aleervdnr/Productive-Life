@@ -43,17 +43,14 @@ function App() {
   };
 
   return (
-    <main
-      className={`${
-        isAuthenticated
-          ? `grid grid-rows-[55px,calc(100vh-55px)] lg:grid-cols-[220px_1fr]`
-          : ""
-      } `}
+    <
     >
       {
         /* Verificar primero si currentTask está vacío */
         !currentTask ? null : <ModalItemTask />
       }
+      <NavBar activeItem={activeItem} />
+      
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<LoginRegisterpage />} />
@@ -80,8 +77,8 @@ function App() {
       </Routes>
       <Toaster theme="dark" richColors expand={true} />
 
-      <NavBar activeItem={activeItem} />
-    </main>
+      
+    </>
   );
 }
 
