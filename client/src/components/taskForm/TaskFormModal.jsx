@@ -4,6 +4,7 @@ import { useUi } from "../../context/UiContext";
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
+import { enUS } from "date-fns/locale";
 import {
   addDays,
   differenceInMilliseconds,
@@ -23,6 +24,8 @@ import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
 import { useTasks } from "../../context/TasksContext";
 import ItemRecurringDays from "../ItemRecurringDays";
+import { useTranslation } from "../../hooks/UseTranslation";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function TaskFormModal() {
   //Contexts
@@ -34,6 +37,8 @@ export default function TaskFormModal() {
   } = useUi();
 
   const { createTask } = useTasks();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
 
   //consts
   const sizesCarousel = {
@@ -352,7 +357,7 @@ export default function TaskFormModal() {
         },
       });
     }
-  }, [selectedMultiple,time]);
+  }, [selectedMultiple, time]);
 
   useEffect(() => {
     if (state.step == 1)
@@ -417,267 +422,286 @@ export default function TaskFormModal() {
     return () => document.removeEventListener("keydown", handleCloseMenu);
   }, []);
 
+  const formatDate = (date, language) => {
+    const locale = language === "es" ? es : enUS; // Selecciona el locale según el idioma
+    const formatPattern =
+      language === "es"
+        ? "d 'de' MMMM" // Formato para español: "2 de abril"
+        : "MMMM d"; // Formato para inglés: "April 2"
+
+    return format(date, formatPattern, { locale });
+  };
+
   return (
-    <div
-      className={`absolute bottom-0 left-1/2 -translate-x-1/2  w-dvw max-w-[550px] lg:max-w-[650px] h-auto min-h-0  bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
-        taskFormActive ? "translate-y-0" : "translate-y-[100%]"
-      } transition-transform duration-500 overflow-hidden`}
-    >
-      <div className="w-full h-5 flex justify-center items-center">
-        <div className="w-[10%] h-1 bg-dark-200 rounded "></div>
-      </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className={`grid grid-cols-[repeat(3,minmax(100%,500px))] w-full ${
-          state.step == 1 && "translate-x-[0px]"
-        } ${state.step == 2 && "translate-x-[-100%]"} ${
-          state.step == 3 && "translate-x-[-200%]"
-        } justify-self-start transition-all duration-500`}
-        style={{ height: `${state.sizeCarousel}` }}
-      >
-        <div
-          className={`grid gap-[10px] px-5 lg:px-10`}
-          style={{ maxHeight: `${sizesCarousel.size1}` }}
-        >
-          <TaskFormModalSelectType
-            title={"Crear Tarea Unica"}
-            description={"Se ejecuta una sola vez, sin repetición."}
-            handleClick={() => {
-              dispatch({ type: "SET_STEP", payload: 2 });
-              dispatch({
-                type: "UPDATE_TASK",
-                payload: { isRecurring: false },
-              });
-            }}
-          />
-          <TaskFormModalSelectType
-            title={"Crear Tarea Recurrente"}
-            description={"Tiene un inicio, fin y se repite según un patrón."}
-            handleClick={() => {
-              dispatch({ type: "SET_STEP", payload: 2 });
-              dispatch({ type: "UPDATE_TASK", payload: { isRecurring: true } });
-            }}
-          />
-        </div>
-        <div
-          className={`h-full w-full px-5 lg:px-10 flex flex-col gap-[10px]`}
-          style={{ maxHeight: `${sizesCarousel.size2}` }}
-        >
-          <TaskFormModalInput
-            placeholder={"Titulo"}
-            value={state.task.title}
-            onChange={(value) =>
-              dispatch({ type: "UPDATE_TASK", payload: { title: value } })
-            }
-            required={true}
-            tabIndexValue={state.step == 2 ? 1 : -1}
-          />
-          <TaskFormModalInput
-            placeholder={"Descripción"}
-            value={state.task.description}
-            onChange={(value) =>
-              dispatch({ type: "UPDATE_TASK", payload: { description: value } })
-            }
-            tabIndexValue={state.step == 2 ? 2 : -1}
-          />
-          <TaskFormModalSelectTime
-            title={"Fecha"}
-            //placeholder={"Elegir Fecha"}
-            placeholder={
-              !selectedSingle || !selectedMultiple
-                ? "Elegir Fecha"
-                : state.task.isRecurring
-                ? `Del ${format(selectedMultiple[0], "d 'de' MMMM", {
-                    locale: esDateFns,
-                  })} al ${format(
-                    selectedMultiple[selectedMultiple.length - 1],
-                    "d 'de' MMMM",
-                    {
-                      locale: esDateFns,
-                    }
-                  )}`
-                : format(selectedSingle, "d 'de' MMMM", {
-                    locale: esDateFns,
-                  })
-            }
-            handleClick={() => {
-              dispatch({ type: "SET_STEP", payload: 3 });
-              dispatch({ type: "SET_STEP_3_IS", payload: "Fecha" });
-            }}
-            tabIndexValue={state.step == 2 ? 3 : -1}
-          />
-          <TaskFormModalSelectTime
-            title={"Hora"}
-            placeholder={
-              state.task.startTime != "00:00:00" &&
-              state.task.endTime != "00:00:00"
-                ? `${state.task.startTime
-                    .split(":")
-                    .slice(0, 2)
-                    .join(":")} - ${state.task.endTime
-                    .split(":")
-                    .slice(0, 2)
-                    .join(":")}`
-                : "Elegir Hora"
-            }
-            handleClick={() => {
-              dispatch({ type: "SET_STEP", payload: 3 });
-              dispatch({ type: "SET_STEP_3_IS", payload: "Hora" });
-            }}
-            tabIndexValue={state.step == 2 ? 4 : -1}
-          />
-          <button
-            className="py-3 text-sm font-medium  w-full bg-violet-main rounded disabled:bg-dark-200 disabled:text-dark-100"
-            tabIndex={state.step == 2 ? 5 : -1}
-          >
-            Crear Tarea
-          </button>
-        </div>
-        <div className="h-full w-full px-5 lg:px-10  grid gap-4">
-          {state.step3Is == "Fecha" && !state.task.isRecurring && (
-            <>
-              <DayPicker
-                mode={"single"}
-                selected={selectedSingle}
-                onSelect={setSelectedSingle}
-                disabled={{ before: new Date() }}
-                footer={footer}
-                locale={es}
-              />
-              <AcceptButton onClick={handleAcceptButton} />
-            </>
-          )}
-          {state.step3Is == "Fecha" && state.task.isRecurring && (
-            <>
-              <DayPicker
-                mode={"multiple"}
-                selected={selectedMultiple}
-                onSelect={handleSelected}
-                disabled={{ before: new Date("2/1/2025") }}
-                footer={<p>Selecciona una fecha</p>}
-                locale={es}
-                modifiers={modifiers}
-                modifiersClassNames={modifiersClassNames}
-              />
-              <div className="grid gap-1 justify-items-center">
-                <label className="font-semibold">Repetir todos los</label>
-                <div className="flex gap-1 max-[425px]:max-w-[385px]">
-                  {recurringDaysArray.map((item) => (
-                    <ItemRecurringDays
-                      key={item.isoDay}
-                      name={item.name}
-                      isoDay={item.isoDay}
-                      isActive={state.task.recurringDays.includes(item.isoDay)}
-                      handleToggle={(value) => {
-                        const currentDays = state.task.recurringDays;
-                        const updatedDays = currentDays.includes(value)
-                          ? currentDays.filter((day) => day !== value)
-                          : [...currentDays, value];
-
-                        dispatch({
-                          type: "UPDATE_TASK",
-                          payload: { recurringDays: updatedDays },
-                        });
-
-                        if (!currentDays.includes(value)) {
-                          // Si se activa un día de recurrencia
-                          if (selectedMultiple.length >= 2) {
-                            const startDate = selectedMultiple[0];
-                            const endDate =
-                              selectedMultiple[selectedMultiple.length - 1];
-                            const targetDay = parseInt(value);
-                            const specificDays = getSpecificDaysInRange(
-                              startDate,
-                              endDate,
-                              targetDay
-                            );
-
-                            // Agregar los días calculados, excluyendo las fechas de inicio y fin
-                            setSelectedMultiple((prev) => {
-                              const newDates = [
-                                ...prev,
-                                ...specificDays.filter(
-                                  (day) =>
-                                    !prev.some((existingDay) =>
-                                      isSameDay(existingDay, day)
-                                    ) &&
-                                    !isSameDay(day, startDate) &&
-                                    !isSameDay(day, endDate)
-                                ),
-                              ];
-
-                              // Ordenar las fechas en orden ascendente
-                              return newDates.sort((a, b) =>
-                                differenceInMilliseconds(a, b)
-                              );
-                            });
-                          }
-                        } else {
-                          // Si se desactiva un día de recurrencia
-                          if (selectedMultiple.length >= 2) {
-                            const startDate = selectedMultiple[0];
-                            const endDate =
-                              selectedMultiple[selectedMultiple.length - 1];
-                            const targetDay = parseInt(value);
-                            const specificDays = getSpecificDaysInRange(
-                              startDate,
-                              endDate,
-                              targetDay
-                            );
-
-                            // Eliminar los días calculados, pero mantener las fechas de inicio y fin
-                            setSelectedMultiple((prev) => {
-                              const newDates = prev.filter(
-                                (day) =>
-                                  !specificDays.some((specificDay) =>
-                                    isSameDay(specificDay, day)
-                                  ) ||
-                                  isSameDay(day, startDate) ||
-                                  isSameDay(day, endDate)
-                              );
-
-                              // Ordenar las fechas en orden ascendente
-                              return newDates.sort((a, b) =>
-                                differenceInMilliseconds(a, b)
-                              );
-                            });
-                          }
-                        }
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              <AcceptButton onClick={handleAcceptButton} />
-            </>
-          )}
-          {state.step3Is == "Hora" && (
-            <>
-              <TimeInput
-                onChange={(value) =>
-                  setTime({ startTime: value, endTime: time.endTime })
-                }
-                title={"Desde Las"}
-              />
-              <TimeInput
-                onChange={(value) =>
-                  setTime({ startTime: time.startTime, endTime: value })
-                }
-                title={"Hasta Las"}
-              />
-              <AcceptButton onClick={handleAcceptButton} />
-            </>
-          )}
-        </div>
-      </form>
-      <button
-        className="w-12 h-12 bg-dark-400 rounded-full grid place-content-center"
+    <>
+      <div
+        className={`${
+          taskFormActive ? "visible" : "invisible"
+        } absolute top-0 left-0 w-screen h-screen bg-[#0006] opacity-30 z-[1000]`}
         onClick={handleCloseMenu}
-        tabIndex={0}
+      ></div>
+      <div
+        className={`absolute bottom-0 left-1/2 -translate-x-1/2  w-dvw max-w-[550px] lg:max-w-[650px] h-auto min-h-0  bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
+          taskFormActive ? "translate-y-0" : "translate-y-[100%]"
+        } transition-transform duration-500 overflow-hidden`}
       >
-        <RxCross1 />
-      </button>
-    </div>
+        <div className="w-full h-5 flex justify-center items-center">
+          <div className="w-[10%] h-1 bg-dark-200 rounded "></div>
+        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={`grid grid-cols-[repeat(3,minmax(100%,500px))] w-full ${
+            state.step == 1 && "translate-x-[0px]"
+          } ${state.step == 2 && "translate-x-[-100%]"} ${
+            state.step == 3 && "translate-x-[-200%]"
+          } justify-self-start transition-all duration-500`}
+          style={{ height: `${state.sizeCarousel}` }}
+        >
+          <div
+            className={`grid gap-[10px] px-5 lg:px-10`}
+            style={{ maxHeight: `${sizesCarousel.size1}` }}
+          >
+            <TaskFormModalSelectType
+              title={t("tasks.taskForm.uniqueTask.title")}
+              description={t("tasks.taskForm.uniqueTask.description")}
+              handleClick={() => {
+                dispatch({ type: "SET_STEP", payload: 2 });
+                dispatch({
+                  type: "UPDATE_TASK",
+                  payload: { isRecurring: false },
+                });
+              }}
+            />
+            <TaskFormModalSelectType
+              title={t("tasks.taskForm.recurringTask.title")}
+              description={t("tasks.taskForm.recurringTask.description")}
+              handleClick={() => {
+                dispatch({ type: "SET_STEP", payload: 2 });
+                dispatch({
+                  type: "UPDATE_TASK",
+                  payload: { isRecurring: true },
+                });
+              }}
+            />
+          </div>
+          <div
+            className={`h-full w-full px-5 lg:px-10 flex flex-col gap-[10px]`}
+            style={{ maxHeight: `${sizesCarousel.size2}` }}
+          >
+            <TaskFormModalInput
+              placeholder={t("tasks.taskForm.inputTitlePlaceholder")}
+              value={state.task.title}
+              onChange={(value) =>
+                dispatch({ type: "UPDATE_TASK", payload: { title: value } })
+              }
+              required={true}
+              tabIndexValue={state.step == 2 ? 1 : -1}
+            />
+            <TaskFormModalInput
+              placeholder={t("tasks.taskForm.inputDescriptionPlaceholder")}
+              value={state.task.description}
+              onChange={(value) =>
+                dispatch({
+                  type: "UPDATE_TASK",
+                  payload: { description: value },
+                })
+              }
+              tabIndexValue={state.step == 2 ? 2 : -1}
+            />
+            <TaskFormModalSelectTime
+              title={t("tasks.taskForm.inputDateLabel")}
+              //placeholder={"Elegir Fecha"}
+              placeholder={
+                !selectedSingle || !selectedMultiple
+                  ? t("tasks.taskForm.inputDatePlaceholder")
+                  : state.task.isRecurring
+                  ? `${t("tasks.taskForm.from")} ${formatDate(
+                      selectedMultiple[0],
+                      language
+                    )} ${t("tasks.taskForm.to")} ${formatDate(selectedMultiple[selectedMultiple.length-1], language)}`
+                  : formatDate(selectedSingle, language)
+              }
+              handleClick={() => {
+                dispatch({ type: "SET_STEP", payload: 3 });
+                dispatch({ type: "SET_STEP_3_IS", payload: "Fecha" });
+              }}
+              tabIndexValue={state.step == 2 ? 3 : -1}
+            />
+            <TaskFormModalSelectTime
+              title={t("tasks.taskForm.inputTimeLabel")}
+              placeholder={
+                state.task.startTime != "00:00:00" &&
+                state.task.endTime != "00:00:00"
+                  ? `${state.task.startTime
+                      .split(":")
+                      .slice(0, 2)
+                      .join(":")} - ${state.task.endTime
+                      .split(":")
+                      .slice(0, 2)
+                      .join(":")}`
+                  : t("tasks.taskForm.inputTimePlaceholder")
+              }
+              handleClick={() => {
+                dispatch({ type: "SET_STEP", payload: 3 });
+                dispatch({ type: "SET_STEP_3_IS", payload: "Hora" });
+              }}
+              tabIndexValue={state.step == 2 ? 4 : -1}
+            />
+            <button
+              className="py-3 text-sm font-medium  w-full bg-violet-main rounded disabled:bg-dark-200 disabled:text-dark-100"
+              tabIndex={state.step == 2 ? 5 : -1}
+            >
+              {t("tasks.taskForm.createTaskButton")}
+            </button>
+          </div>
+          <div className="h-full w-full px-5 lg:px-10  grid gap-4">
+            {state.step3Is == "Fecha" && !state.task.isRecurring && (
+              <>
+                <DayPicker
+                  mode={"single"}
+                  selected={selectedSingle}
+                  onSelect={setSelectedSingle}
+                  disabled={{ before: new Date() }}
+                  footer={footer}
+                  locale={es}
+                />
+                <AcceptButton onClick={handleAcceptButton} />
+              </>
+            )}
+            {state.step3Is == "Fecha" && state.task.isRecurring && (
+              <>
+                <DayPicker
+                  mode={"multiple"}
+                  selected={selectedMultiple}
+                  onSelect={handleSelected}
+                  disabled={{ before: new Date("2/1/2025") }}
+                  footer={<p>Selecciona una fecha</p>}
+                  locale={es}
+                  modifiers={modifiers}
+                  modifiersClassNames={modifiersClassNames}
+                />
+                <div className="grid gap-1 justify-items-center">
+                  <label className="font-semibold">Repetir todos los</label>
+                  <div className="flex gap-1 max-[425px]:max-w-[385px]">
+                    {recurringDaysArray.map((item) => (
+                      <ItemRecurringDays
+                        key={item.isoDay}
+                        name={item.name}
+                        isoDay={item.isoDay}
+                        isActive={state.task.recurringDays.includes(
+                          item.isoDay
+                        )}
+                        handleToggle={(value) => {
+                          const currentDays = state.task.recurringDays;
+                          const updatedDays = currentDays.includes(value)
+                            ? currentDays.filter((day) => day !== value)
+                            : [...currentDays, value];
+
+                          dispatch({
+                            type: "UPDATE_TASK",
+                            payload: { recurringDays: updatedDays },
+                          });
+
+                          if (!currentDays.includes(value)) {
+                            // Si se activa un día de recurrencia
+                            if (selectedMultiple.length >= 2) {
+                              const startDate = selectedMultiple[0];
+                              const endDate =
+                                selectedMultiple[selectedMultiple.length - 1];
+                              const targetDay = parseInt(value);
+                              const specificDays = getSpecificDaysInRange(
+                                startDate,
+                                endDate,
+                                targetDay
+                              );
+
+                              // Agregar los días calculados, excluyendo las fechas de inicio y fin
+                              setSelectedMultiple((prev) => {
+                                const newDates = [
+                                  ...prev,
+                                  ...specificDays.filter(
+                                    (day) =>
+                                      !prev.some((existingDay) =>
+                                        isSameDay(existingDay, day)
+                                      ) &&
+                                      !isSameDay(day, startDate) &&
+                                      !isSameDay(day, endDate)
+                                  ),
+                                ];
+
+                                // Ordenar las fechas en orden ascendente
+                                return newDates.sort((a, b) =>
+                                  differenceInMilliseconds(a, b)
+                                );
+                              });
+                            }
+                          } else {
+                            // Si se desactiva un día de recurrencia
+                            if (selectedMultiple.length >= 2) {
+                              const startDate = selectedMultiple[0];
+                              const endDate =
+                                selectedMultiple[selectedMultiple.length - 1];
+                              const targetDay = parseInt(value);
+                              const specificDays = getSpecificDaysInRange(
+                                startDate,
+                                endDate,
+                                targetDay
+                              );
+
+                              // Eliminar los días calculados, pero mantener las fechas de inicio y fin
+                              setSelectedMultiple((prev) => {
+                                const newDates = prev.filter(
+                                  (day) =>
+                                    !specificDays.some((specificDay) =>
+                                      isSameDay(specificDay, day)
+                                    ) ||
+                                    isSameDay(day, startDate) ||
+                                    isSameDay(day, endDate)
+                                );
+
+                                // Ordenar las fechas en orden ascendente
+                                return newDates.sort((a, b) =>
+                                  differenceInMilliseconds(a, b)
+                                );
+                              });
+                            }
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <AcceptButton onClick={handleAcceptButton} />
+              </>
+            )}
+            {state.step3Is == "Hora" && (
+              <>
+                <TimeInput
+                  onChange={(value) =>
+                    setTime({ startTime: value, endTime: time.endTime })
+                  }
+                  title={"Desde Las"}
+                />
+                <TimeInput
+                  onChange={(value) =>
+                    setTime({ startTime: time.startTime, endTime: value })
+                  }
+                  title={"Hasta Las"}
+                />
+                <AcceptButton onClick={handleAcceptButton} />
+              </>
+            )}
+          </div>
+        </form>
+        <button
+          className="w-12 h-12 bg-dark-400 rounded-full grid place-content-center"
+          onClick={handleCloseMenu}
+          tabIndex={0}
+        >
+          <RxCross1 />
+        </button>
+      </div>
+    </>
   );
 }
 

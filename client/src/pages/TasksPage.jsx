@@ -239,7 +239,7 @@ export default function TasksPage({ setActiveItem }) {
   };
 
   return (
-    <div className="w-full h-[calc(100dvh-55px)] lg:h-screen overflow-hidden relative lg:col-start-2">
+    <div className="w-full h-screen overflow-hidden relative max-lg:pt-14 lg:pl-52">
       <Joyride
         callback={handleJoyrideCallback}
         steps={width >= 1024 ? stepsDesktop : stepsMobile}
@@ -257,6 +257,7 @@ export default function TasksPage({ setActiveItem }) {
         }}
         continuous
       />
+
       <div className="grid mb-3 px-5 lg:hidden">
         <span className="text-2xl capitalize">
         {t("tasks.greeting")}, {user.name.split(" ")[0]}!{" "}

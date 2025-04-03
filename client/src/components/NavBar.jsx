@@ -33,7 +33,7 @@ function NavBar({ activeItem }) {
 
   return (
     <div
-      className={`p-5 lg:p-0 lg:w-[220px] row-start-1 ${
+      className={`fixed top-0 left-0 p-5 lg:p-0 lg:w-52 z-[900] ${
         !isAuthenticated && `hidden`
       } ${
         loading && `hidden`
@@ -41,7 +41,7 @@ function NavBar({ activeItem }) {
     >
       <BurgerMenu setMenu={handleMenuOpenClose} />
       <nav
-        className={`w-full p-5 h-dvh absolute top-0 left-0 bg-dark-400  transition-transform duration-300 ease-in-out max-lg:max-w-[375px] lg:static lg:translate-x-0  lg:px-0  ${
+        className={`max-lg:w-[60vw] p-5 h-dvh absolute top-0 left-0 bg-dark-400  transition-transform duration-300 ease-in-out max-lg:max-w-[375px] lg:static lg:translate-x-0  lg:px-0  ${
           menuIsOpen ? `translate-x-0` : `translate-x-[-100%]`
         } grid lg:pb-8`}
       >
