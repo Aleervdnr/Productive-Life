@@ -17,6 +17,16 @@
       "monthlyProgress": "Progreso Mensual",
       "of": "de"
     },
+    "pomodoroTimer": {
+      "ready": "Listo?",
+      "session": "Sesión",
+      "of": "de",
+      "workingTime": "Tiempo de Trabajo",
+      "restTime": "Tiempo de Descanso",
+      "sessions": "Sesiones",
+      "focus": "¡Enfocate!",
+      "rest": "Descansa"
+    },
     "days": {
       "monday": "Lunes",
       "tuesday": "Martes",
@@ -64,6 +74,16 @@
       "weeklyProgress": "Weekly Progress",
       "monthlyProgress": "Monthly Progress",
       "of": "of"
+    },
+    "pomodoroTimer": {
+      "ready": "Ready?",
+      "session": "Session",
+      "of": "of",
+      "workingTime": "Working Time",
+      "restTime": "Rest Time",
+      "sessions": "Sessions",
+      "focus": "Focus!",
+      "rest": "Rest"
     },
     "days": {
       "monday": "Monday",
