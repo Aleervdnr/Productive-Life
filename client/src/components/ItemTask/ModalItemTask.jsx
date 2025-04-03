@@ -12,6 +12,7 @@ import {
 import useWindowSize from "../../hooks/useWindowSize";
 import {
   addDays,
+  addMonths,
   differenceInDays,
   differenceInMilliseconds,
   differenceInMinutes,
@@ -539,37 +540,49 @@ export default function ModalItemTask() {
     // Obtener la primera fecha y la última fecha
     const firstTaskDate = new Date(dates[0].taskDate); // Primera fecha
     const lastRecurringEndDate = new Date(dates[dates.length - 1].taskDate); // Última fecha
-
-    // Calcular la diferencia en días, semanas y meses
-    const daysDifference = differenceInDays(
-      lastRecurringEndDate,
-      firstTaskDate
-    );
-    const weeksDifference = differenceInWeeks(
-      lastRecurringEndDate,
-      firstTaskDate
-    );
-    const monthsDifference = differenceInMonths(
-      lastRecurringEndDate,
-      firstTaskDate
-    );
-
+  
+    // Calcular la diferencia total en días, semanas y meses
+    const totalDaysDifference = differenceInDays(lastRecurringEndDate, firstTaskDate);
+    const totalWeeksDifference = Math.floor(totalDaysDifference / 7); // Semanas completas
+    const remainingDays = totalDaysDifference % 7; // Días restantes después de las semanas completas
+    const totalMonthsDifference = differenceInMonths(lastRecurringEndDate, firstTaskDate);
+  
     let formattedDifference;
-
-    if (monthsDifference > 0) {
-      formattedDifference = `${monthsDifference} mes${
-        monthsDifference > 1 ? "es" : ""
-      }`;
-    } else if (weeksDifference > 0) {
-      formattedDifference = `${weeksDifference} semana${
-        weeksDifference > 1 ? "s" : ""
-      }`;
+  
+    if (totalMonthsDifference > 0) {
+      // Si hay al menos 1 mes de diferencia
+      const remainingWeeks = differenceInWeeks(
+        lastRecurringEndDate,
+        addMonths(firstTaskDate, totalMonthsDifference)
+      ); // Semanas restantes después de los meses completos
+  
+      if (remainingWeeks > 0) {
+        formattedDifference = `${totalMonthsDifference} mes${
+          totalMonthsDifference > 1 ? "es" : ""
+        } y ${remainingWeeks} semana${remainingWeeks > 1 ? "s" : ""}`;
+      } else {
+        formattedDifference = `${totalMonthsDifference} mes${
+          totalMonthsDifference > 1 ? "es" : ""
+        }`;
+      }
+    } else if (totalWeeksDifference > 0) {
+      // Si hay al menos 1 semana de diferencia
+      if (remainingDays > 0) {
+        formattedDifference = `${totalWeeksDifference} semana${
+          totalWeeksDifference > 1 ? "s" : ""
+        } y ${remainingDays} día${remainingDays > 1 ? "s" : ""}`;
+      } else {
+        formattedDifference = `${totalWeeksDifference} semana${
+          totalWeeksDifference > 1 ? "s" : ""
+        }`;
+      }
     } else {
-      formattedDifference = `${daysDifference} día${
-        daysDifference > 1 ? "s" : ""
+      // Solo días de diferencia
+      formattedDifference = `${totalDaysDifference} día${
+        totalDaysDifference > 1 ? "s" : ""
       }`;
     }
-
+  
     return formattedDifference;
   };
 
@@ -989,7 +1002,7 @@ export default function ModalItemTask() {
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
                   Promedio de Tiempo
                   <span className="text-white text-3xl">
-                    {formatTime(averageTime.toFixed(2))}
+                    {formatTime(Math.round(averageTime))}
                   </span>
                   <span className="">Por tarea completada</span>
                 </div>
