@@ -14,6 +14,7 @@ import {
   addDays,
   differenceInDays,
   differenceInMilliseconds,
+  differenceInMinutes,
   differenceInMonths,
   differenceInWeeks,
   eachDayOfInterval,
@@ -210,13 +211,17 @@ export default function ModalItemTask() {
         <span className="text-violet-main font-semibold">
           {format(new Date(selectedMultiple[0]), "d 'de' MMMM", {
             locale: esDateFns,
-          }) }{" "}
+          })}{" "}
         </span>
         hasta el{" "}
         <span className="text-violet-main font-semibold">
-          {format(new Date (selectedMultiple[selectedMultiple.length-1]), "d 'de' MMMM", {
-            locale: esDateFns,
-          })}
+          {format(
+            new Date(selectedMultiple[selectedMultiple.length - 1]),
+            "d 'de' MMMM",
+            {
+              locale: esDateFns,
+            }
+          )}
         </span>
       </p>
     );
@@ -519,50 +524,98 @@ export default function ModalItemTask() {
   const total = tasks.filter(
     (recu) => recu.recurrenceOf == currentTask.recurrenceOf
   ).length;
-  const total1 = tasks.filter(
+  const totalRecurrences = tasks.filter(
     (recu) => recu.recurrenceOf == currentTask.recurrenceOf
   );
-
-  console.log(total1);
+  const totalRecurrencesCompleted = tasks.filter(
+    (recu) =>
+      recu.recurrenceOf == currentTask.recurrenceOf &&
+      recu.status === "completed"
+  );
 
   const porcentajeCompleted = ((completed / total) * 100).toFixed(2);
 
-  // Obtener la primera fecha y la última fecha
-  const firstTaskDate = new Date(total1[0].taskDate); // Primera fecha
-  const lastRecurringEndDate = new Date(total1[total1.length - 1].taskDate); // Última fecha
+  const getDifference = (dates) => {
+    // Obtener la primera fecha y la última fecha
+    const firstTaskDate = new Date(dates[0].taskDate); // Primera fecha
+    const lastRecurringEndDate = new Date(dates[dates.length - 1].taskDate); // Última fecha
 
-  console.log(firstTaskDate, lastRecurringEndDate);
+    // Calcular la diferencia en días, semanas y meses
+    const daysDifference = differenceInDays(
+      lastRecurringEndDate,
+      firstTaskDate
+    );
+    const weeksDifference = differenceInWeeks(
+      lastRecurringEndDate,
+      firstTaskDate
+    );
+    const monthsDifference = differenceInMonths(
+      lastRecurringEndDate,
+      firstTaskDate
+    );
 
-  // Calcular la diferencia en días, semanas y meses
-  const daysDifference = differenceInDays(lastRecurringEndDate, firstTaskDate);
-  const weeksDifference = differenceInWeeks(
-    lastRecurringEndDate,
-    firstTaskDate
+    let formattedDifference;
+
+    if (monthsDifference > 0) {
+      formattedDifference = `${monthsDifference} mes${
+        monthsDifference > 1 ? "es" : ""
+      }`;
+    } else if (weeksDifference > 0) {
+      formattedDifference = `${weeksDifference} semana${
+        weeksDifference > 1 ? "s" : ""
+      }`;
+    } else {
+      formattedDifference = `${daysDifference} día${
+        daysDifference > 1 ? "s" : ""
+      }`;
+    }
+
+    return formattedDifference;
+  };
+
+  const formattedTotalDifference = getDifference(totalRecurrences);
+  const formattedCompletedDifference = totalRecurrencesCompleted.length > 0 ? getDifference(totalRecurrencesCompleted) : "0 dias"
+
+
+  // Filtrar las tareas completadas
+  const completedTasks = tasks?.filter(
+    (task) =>
+      task.status === "completed" &&
+      task.recurrenceOf == currentTask.recurrenceOf
   );
-  const monthsDifference = differenceInMonths(
-    lastRecurringEndDate,
-    firstTaskDate
-  );
 
-  console.log(`Diferencia en días: ${daysDifference} días`);
-  console.log(`Diferencia en semanas: ${weeksDifference} semanas`);
-  console.log(`Diferencia en meses: ${monthsDifference} meses`);
+  // Función para calcular el tiempo invertido en minutos
+  const calculateTimeSpent = (startTime, endTime) => {
+    const start = new Date(`1970-01-01T${startTime}`);
+    const end = new Date(`1970-01-01T${endTime}`);
+    return differenceInMinutes(end, start);
+  };
 
-  let formattedDifference;
+  // Calcular el tiempo total y el promedio
+  let totalTimeSpent = 0;
 
-  if (monthsDifference > 0) {
-    formattedDifference = `${monthsDifference} mes${
-      monthsDifference > 1 ? "es" : ""
-    }`;
-  } else if (weeksDifference > 0) {
-    formattedDifference = `${weeksDifference} semana${
-      weeksDifference > 1 ? "s" : ""
-    }`;
-  } else {
-    formattedDifference = `${daysDifference} día${
-      daysDifference > 1 ? "s" : ""
-    }`;
-  }
+  completedTasks.forEach((task) => {
+    const timeSpent = calculateTimeSpent(task.startTime, task.endTime);
+    totalTimeSpent += timeSpent;
+  });
+
+  const averageTime =
+    completedTasks.length > 0 ? totalTimeSpent / completedTasks.length : 0;
+
+  const formatTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+
+    let timeFormatted = `${hours}h ${remainingMinutes}m`;
+
+    if (hours == 0) {
+      timeFormatted = `${remainingMinutes}m`;
+    }
+    if (remainingMinutes == 0) {
+      timeFormatted = `${hours}h`;
+    }
+    return timeFormatted;
+  };
 
   return (
     <dialog
@@ -863,16 +916,16 @@ export default function ModalItemTask() {
             <div className={`space-y-4 ${paddingContent} `}>
               <div className="flex justify-between text-violet-main font-semibold gap-3">
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
-                  Efectividad
+                  Progreso
                   <span className="text-white text-3xl">
                     {porcentajeCompleted}%
                   </span>
-                  <span className="">{`${completed} de ${total}`}</span>
+                  <span className="">{`${completed} de ${total} totales`}</span>
                 </div>
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
                   Total Recurrencias
                   <span className="text-white text-3xl">{total}</span>
-                  <span className="">{`En ${formattedDifference}`}</span>
+                  <span className="">{`En ${formattedTotalDifference}`}</span>
                 </div>
               </div>
               <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
@@ -935,13 +988,17 @@ export default function ModalItemTask() {
               <div className="flex justify-between text-violet-main font-semibold gap-3">
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
                   Promedio de Tiempo
-                  <span className="text-white text-3xl">0Min</span>
+                  <span className="text-white text-3xl">
+                    {formatTime(averageTime.toFixed(2))}
+                  </span>
                   <span className="">Por tarea completada</span>
                 </div>
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
                   Horas Dedicadas
-                  <span className="text-white text-3xl">0hs</span>
-                  <span className="">{`En ${formattedDifference}`}</span>
+                  <span className="text-white text-3xl">
+                    {formatTime(totalTimeSpent)}
+                  </span>
+                  <span className="">{`En ${formattedCompletedDifference}`}</span>
                 </div>
               </div>
             </div>

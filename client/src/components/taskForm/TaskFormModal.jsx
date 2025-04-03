@@ -4,6 +4,7 @@ import { useUi } from "../../context/UiContext";
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { es } from "react-day-picker/locale";
+import { enUS } from "date-fns/locale";
 import {
   addDays,
   differenceInMilliseconds,
@@ -23,6 +24,8 @@ import { AcceptButton } from "./ButtonsTaskForm";
 import TimeInput from "./TimeInput";
 import { useTasks } from "../../context/TasksContext";
 import ItemRecurringDays from "../ItemRecurringDays";
+import { useTranslation } from "../../hooks/UseTranslation";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function TaskFormModal() {
   //Contexts
@@ -34,6 +37,8 @@ export default function TaskFormModal() {
   } = useUi();
 
   const { createTask } = useTasks();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
 
   //consts
   const sizesCarousel = {
@@ -417,10 +422,24 @@ export default function TaskFormModal() {
     return () => document.removeEventListener("keydown", handleCloseMenu);
   }, []);
 
-  
+  const formatDate = (date, language) => {
+    const locale = language === "es" ? es : enUS; // Selecciona el locale según el idioma
+    const formatPattern =
+      language === "es"
+        ? "d 'de' MMMM" // Formato para español: "2 de abril"
+        : "MMMM d"; // Formato para inglés: "April 2"
+
+    return format(date, formatPattern, { locale });
+  };
+
   return (
     <>
-      <div className={`${taskFormActive ? "visible" : "invisible"} absolute top-0 left-0 w-screen h-screen bg-[#0006] opacity-30 z-[1000]`} onClick={handleCloseMenu}></div>
+      <div
+        className={`${
+          taskFormActive ? "visible" : "invisible"
+        } absolute top-0 left-0 w-screen h-screen bg-[#0006] opacity-30 z-[1000]`}
+        onClick={handleCloseMenu}
+      ></div>
       <div
         className={`absolute bottom-0 left-1/2 -translate-x-1/2  w-dvw max-w-[550px] lg:max-w-[650px] h-auto min-h-0  bg-dark-500 rounded-t-3xl z-[1001] grid grid-rows-[36px,1fr,70px] grid-cols-1 justify-items-center items-center ${
           taskFormActive ? "translate-y-0" : "translate-y-[100%]"
@@ -443,8 +462,8 @@ export default function TaskFormModal() {
             style={{ maxHeight: `${sizesCarousel.size1}` }}
           >
             <TaskFormModalSelectType
-              title={"Crear Tarea Unica"}
-              description={"Se ejecuta una sola vez, sin repetición."}
+              title={t("tasks.taskForm.uniqueTask.title")}
+              description={t("tasks.taskForm.uniqueTask.description")}
               handleClick={() => {
                 dispatch({ type: "SET_STEP", payload: 2 });
                 dispatch({
@@ -454,8 +473,8 @@ export default function TaskFormModal() {
               }}
             />
             <TaskFormModalSelectType
-              title={"Crear Tarea Recurrente"}
-              description={"Tiene un inicio, fin y se repite según un patrón."}
+              title={t("tasks.taskForm.recurringTask.title")}
+              description={t("tasks.taskForm.recurringTask.description")}
               handleClick={() => {
                 dispatch({ type: "SET_STEP", payload: 2 });
                 dispatch({
@@ -470,7 +489,7 @@ export default function TaskFormModal() {
             style={{ maxHeight: `${sizesCarousel.size2}` }}
           >
             <TaskFormModalInput
-              placeholder={"Titulo"}
+              placeholder={t("tasks.taskForm.inputTitlePlaceholder")}
               value={state.task.title}
               onChange={(value) =>
                 dispatch({ type: "UPDATE_TASK", payload: { title: value } })
@@ -479,7 +498,7 @@ export default function TaskFormModal() {
               tabIndexValue={state.step == 2 ? 1 : -1}
             />
             <TaskFormModalInput
-              placeholder={"Descripción"}
+              placeholder={t("tasks.taskForm.inputDescriptionPlaceholder")}
               value={state.task.description}
               onChange={(value) =>
                 dispatch({
@@ -490,24 +509,17 @@ export default function TaskFormModal() {
               tabIndexValue={state.step == 2 ? 2 : -1}
             />
             <TaskFormModalSelectTime
-              title={"Fecha"}
+              title={t("tasks.taskForm.inputDateLabel")}
               //placeholder={"Elegir Fecha"}
               placeholder={
                 !selectedSingle || !selectedMultiple
-                  ? "Elegir Fecha"
+                  ? t("tasks.taskForm.inputDatePlaceholder")
                   : state.task.isRecurring
-                  ? `Del ${format(selectedMultiple[0], "d 'de' MMMM", {
-                      locale: esDateFns,
-                    })} al ${format(
-                      selectedMultiple[selectedMultiple.length - 1],
-                      "d 'de' MMMM",
-                      {
-                        locale: esDateFns,
-                      }
-                    )}`
-                  : format(selectedSingle, "d 'de' MMMM", {
-                      locale: esDateFns,
-                    })
+                  ? `${t("tasks.taskForm.from")} ${formatDate(
+                      selectedMultiple[0],
+                      language
+                    )} ${t("tasks.taskForm.to")} ${formatDate(selectedMultiple[selectedMultiple.length-1], language)}`
+                  : formatDate(selectedSingle, language)
               }
               handleClick={() => {
                 dispatch({ type: "SET_STEP", payload: 3 });
@@ -516,7 +528,7 @@ export default function TaskFormModal() {
               tabIndexValue={state.step == 2 ? 3 : -1}
             />
             <TaskFormModalSelectTime
-              title={"Hora"}
+              title={t("tasks.taskForm.inputTimeLabel")}
               placeholder={
                 state.task.startTime != "00:00:00" &&
                 state.task.endTime != "00:00:00"
@@ -527,7 +539,7 @@ export default function TaskFormModal() {
                       .split(":")
                       .slice(0, 2)
                       .join(":")}`
-                  : "Elegir Hora"
+                  : t("tasks.taskForm.inputTimePlaceholder")
               }
               handleClick={() => {
                 dispatch({ type: "SET_STEP", payload: 3 });
@@ -539,7 +551,7 @@ export default function TaskFormModal() {
               className="py-3 text-sm font-medium  w-full bg-violet-main rounded disabled:bg-dark-200 disabled:text-dark-100"
               tabIndex={state.step == 2 ? 5 : -1}
             >
-              Crear Tarea
+              {t("tasks.taskForm.createTaskButton")}
             </button>
           </div>
           <div className="h-full w-full px-5 lg:px-10  grid gap-4">

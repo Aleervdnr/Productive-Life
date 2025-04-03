@@ -26,7 +26,26 @@
       "saturday": "Sábado",
       "sunday": "Domingo"
     },
-    "addTaskButton":"Agregar Tarea"
+    "addTaskButton": "Agregar Tarea",
+    "taskForm": {
+      "uniqueTask": {
+        "title": "Crear Tarea Unica",
+        "description": "Se ejecuta una sola vez, sin repetición."
+      },
+      "recurringTask": {
+        "title": "Crear Tarea Recurrente",
+        "description": "Tiene un inicio, fin y se repite según un patrón."
+      },
+      "inputTitlePlaceholder": "Titulo",
+      "inputDescriptionPlaceholder": "Descripción",
+      "inputDateLabel": "Fecha",
+      "inputDatePlaceholder": "Elegir Fecha",
+      "from": "Del",
+      "to": "al",
+      "inputTimeLabel": "Hora",
+      "inputTimePlaceholder": "Elegir Hora",
+      "createTaskButton": "Crear Tarea"
+    }
   },
   "en": {
     "greeting": "Hi",
@@ -55,6 +74,25 @@
       "saturday": "Saturday",
       "sunday": "Sunday"
     },
-    "addTaskButton":"Add Task"
+    "addTaskButton": "Add Task",
+    "taskForm": {
+      "uniqueTask": {
+        "title": "Create One-Time Task",
+        "description": "Executes only once, without repetition."
+      },
+      "recurringTask": {
+        "title": "Create Recurring Task",
+        "description": "Has a start, end, and repeats based on a pattern."
+      },
+      "inputTitlePlaceholder": "Title",
+      "inputDescriptionPlaceholder": "Description",
+      "inputDateLabel": "Date",
+      "inputDatePlaceholder": "Choose Date",
+      "from": "From",
+      "to": "to",
+      "inputTimeLabel": "Time",
+      "inputTimePlaceholder": "Choose Time",
+      "createTaskButton": "Create Task"
+    }
   }
 }
