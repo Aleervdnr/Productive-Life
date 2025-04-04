@@ -80,13 +80,13 @@ export default function MonthTasks() {
           />
         </div>
       </div>
-      <span>{t("tasks.days.monday").charAt(0)}</span>
-      <span>{t("tasks.days.tuesday").charAt(0)}</span>
-      <span>{t("tasks.days.wednesday").charAt(0)}</span>
-      <span>{t("tasks.days.thursday").charAt(0)}</span>
-      <span>{t("tasks.days.friday").charAt(0)}</span>
-      <span>{t("tasks.days.saturday").charAt(0)}</span>
-      <span>{t("tasks.days.sunday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.monday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.tuesday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.wednesday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.thursday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.friday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.saturday").charAt(0)}</span>
+      <span className="font-medium">{t("tasks.days.sunday").charAt(0)}</span>
 
       {/* Si el dia empieza en lunes, martes, miercoles o el dia que sea, mediante esta logica se acomoda el primer dia del mes en el dia que es mediante unos espacios vacios, ejemplo: si la semana empieza en martes en el lunes va haber un espacio vacio, sin esto todos los meses se mostrarian como primer dia el lunes*/}
       <div
