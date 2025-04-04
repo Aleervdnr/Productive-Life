@@ -3,7 +3,7 @@ import { RxCross1 } from "react-icons/rx";
 import { useUi } from "../../context/UiContext";
 import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
-import { es } from "react-day-picker/locale";
+import { es, enUS as enUSDayPicker } from "react-day-picker/locale";
 import { enUS } from "date-fns/locale";
 import {
   addDays,
@@ -48,13 +48,13 @@ export default function TaskFormModal() {
   };
 
   const recurringDaysArray = [
-    { name: "Lunes", isoDay: "1" },
-    { name: "Martes", isoDay: "2" },
-    { name: "Miercoles", isoDay: "3" },
-    { name: "Jueves", isoDay: "4" },
-    { name: "Viernes", isoDay: "5" },
-    { name: "Sabado", isoDay: "6" },
-    { name: "Domingo", isoDay: "0" },
+    { name: t("tasks.days.monday"), isoDay: "1" },
+    { name: t("tasks.days.tuesday"), isoDay: "2" },
+    { name: t("tasks.days.wednesday"), isoDay: "3" },
+    { name: t("tasks.days.thursday"), isoDay: "4" },
+    { name: t("tasks.days.friday"), isoDay: "5" },
+    { name: t("tasks.days.saturday"), isoDay: "6" },
+    { name: t("tasks.days.sunday"), isoDay: "0" },
   ];
 
   //Reducer
@@ -146,6 +146,16 @@ export default function TaskFormModal() {
   const [selectedMultiple, setSelectedMultiple] = useState(
     defaultSelectedMultiple
   );
+
+  const formatDate = (date, language) => {
+    const locale = language === "es" ? es : enUS; // Selecciona el locale según el idioma
+    const formatPattern =
+      language === "es"
+        ? "d 'de' MMMM" // Formato para español: "2 de abril"
+        : "MMMM d"; // Formato para inglés: "April 2"
+
+    return format(date, formatPattern, { locale });
+  };
 
   const handleSelected = (value) => {
     //Si se agregan dias
@@ -266,36 +276,35 @@ export default function TaskFormModal() {
 
   let footer = (
     <p className="text-xs md:text-sm text-center mt-2">
-      Elige el día para la tarea.
+      {t("tasks.dayPickerFooter.default")}
     </p>
   );
   if (!state.task.isRecurring && selectedSingle) {
     footer = (
       <p className="text-xs md:text-sm text-center mt-2">
-        Elegiste el{" "}
+        {t("tasks.dayPickerFooter.selectedSingle")}{" "}
         <span className="text-violet-main font-medium">
-          {format(selectedSingle, "yyyy-MM-dd")}{" "}
+          {formatDate(selectedSingle, language)}{" "}
         </span>
       </p>
     );
-  } //else if (state.task.isRecurring && selectedMultiple) {
-  //   if (!selectedMultiple.to) {
-  //     //footer = <p>Desde el{format(selected.from, "yyyy-MM-dd")}</p>;
-  //   } else if (selectedMultiple.to) {
-  //     footer = (
-  //       <p className="text-xs md:text-sm text-center mt-2">
-  //         <span>Desde el </span>
-  //         <span className="text-violet-main font-medium">
-  //           {format(selectedMultiple.from, "yyyy-MM-dd")}{" "}
-  //         </span>
-  //         <span>- Hasta el </span>
-  //         <span className="text-violet-main font-medium">
-  //           {format(selectedMultiple.to, "yyyy-MM-dd")}
-  //         </span>
-  //       </p>
-  //     );
-  //   }
-  // }
+  } else if (state.task.isRecurring && selectedMultiple) {
+    footer = (
+      <p className="text-xs md:text-sm text-center mt-2">
+        {t("tasks.dayPickerFooter.selectedMultipleFrom")}{" "}
+        <span className="text-violet-main font-semibold">
+          {formatDate(new Date(selectedMultiple[0]), language)}{" "}
+        </span>
+        {t("tasks.dayPickerFooter.selectedMultipleTo")}{" "}
+        <span className="text-violet-main font-semibold">
+          {formatDate(
+            new Date(selectedMultiple[selectedMultiple.length - 1]),
+            language
+          )}
+        </span>
+      </p>
+    );
+   }
 
   //TimeInput
   const [time, setTime] = useState({
@@ -429,16 +438,6 @@ export default function TaskFormModal() {
     return () => document.removeEventListener("keydown", handleCloseMenu);
   }, []);
 
-  const formatDate = (date, language) => {
-    const locale = language === "es" ? es : enUS; // Selecciona el locale según el idioma
-    const formatPattern =
-      language === "es"
-        ? "d 'de' MMMM" // Formato para español: "2 de abril"
-        : "MMMM d"; // Formato para inglés: "April 2"
-
-    return format(date, formatPattern, { locale });
-  };
-
   return (
     <>
       <div
@@ -525,7 +524,10 @@ export default function TaskFormModal() {
                   ? `${t("tasks.taskForm.from")} ${formatDate(
                       selectedMultiple[0],
                       language
-                    )} ${t("tasks.taskForm.to")} ${formatDate(selectedMultiple[selectedMultiple.length-1], language)}`
+                    )} ${t("tasks.taskForm.to")} ${formatDate(
+                      selectedMultiple[selectedMultiple.length - 1],
+                      language
+                    )}`
                   : formatDate(selectedSingle, language)
               }
               handleClick={() => {
@@ -570,7 +572,7 @@ export default function TaskFormModal() {
                   onSelect={setSelectedSingle}
                   disabled={{ before: new Date() }}
                   footer={footer}
-                  locale={es}
+                  locale={language == "es" ? es : enUSDayPicker}
                 />
                 <AcceptButton onClick={handleAcceptButton} />
               </>
@@ -582,13 +584,13 @@ export default function TaskFormModal() {
                   selected={selectedMultiple}
                   onSelect={handleSelected}
                   disabled={{ before: new Date("2/1/2025") }}
-                  footer={<p>Selecciona una fecha</p>}
-                  locale={es}
+                  footer={footer}
+                  locale={language == "es" ? es : enUSDayPicker}
                   modifiers={modifiers}
                   modifiersClassNames={modifiersClassNames}
                 />
                 <div className="grid gap-1 justify-items-center">
-                  <label className="font-semibold">Repetir todos los</label>
+                  <label className="font-semibold">{t("tasks.modalTask.repeatTitle")}</label>
                   <div className="flex gap-1 max-[425px]:max-w-[385px]">
                     {recurringDaysArray.map((item) => (
                       <ItemRecurringDays
@@ -687,13 +689,13 @@ export default function TaskFormModal() {
                   onChange={(value) =>
                     setTime({ startTime: value, endTime: time.endTime })
                   }
-                  title={"Desde Las"}
+                  title={t("tasks.timeInput.from")}
                 />
                 <TimeInput
                   onChange={(value) =>
                     setTime({ startTime: time.startTime, endTime: value })
                   }
-                  title={"Hasta Las"}
+                  title={t("tasks.timeInput.to")}
                 />
                 <AcceptButton onClick={handleAcceptButton} />
               </>

@@ -12,14 +12,17 @@ import { useAuth } from "../context/AuthContext.jsx";
 import useWindowSize from "../hooks/useWindowSize.jsx";
 import { useDate } from "../context/DateContext.jsx";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { useTranslation } from "../hooks/UseTranslation.jsx";
+import { MdOutlineAdd } from "react-icons/md";
+import { useLanguage } from "../context/LanguageContext.jsx";
 
 export default function TasksPage({ setActiveItem }) {
   const { getTasks } = useTasks();
   const { nowDateTime } = useDate();
   const { completeTour, user } = useAuth();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const { width } = useWindowSize();
 
@@ -215,6 +218,30 @@ export default function TasksPage({ setActiveItem }) {
         back: <span aria-label="back">Volver</span>,
       },
     },
+    {
+      target: "body",
+      placement: "center",
+      content: (
+        <div className="max-[768px]:w-[80vw] grid justify-items-center">
+          <h3 className="font-bold text-lg">Transforma tus ideas en acción</h3>
+          <p>Agrega nuevas tareas y da el primer paso hacia tus metas.</p>{" "}
+          <div
+            className={`bg-violet-main w-11 h-11 rounded-full text-2xl flex justify-center items-center mt-2`}
+          >
+            <span className="lg:text-md lg:leading-3 lg:font-medium lg:pl-1 ">
+              <MdOutlineAdd />
+            </span>
+          </div>
+        </div>
+      ),
+      controlled: true,
+      locale: {
+        skip: <strong aria-label="skip">Saltar</strong>,
+        next: <span aria-label="next">Siguiente</span>,
+        back: <span aria-label="back">Volver</span>,
+        last: <span aria-label="Last">Fin</span>,
+      },
+    },
   ];
 
   const handleJoyrideCallback = (data) => {
@@ -236,6 +263,16 @@ export default function TasksPage({ setActiveItem }) {
     console.groupCollapsed(type);
     console.log(data);
     console.groupEnd();
+  };
+
+  const formatDate = (date, language) => {
+    const locale = language === "es" ? es : enUS; // Selecciona el locale según el idioma
+    const formatPattern =
+      language === "es"
+        ? "d 'de' MMMM yyyy" // Formato para español: "2 de abril"
+        : "MMMM d yyyy"; // Formato para inglés: "April 2"
+
+    return format(date, formatPattern, { locale });
   };
 
   return (
@@ -260,10 +297,10 @@ export default function TasksPage({ setActiveItem }) {
 
       <div className="grid mb-3 px-5 lg:hidden">
         <span className="text-2xl capitalize">
-        {t("tasks.greeting")}, {user.name.split(" ")[0]}!{" "}
+          {t("tasks.greeting")}, {user.name.split(" ")[0]}!{" "}
         </span>
         <span className="text-xs text-dark-100">
-          {format(nowDateTime, "d 'de' MMMM yyyy", { locale: es })}
+          {formatDate(nowDateTime, language)}
         </span>
       </div>
       <div className="font-medium flex gap-2 px-5 lg:hidden">
