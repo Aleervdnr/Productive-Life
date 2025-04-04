@@ -59,32 +59,32 @@ export default function TodayTasks() {
       </div>
       <div className="w-full h-[1px] bg-dark-200 my-4 lg:hidden"></div>
       <div className="w-full grid grid-cols-2 gap-2 lg:hidden">
-        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">{t("tasks.cardProgress.completed")}</span>
+        <div className="py-2 px-6 w-full bg-dark-400 grid place-content-start rounded-lg">
+          <span className="text-xs text-violet-main font-semibold">{t("tasks.cardProgress.completed")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {filteredTasks.filter((task) => task.status == "completed").length}{" "}
             <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {filteredTasks.length}
           </span>
         </div>
-        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">{t("tasks.cardProgress.toDo")}</span>
+        <div className="py-2 px-6 w-full bg-dark-400 grid place-content-start rounded-lg">
+          <span className="text-xs text-violet-main font-semibold">{t("tasks.cardProgress.toDo")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {filteredTasks.filter((task) => task.status == "pending").length}{" "}
             <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {filteredTasks.length}
           </span>
         </div>
-        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">{t("tasks.cardProgress.overdue")}</span>
+        <div className="py-2 px-6 w-full bg-dark-400 grid place-content-start rounded-lg">
+          <span className="text-xs text-violet-main font-semibold">{t("tasks.cardProgress.overdue")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {filteredTasks.filter((task) => task.status == "overdue").length}{" "}
             <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
             {filteredTasks.length}
           </span>
         </div>
-        <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">{t("tasks.cardProgress.dailyProgress")}</span>
+        <div className="py-2 px-6 w-full bg-dark-400 grid place-content-start rounded-lg">
+          <span className="text-xs text-violet-main font-semibold">{t("tasks.cardProgress.dailyProgress")}</span>
           <AnimatedCounter
             value={
               filteredTasks.length > 0
