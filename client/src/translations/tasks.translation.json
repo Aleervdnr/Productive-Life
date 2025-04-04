@@ -55,6 +55,64 @@
       "inputTimeLabel": "Hora",
       "inputTimePlaceholder": "Elegir Hora",
       "createTaskButton": "Crear Tarea"
+    },
+    "modalTask": {
+      "tabInformation": "Información",
+      "tabRecurrences": "Recurrencias",
+      "tabStats": "Estadisticas",
+      "title": "Titulo",
+      "description": "Descripcion",
+      "status": "Estado",
+      "statusCompleted": "Completado",
+      "statusPending": "Pendiente",
+      "statusOverdue": "Atrasado",
+      "date": "Fecha",
+      "time": "Hora",
+      "deleteButton": "Eliminar",
+      "deleteAllButton": "Eliminar Todo",
+      "saveButton": "Guardar",
+      "repeatTitle": "Repetir todos los",
+      "statistics": {
+        "progress": { "label": "Progreso", "of": "de", "total": "totales" },
+        "totalRecurrences": {
+          "label": "Total Recurrencias",
+          "inPeriod": "En"
+        },
+        "recurrencesStatus": {
+          "title": "Estado de Recurrencias",
+          "completed": "Completadas",
+          "pending": "Pendientes",
+          "overdue": "Atrasadas"
+        },
+        "averageTime": {
+          "label": "Promedio de Tiempo",
+          "perTask": "Por tarea completada"
+        },
+        "dedicatedHours": {
+          "label": "Horas Dedicadas",
+          "inPeriod": "En"
+        }
+        ,
+        "and":"y"
+      }
+    },
+    "dayPickerFooter": {
+      "default": "Elige el día para la tarea.",
+      "selectedSingle": "Elegiste el",
+      "selectedMultipleFrom": "Desde el",
+      "selectedMultipleTo": "Hasta el"
+    },
+    "timeInput": {
+      "from": "Desde las",
+      "to": "Hasta las"
+    },
+    "timeUnits": {
+      "day": "día",
+      "days": "días",
+      "week": "semana",
+      "weeks": "semanas",
+      "month": "mes",
+      "months": "meses"
     }
   },
   "en": {
@@ -113,6 +171,63 @@
       "inputTimeLabel": "Time",
       "inputTimePlaceholder": "Choose Time",
       "createTaskButton": "Create Task"
+    },
+    "modalTask": {
+      "tabInformation": "Information",
+      "tabRecurrences": "Recurrences",
+      "tabStats": "Statistics",
+      "title": "Title",
+      "description": "Description",
+      "status": "Status",
+      "statusCompleted": "Completed",
+      "statusPending": "Pending",
+      "statusOverdue": "Overdue",
+      "date": "Date",
+      "time": "Time",
+      "deleteButton": "Delete",
+      "deleteAllButton": "Delete All",
+      "saveButton": "Save",
+      "repeatTitle": "Repeat Every",
+      "statistics": {
+        "progress": { "label": "Progress", "of": "of", "total": "total" },
+        "totalRecurrences": {
+          "label": "Total Recurrences",
+          "inPeriod": "In"
+        },
+        "recurrencesStatus": {
+          "title": "Recurrences Status",
+          "completed": "Completed",
+          "pending": "Pending",
+          "overdue": "Overdue"
+        },
+        "averageTime": {
+          "label": "Average Time",
+          "perTask": "Per completed task"
+        },
+        "dedicatedHours": {
+          "label": "Dedicated Hours",
+          "inPeriod": "In"
+        },
+        "and":"and"
+      }
+    },
+    "dayPickerFooter": {
+      "default": "Choose a day for the task.",
+      "selectedSingle": "You selected",
+      "selectedMultipleFrom": "From",
+      "selectedMultipleTo": "To"
+    },
+    "timeInput": {
+      "from": "From",
+      "to": "To"
+    },
+    "timeUnits": {
+      "day": "day",
+      "days": "days",
+      "week": "week",
+      "weeks": "weeks",
+      "month": "month",
+      "months": "months"
     }
   }
 }
