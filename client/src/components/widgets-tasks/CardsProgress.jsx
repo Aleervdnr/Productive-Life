@@ -4,27 +4,28 @@ import { AnimatedCounter } from "../AnimatedCounter";
 import { useTasks } from "../../context/TasksContext";
 import { isSameDay, isSameMonth, isSameWeek } from "date-fns";
 import { todayDate } from "../../libs/Dates.js";
+import { useTranslation } from "../../hooks/UseTranslation.jsx";
 
 export default function CardsProgress({}) {
+  const { t } = useTranslation();
   const detailsRef = useRef(null);
 
   const { tasks, tasksIsLoading } = useTasks();
-  const [dropDownState, setDropDownState] = useState("Progreso Mensual");
-  const [todayTasks, setTodayTasks] = useState([]);
-  const [weeklyTasks, setWeeklyTasks] = useState([]);
-  const [monthlyTasks, setMonthlyTasks] = useState([]);
+  const [dropDownState, setDropDownState] = useState(
+    t("tasks.cardProgress.monthlyProgress")
+  );
   const [filteredTasks, setFilteredTasks] = useState([]);
 
   const handleSelect = (e) => {
-    if (e.target.innerText == "Progreso Mensual") {
+    if (e.target.id == "monthlyProgress") {
       setFilteredTasks(
         tasks.filter((task) =>
           isSameMonth(new Date(task.taskDate), new Date(todayDate))
         )
       );
-      setDropDownState("Progreso Mensual");
+      setDropDownState(t("tasks.cardProgress.monthlyProgress"));
     }
-    if (e.target.innerText == "Progreso Semanal") {
+    if (e.target.id == "weeklyProgress") {
       setFilteredTasks(
         tasks.filter((task) =>
           isSameWeek(new Date(task.taskDate), new Date(todayDate), {
@@ -32,38 +33,34 @@ export default function CardsProgress({}) {
           })
         )
       );
-      setDropDownState("Progreso Semanal");
+      setDropDownState(t("tasks.cardProgress.weeklyProgress"));
     }
-    if (e.target.innerText == "Progreso Diario") {
+    if (e.target.id == "dailyProgress") {
       setFilteredTasks(
         tasks.filter((task) =>
           isSameDay(new Date(task.taskDate), new Date(todayDate))
         )
       );
-      setDropDownState("Progreso Diario");
+      setDropDownState(t("tasks.cardProgress.dailyProgress"));
     }
     detailsRef.current.removeAttribute("open");
   };
 
   useEffect(() => {
-    if (!tasksIsLoading)
-      setFilteredTasks(
-        tasks.filter((task) =>
-          isSameMonth(new Date(task.taskDate), new Date(todayDate))
-        )
-      );
-  }, []);
-
-  useEffect(() => {
-    console.log(tasksIsLoading);
-    if (dropDownState == "Progreso Diario" && !tasksIsLoading) {
+    if (
+      dropDownState == t("tasks.cardProgress.dailyProgress") &&
+      !tasksIsLoading
+    ) {
       setFilteredTasks(
         tasks.filter((task) =>
           isSameDay(new Date(task.taskDate), new Date(todayDate))
         )
       );
     }
-    if (dropDownState == "Progreso Semanal" && !tasksIsLoading) {
+    if (
+      dropDownState == t("tasks.cardProgress.weeklyProgress") &&
+      !tasksIsLoading
+    ) {
       setFilteredTasks(
         tasks.filter((task) =>
           isSameWeek(new Date(task.taskDate), new Date(todayDate), {
@@ -72,7 +69,10 @@ export default function CardsProgress({}) {
         )
       );
     }
-    if (dropDownState == "Progreso Mensual" && !tasksIsLoading) {
+    if (
+      dropDownState == t("tasks.cardProgress.monthlyProgress") &&
+      !tasksIsLoading
+    ) {
       setFilteredTasks(
         tasks.filter((task) =>
           isSameMonth(new Date(task.taskDate), new Date(todayDate))
@@ -87,26 +87,26 @@ export default function CardsProgress({}) {
       className="max-lg:hidden w-full grid grid-cols-4 gap-2 row-start-2 col-start-2 col-end-5"
     >
       <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-        <span className="text-xs">Tareas Completadas</span>
+        <span className="text-xs">{t("tasks.cardProgress.completed")}</span>
         <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
           {filteredTasks.filter((task) => task.status == "completed").length}{" "}
-          <span className="lg:text-sm xl:text-lg">de</span>{" "}
+          <span className="lg:text-sm xl:text-lg">{t("tasks.pomodoroTimer.of")}</span>{" "}
           {filteredTasks.length}
         </span>
       </div>
       <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-        <span className="text-xs">Tareas Para Hacer</span>
+        <span className="text-xs">{t("tasks.cardProgress.toDo")}</span>
         <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
           {filteredTasks.filter((task) => task.status == "pending").length}{" "}
-          <span className="lg:text-sm xl:text-lg">de</span>{" "}
+          <span className="lg:text-sm xl:text-lg">{t("tasks.pomodoroTimer.of")}</span>{" "}
           {filteredTasks.length}
         </span>
       </div>
       <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-        <span className="text-xs">Tareas Atrasadas</span>
+        <span className="text-xs">{t("tasks.cardProgress.overdue")}</span>
         <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
           {filteredTasks.filter((task) => task.status == "overdue").length}{" "}
-          <span className="lg:text-sm xl:text-lg">de</span>{" "}
+          <span className="lg:text-sm xl:text-lg">{t("tasks.pomodoroTimer.of")}</span>{" "}
           {filteredTasks.length}
         </span>
       </div>
@@ -120,21 +120,24 @@ export default function CardsProgress({}) {
           <ul className="absolute bg-dark-200 w-full">
             <li
               className="cursor-pointer hover:bg-dark-400 px-3 py-2"
+              id="monthlyProgress"
               onClick={(e) => handleSelect(e)}
             >
-              Progreso Mensual
+              {t("tasks.cardProgress.monthlyProgress")}
             </li>
             <li
               className="cursor-pointer hover:bg-dark-400 px-3 py-2"
+              id="weeklyProgress"
               onClick={(e) => handleSelect(e)}
             >
-              Progreso Semanal
+              {t("tasks.cardProgress.weeklyProgress")}
             </li>
             <li
               className="cursor-pointer hover:bg-dark-400 px-3 py-2"
+              id="dailyProgress"
               onClick={(e) => handleSelect(e)}
             >
-              Progreso Diario
+              {t("tasks.cardProgress.dailyProgress")}
             </li>
           </ul>
         </details>

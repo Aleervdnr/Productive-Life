@@ -12,6 +12,7 @@ import {
 import useWindowSize from "../../hooks/useWindowSize";
 import {
   addDays,
+  addMonths,
   differenceInDays,
   differenceInMilliseconds,
   differenceInMinutes,
@@ -31,12 +32,15 @@ import {
 import { es as esDateFns } from "date-fns/locale";
 import InputItemTask from "./InputItemTask";
 import { DayPicker } from "react-day-picker";
-import { es } from "react-day-picker/locale";
+import { es, enUS as enUSDayPicker } from "react-day-picker/locale";
+import { enUS } from "date-fns/locale";
 import { AcceptButton } from "../Buttons/ButtonsModal";
 import TimeInput from "../Inputs/TimeInput";
 import DropDownItemTask from "./DropDownItemTask";
 import { useTasks } from "../../context/TasksContext";
 import ItemRecurringDays from "../ItemRecurringDays";
+import { useTranslation } from "../../hooks/UseTranslation.jsx";
+import { useLanguage } from "../../context/LanguageContext.jsx";
 
 export default function ModalItemTask() {
   const [activeTab, setActiveTab] = useState(1);
@@ -55,6 +59,8 @@ export default function ModalItemTask() {
     deleteTask,
     currentTask,
   } = useTasks();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   const [parentTask, setparentTask] = useState(
     parentTasks.find((tasks) => tasks._id == currentTask.recurrenceOf)
   );
@@ -63,13 +69,21 @@ export default function ModalItemTask() {
     endTime: "00:00:00",
   });
   let tabs = [
-    { id: 1, title: "Información", icon: <Info className="w-4 h-4" /> },
+    {
+      id: 1,
+      title: t("tasks.modalTask.tabInformation"),
+      icon: <Info className="w-4 h-4" />,
+    },
     {
       id: 2,
-      title: "Recurrencias",
+      title: t("tasks.modalTask.tabRecurrences"),
       icon: <CalendarDays className="w-4 h-4" />,
     },
-    { id: 3, title: "Estadísticas", icon: <BarChart3 className="w-4 h-4" /> },
+    {
+      id: 3,
+      title: t("tasks.modalTask.tabStats"),
+      icon: <BarChart3 className="w-4 h-4" />,
+    },
   ];
   if (!currentTask.isRecurring && !currentTask.recurrenceOf) {
     tabs = [
@@ -104,13 +118,13 @@ export default function ModalItemTask() {
   }, [taskModalActive]);
 
   const recurringDaysArray = [
-    { name: "Lunes", isoDay: "1" },
-    { name: "Martes", isoDay: "2" },
-    { name: "Miercoles", isoDay: "3" },
-    { name: "Jueves", isoDay: "4" },
-    { name: "Viernes", isoDay: "5" },
-    { name: "Sabado", isoDay: "6" },
-    { name: "Domingo", isoDay: "0" },
+    { name: t("tasks.days.monday"), isoDay: "1" },
+    { name: t("tasks.days.tuesday"), isoDay: "2" },
+    { name: t("tasks.days.wednesday"), isoDay: "3" },
+    { name: t("tasks.days.thursday"), isoDay: "4" },
+    { name: t("tasks.days.friday"), isoDay: "5" },
+    { name: t("tasks.days.saturday"), isoDay: "6" },
+    { name: t("tasks.days.sunday"), isoDay: "0" },
   ];
 
   //Reducer
@@ -180,19 +194,27 @@ export default function ModalItemTask() {
   const [selectedSingle, setSelectedSingle] = useState([currentDate]);
   const [selectedMultiple, setSelectedMultiple] = useState(currentRecurrences);
 
+  const formatDate = (date, language) => {
+    const locale = language === "es" ? es : enUS; // Selecciona el locale según el idioma
+    const formatPattern =
+      language === "es"
+        ? "d 'de' MMMM" // Formato para español: "2 de abril"
+        : "MMMM d"; // Formato para inglés: "April 2"
+
+    return format(date, formatPattern, { locale });
+  };
+
   let footer = (
     <p className="text-xs md:text-sm text-center mt-2">
-      Elige el día para la tarea.
+      {t("tasks.dayPickerFooter.default")}
     </p>
   );
   if (selectedSingle) {
     footer = (
       <p className="text-xs md:text-sm text-center mt-2">
-        Elegiste el{" "}
+        {t("tasks.dayPickerFooter.selectedSingle")}{" "}
         <span className="text-violet-main font-medium">
-          {format(selectedSingle, "d 'de' MMMM", {
-            locale: esDateFns,
-          })}{" "}
+          {formatDate(selectedSingle, language)}{" "}
         </span>
       </p>
     );
@@ -200,27 +222,22 @@ export default function ModalItemTask() {
 
   let footerRecurrences = (
     <p className="text-xs md:text-sm text-center mt-2">
-      Elige el día para la tarea.
+      {t("tasks.dayPickerFooter.default")}
     </p>
   );
 
   if (currentTask.recurrenceOf) {
     footerRecurrences = (
       <p className="text-xs md:text-sm text-center mt-2">
-        Desde el{" "}
+        {t("tasks.dayPickerFooter.selectedMultipleFrom")}{" "}
         <span className="text-violet-main font-semibold">
-          {format(new Date(selectedMultiple[0]), "d 'de' MMMM", {
-            locale: esDateFns,
-          })}{" "}
+          {formatDate(new Date(selectedMultiple[0]), language)}{" "}
         </span>
-        hasta el{" "}
+        {t("tasks.dayPickerFooter.selectedMultipleTo")}{" "}
         <span className="text-violet-main font-semibold">
-          {format(
+          {formatDate(
             new Date(selectedMultiple[selectedMultiple.length - 1]),
-            "d 'de' MMMM",
-            {
-              locale: esDateFns,
-            }
+            language
           )}
         </span>
       </p>
@@ -540,33 +557,51 @@ export default function ModalItemTask() {
     const firstTaskDate = new Date(dates[0].taskDate); // Primera fecha
     const lastRecurringEndDate = new Date(dates[dates.length - 1].taskDate); // Última fecha
 
-    // Calcular la diferencia en días, semanas y meses
-    const daysDifference = differenceInDays(
+    // Calcular la diferencia total en días, semanas y meses
+    const totalDaysDifference = differenceInDays(
       lastRecurringEndDate,
       firstTaskDate
     );
-    const weeksDifference = differenceInWeeks(
-      lastRecurringEndDate,
-      firstTaskDate
-    );
-    const monthsDifference = differenceInMonths(
+    const totalWeeksDifference = Math.floor(totalDaysDifference / 7); // Semanas completas
+    const remainingDays = totalDaysDifference % 7; // Días restantes después de las semanas completas
+    const totalMonthsDifference = differenceInMonths(
       lastRecurringEndDate,
       firstTaskDate
     );
 
     let formattedDifference;
 
-    if (monthsDifference > 0) {
-      formattedDifference = `${monthsDifference} mes${
-        monthsDifference > 1 ? "es" : ""
-      }`;
-    } else if (weeksDifference > 0) {
-      formattedDifference = `${weeksDifference} semana${
-        weeksDifference > 1 ? "s" : ""
-      }`;
+    if (totalMonthsDifference > 0) {
+      // Si hay al menos 1 mes de diferencia
+      const remainingWeeks = differenceInWeeks(
+        lastRecurringEndDate,
+        addMonths(firstTaskDate, totalMonthsDifference)
+      ); // Semanas restantes después de los meses completos
+
+      if (remainingWeeks > 0) {
+        formattedDifference = `${totalMonthsDifference} ${
+          totalMonthsDifference > 1 ? t("tasks.timeUnits.months") : t("tasks.timeUnits.month")
+        } ${t("tasks.modalTask.statistics.and")} ${remainingWeeks} ${remainingWeeks > 1 ? t("tasks.timeUnits.weeks") : t("tasks.timeUnits.week")}`;
+      } else {
+        formattedDifference = `${totalMonthsDifference} ${
+          totalMonthsDifference > 1 ? t("tasks.timeUnits.months") : t("tasks.timeUnits.month")
+        }`;
+      }
+    } else if (totalWeeksDifference > 0) {
+      // Si hay al menos 1 semana de diferencia
+      if (remainingDays > 0) {
+        formattedDifference = `${totalWeeksDifference} ${
+          totalWeeksDifference > 1 ? t("tasks.timeUnits.weeks") : t("tasks.timeUnits.week")
+        } ${t("tasks.modalTask.statistics.and")} ${remainingDays} ${remainingDays > 1 ? t("tasks.timeUnits.days") : t("tasks.timeUnits.day")}`;
+      } else {
+        formattedDifference = `${totalWeeksDifference} ${
+          totalWeeksDifference > 1 ? t("tasks.timeUnits.weeks") : t("tasks.timeUnits.week")
+        }`;
+      }
     } else {
-      formattedDifference = `${daysDifference} día${
-        daysDifference > 1 ? "s" : ""
+      // Solo días de diferencia
+      formattedDifference = `${totalDaysDifference} ${
+        totalDaysDifference > 1 ? t("tasks.timeUnits.days") : t("tasks.timeUnits.day")
       }`;
     }
 
@@ -574,8 +609,10 @@ export default function ModalItemTask() {
   };
 
   const formattedTotalDifference = getDifference(totalRecurrences);
-  const formattedCompletedDifference = totalRecurrencesCompleted.length > 0 ? getDifference(totalRecurrencesCompleted) : "0 dias"
-
+  const formattedCompletedDifference =
+    totalRecurrencesCompleted.length > 0
+      ? getDifference(totalRecurrencesCompleted)
+      : "0" + t("tasks.timeUnits.days");
 
   // Filtrar las tareas completadas
   const completedTasks = tasks?.filter(
@@ -674,7 +711,7 @@ export default function ModalItemTask() {
               <div className={`w-full space-y-4 ${paddingContent}`}>
                 <div className="space-y-2">
                   <InputItemTask
-                    label={"Título"}
+                    label={t("tasks.modalTask.title")}
                     value={state.title}
                     onChange={(value) =>
                       dispatch({ type: "SET_TITLE", payload: value })
@@ -682,7 +719,7 @@ export default function ModalItemTask() {
                   />
                   <div className="relative  p-3 pb-1 pt-5 bg-[#2A2B31]">
                     <label className="absolute top-1 text-violet-main block text-xs font-bold">
-                      {"Descripción"}
+                      {t("tasks.modalTask.description")}
                     </label>
                     <textarea
                       value={state.description}
@@ -705,7 +742,7 @@ export default function ModalItemTask() {
                       onClick={() => handleEditDateTime("Date")}
                     >
                       <label className="absolute px-3 top-1 text-violet-main block text-xs font-bold">
-                        Fecha
+                        {t("tasks.modalTask.date")}
                       </label>
                       <div className="p-3 pb-1 pt-5 bg-[#2A2B31] rounded-lg text-white focus:outline-none">
                         {format(`${state.taskDate}T00:00:00`, "d 'de' MMMM", {
@@ -718,7 +755,7 @@ export default function ModalItemTask() {
                       onClick={() => handleEditDateTime("Time")}
                     >
                       <label className="absolute px-3 top-1 text-violet-main block text-xs font-bold">
-                        Hora
+                        {t("tasks.modalTask.time")}
                       </label>
                       <div className="p-3 pb-1 pt-5 bg-[#2A2B31] rounded-lg text-white focus:outline-none">
                         {state.startTime.slice(0, 5)} -{" "}
@@ -731,20 +768,18 @@ export default function ModalItemTask() {
                 {/* Botones de acción para Tab 1 */}
                 <div className="flex justify-end gap-4">
                   <button
-                    //onClick={() => handleDelete("single")}
                     className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center text-sm font-medium"
                     onClick={() => setShowDeleteModal(true)}
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
-                    Eliminar
+                    {t("tasks.modalTask.deleteButton")}
                   </button>
                   <button
-                    //onClick={handleSave}
                     className="px-4 py-2 bg-violet-main text-white rounded-md hover:bg-[#6A62D9] transition-colors flex items-center text-sm font-medium"
                     onClick={handleSaveButton}
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Guardar
+                    {t("tasks.modalTask.saveButton")}
                   </button>
                 </div>
               </div>
@@ -757,7 +792,7 @@ export default function ModalItemTask() {
                       onSelect={handleSelectedDate}
                       disabled={{ before: new Date() }}
                       footer={footer}
-                      locale={es}
+                      locale={language == "es" ? es : enUSDayPicker}
                     />
                     <AcceptButton onClick={handleAcceptButton} />
                   </div>
@@ -768,14 +803,14 @@ export default function ModalItemTask() {
                       onChange={(value) =>
                         dispatch({ type: "SET_STARTTIME", payload: value })
                       }
-                      title={"Desde Las"}
+                      title={t("tasks.timeInput.from")}
                       value={state.startTime}
                     />
                     <TimeInput
                       onChange={(value) =>
                         dispatch({ type: "SET_ENDTIME", payload: value })
                       }
-                      title={"Hasta Las"}
+                      title={t("tasks.timeInput.to")}
                       value={state.endTime}
                     />
                     <AcceptButton onClick={handleAcceptButton} />
@@ -794,13 +829,15 @@ export default function ModalItemTask() {
                   onSelect={handleSelected}
                   disabled={{ before: new Date("2/1/2025") }}
                   footer={footerRecurrences}
-                  locale={es}
+                  locale={language == "es" ? es : enUSDayPicker}
                   modifiers={modifiers}
                   modifiersClassNames={modifiersClassNames}
                   numberOfMonths={width >= 1024 ? 2 : 1}
                 />
                 <div className="grid gap-1 justify-items-center">
-                  <label className="font-semibold">Repetir todos los</label>
+                  <label className="font-semibold">
+                    {t("tasks.modalTask.repeatTitle")}
+                  </label>
                   <div className="flex gap-1 max-[425px]:max-w-[385px]">
                     {recurringDaysArray.map((item) => (
                       <ItemRecurringDays
@@ -898,7 +935,7 @@ export default function ModalItemTask() {
                     onClick={() => setShowDeleteModal(true)}
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
-                    Eliminar Todo
+                    {t("tasks.modalTask.deleteAllButton")}
                   </button>
                   <button
                     //onClick={handleSave}
@@ -906,7 +943,7 @@ export default function ModalItemTask() {
                     onClick={handleSaveRecurrencesButton}
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    Guardar
+                    {t("tasks.modalTask.saveButton")}
                   </button>
                 </div>
               </div>
@@ -916,28 +953,39 @@ export default function ModalItemTask() {
             <div className={`space-y-4 ${paddingContent} `}>
               <div className="flex justify-between text-violet-main font-semibold gap-3">
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
-                  Progreso
+                  {t("tasks.modalTask.statistics.progress.label")}
                   <span className="text-white text-3xl">
                     {porcentajeCompleted}%
                   </span>
-                  <span className="">{`${completed} de ${total} totales`}</span>
+                  <span className="">{`${completed} ${t(
+                    "tasks.modalTask.statistics.progress.of"
+                  )} ${total} ${t(
+                    "tasks.modalTask.statistics.progress.total"
+                  )}`}</span>
                 </div>
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
-                  Total Recurrencias
+                  {t("tasks.modalTask.statistics.totalRecurrences.label")}
                   <span className="text-white text-3xl">{total}</span>
-                  <span className="">{`En ${formattedTotalDifference}`}</span>
+                  <span className="">
+                    {t("tasks.modalTask.statistics.totalRecurrences.inPeriod")}
+                    {` ${formattedTotalDifference}`}
+                  </span>
                 </div>
               </div>
               <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
                 <span className="text-violet-main font-semibold">
-                  Estado de Recurrencias
+                  {t("tasks.modalTask.statistics.recurrencesStatus.title")}
                 </span>
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-[#22C55E]"></div>
-                        <span className="">Completadas</span>
+                        <span className="">
+                          {t(
+                            "tasks.modalTask.statistics.recurrencesStatus.completed"
+                          )}
+                        </span>
                       </div>
                       <span>{completed}</span>
                     </div>
@@ -954,7 +1002,11 @@ export default function ModalItemTask() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-[#EAB308]"></div>
-                        <span className="">Pendientes</span>
+                        <span className="">
+                          {t(
+                            "tasks.modalTask.statistics.recurrencesStatus.pending"
+                          )}
+                        </span>
                       </div>
                       <span>{pending}</span>
                     </div>
@@ -971,7 +1023,11 @@ export default function ModalItemTask() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full bg-[#EF4444]"></div>
-                        <span className="">Canceladas</span>
+                        <span className="">
+                          {t(
+                            "tasks.modalTask.statistics.recurrencesStatus.overdue"
+                          )}
+                        </span>
                       </div>
                       <span>{overdue}</span>
                     </div>
@@ -987,18 +1043,24 @@ export default function ModalItemTask() {
               </div>
               <div className="flex justify-between text-violet-main font-semibold gap-3">
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
-                  Promedio de Tiempo
+                  {t("tasks.modalTask.statistics.averageTime.label")}
                   <span className="text-white text-3xl">
-                    {formatTime(averageTime.toFixed(2))}
+                    {formatTime(Math.round(averageTime))}
                   </span>
-                  <span className="">Por tarea completada</span>
+                  <span className="">
+                    {" "}
+                    {t("tasks.modalTask.statistics.averageTime.perTask")}
+                  </span>
                 </div>
                 <div className="bg-dark-400 px-4 py-1 w-full rounded-lg grid text-sm">
-                  Horas Dedicadas
+                  {t("tasks.modalTask.statistics.dedicatedHours.label")}
                   <span className="text-white text-3xl">
                     {formatTime(totalTimeSpent)}
                   </span>
-                  <span className="">{`En ${formattedCompletedDifference}`}</span>
+                  <span className="">
+                    {t("tasks.modalTask.statistics.dedicatedHours.inPeriod")}
+                    {` ${formattedCompletedDifference}`}
+                  </span>
                 </div>
               </div>
             </div>

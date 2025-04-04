@@ -1,7 +1,7 @@
 import { format, getDate, setDefaultOptions } from "date-fns";
 import { useTasks } from "../../context/TasksContext";
 import { es } from "date-fns/locale";
-import ItemTodayTask from "./ItemTodayTask";
+import ItemTask from "../ItemTask/ItemTask";
 
 setDefaultOptions({ locale: es });
 
@@ -47,7 +47,7 @@ export default function MonthDayItem({ children, day }) {
           <div className=" grid gap-2">
             {!tasksIsLoading &&
               filteredTasks.map((task) => (
-                <ItemTodayTask key={task._id} task={task} />
+                <ItemTask key={task._id} task={task} />
               ))}
           </div>
         </div>

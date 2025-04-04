@@ -5,6 +5,7 @@ import { MdStop } from "react-icons/md";
 import { FaUndo } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 import { IoChevronBackOutline } from "react-icons/io5";
+import { useTranslation } from "../hooks/UseTranslation";
 
 const PomodoroTimer = () => {
   const workOptions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]; // Opciones de trabajo
@@ -19,6 +20,8 @@ const PomodoroTimer = () => {
   const [isRunning, setIsRunning] = useState(false); // Estado del temporizador
   const [isWorkMode, setIsWorkMode] = useState(true); // Modo de trabajo o descanso
   const [settingsMode, setSettingsMode] = useState(false);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     let timer;
@@ -102,15 +105,15 @@ const PomodoroTimer = () => {
       >
         <div className="px-6 h-full flex flex-col justify-center gap-2 text-center">
           <h2 className={`text-xl font-semibold ${isRunning && "hidden"}`}>
-            {!isRunning && "Listo?"}
+            {!isRunning && t("tasks.pomodoroTimer.ready")}
           </h2>
           <h2 className={`text-xl font-semibold ${!isRunning && "hidden"}`}>
-            {isWorkMode ? "Enfocate!" : "Descansa"}
+            {isWorkMode ? t("tasks.pomodoroTimer.focus") : t("tasks.pomodoroTimer.rest")}
           </h2>
           <div>
             <h1 className="text-5xl font-bold">{formatTime(timeLeft)}</h1>
             <p className="text-sm">
-              Sesión {currentSession} de {sessions}
+              {t("tasks.pomodoroTimer.session")} {currentSession} {t("tasks.pomodoroTimer.of")} {sessions}
             </p>
           </div>
 
@@ -138,7 +141,7 @@ const PomodoroTimer = () => {
         <div className="px-6">
           <div className="flex flex-col ">
             <label className="flex gap-2 items-center">
-              <span className="text-sm font-medium">Tiempo de trabajo:</span>
+              <span className="text-sm font-medium">{t("tasks.pomodoroTimer.workingTime")}:</span>
               <select
                 value={workTime}
                 onChange={(e) =>
@@ -156,7 +159,7 @@ const PomodoroTimer = () => {
             </label>
 
             <label className="flex gap-2 items-center">
-              <span className="text-sm font-medium">Tiempo de descanso:</span>
+              <span className="text-sm font-medium">{t("tasks.pomodoroTimer.restTime")}:</span>
               <select
                 value={breakTime}
                 onChange={(e) =>
@@ -174,7 +177,7 @@ const PomodoroTimer = () => {
             </label>
 
             <label className="flex gap-2 items-center">
-              <span className="text-sm font-medium">Sesiones:</span>
+              <span className="text-sm font-medium">{t("tasks.pomodoroTimer.sessions")}:</span>
               <select
                 value={sessions}
                 onChange={(e) =>

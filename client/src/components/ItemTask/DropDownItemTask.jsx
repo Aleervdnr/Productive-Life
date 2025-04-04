@@ -1,28 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { useTranslation } from "../../hooks/UseTranslation";
 
 export default function DropDownItemTask({ status = "pending", onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const [dropDownState, setDropDownState] = useState(status);
   const detailsRef = useRef(null);
+  const { t } = useTranslation();
 
   const statusOptions = [
     {
       value: "completed",
-      label: "Completed",
+      label: t("tasks.modalTask.statusCompleted"),
       icon: CheckCircle,
       color: "text-green-500",
     },
     {
       value: "pending",
-      label: "Pending",
+      label: t("tasks.modalTask.statusPending"),
       icon: Clock,
       color: "text-yellow-500",
     },
     {
       value: "overdue",
-      label: "Overdue",
+      label: t("tasks.modalTask.statusOverdue"),
       icon: AlertCircle,
       color: "text-red-500",
     },
@@ -44,7 +46,8 @@ export default function DropDownItemTask({ status = "pending", onChange }) {
 
   // Find the current status object
   const currentStatus =
-    statusOptions.find((option) => option.value === dropDownState) || statusOptions[1];
+    statusOptions.find((option) => option.value === dropDownState) ||
+    statusOptions[1];
   const Icon = currentStatus.icon;
 
   // Handle status change
@@ -60,7 +63,7 @@ export default function DropDownItemTask({ status = "pending", onChange }) {
       <details className=" max-sm:col-span-2" ref={detailsRef}>
         <summary className="p-3 pt-5 bg-[#2A2B31] rounded-lg text-white relative list-none px-3 flex items-center cursor-pointer">
           <label className="absolute top-1 text-violet-main block text-xs font-bold">
-            Estado
+            {t("tasks.modalTask.status")}
           </label>
           <Icon className={`h-4 w-4 ${currentStatus.color}`} />
           <span className="pl-1">{currentStatus.label}</span>
