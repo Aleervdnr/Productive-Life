@@ -246,15 +246,22 @@ export default function TaskFormModal() {
   };
 
   const modifiers = {
-    first: selectedMultiple[0],
-    last: selectedMultiple[selectedMultiple.length - 1],
+    first: selectedMultiple[0], // Primer día seleccionado
+    last: selectedMultiple[selectedMultiple.length - 1], // Último día seleccionado
+    between: (date) => {
+      if (!selectedMultiple || selectedMultiple.length < 2) return false; // No hay rango válido
+      const startDate = new Date(selectedMultiple[0]);
+      const endDate = new Date(selectedMultiple[selectedMultiple.length - 1]);
+      return date > startDate && date < endDate; // Días entre el primero y el último
+    },
     selected: selectedMultiple,
   };
 
   const modifiersClassNames = {
-    first: "first-day",
-    last: "end-day",
-    between: "between-class",
+    first: "first-day", // Clase para el primer día
+    last: "end-day", // Clase para el último día
+    between: "between-days", // Clase para los días intermedios
+    selected: "selected-days",
   };
 
   let footer = (
