@@ -46,7 +46,7 @@ export default function Landing() {
   const addEmailWaitList = async (email) => {
     try {
       await addEmailWaitListRequest(email);
-      toast.success("Email agregado a la lista de espera");
+      toast.success(language =="es" ? "Email agregado a la lista de espera" : "Email added to the waitlist");
     } catch (error) {
       error.response.data.map((error) =>
         toast.error(error, {
