@@ -63,6 +63,11 @@
       "emailPlaceholder": "Escribe tu email...",
       "button": "¡Únete Ahora!",
       "additionalMessage": "¡Forma parte de los primeros usuarios y obtén beneficios exclusivos al lanzar el producto!"
+    },
+    "toast": {
+      "EMAIL_ALREADY_EXISTS": "El email indicado ya está agregado a la lista de espera.",
+      "EMAIL_REGISTERED": "Email registrado con éxito.",
+      "INTERNAL_ERROR": "Ocurrió un error inesperado. Intenta nuevamente."
     }
   },
   "en": {
@@ -129,6 +134,11 @@
       "emailPlaceholder": "Enter your email...",
       "button": "Join Now!",
       "additionalMessage": "Become one of the first users and get exclusive benefits when the product launches!"
+    },
+    "toast": {
+      "EMAIL_ALREADY_EXISTS": "This email is already on the waitlist.",
+      "EMAIL_REGISTERED": "Email successfully registered!",
+      "INTERNAL_ERROR": "An unexpected error occurred. Please try again later."
     }
   }
 }

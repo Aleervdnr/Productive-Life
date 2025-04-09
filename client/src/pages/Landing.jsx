@@ -45,16 +45,25 @@ export default function Landing() {
 
   const addEmailWaitList = async (email) => {
     try {
-      await addEmailWaitListRequest(email);
-      toast.success(language =="es" ? "Email agregado a la lista de espera" : "Email added to the waitlist");
-    } catch (error) {
-      error.response.data.map((error) =>
-        toast.error(error, {
-          duration: 3000,
-        })
-      );
+      const res = await addEmailWaitListRequest(email);
+      // Mostrar el mensaje de éxito traducido
+      toast.success(t(`landing.toast.${res.data.code}`));
+    } catch (err) {
+      // Manejo de error con estructura defensiva
+      const errorData = err.response?.data;
+  
+      if (Array.isArray(errorData)) {
+        errorData.forEach((e) => {
+          toast.error(t(`landing.toast.${e}`), { duration: 3000 });
+        });
+      } else if (errorData?.code) {
+        toast.error(t(`landing.toast.${errorData.code}`), { duration: 3000 });
+      } else {
+        toast.error(t("landing.toast.INTERNAL_ERROR"), { duration: 3000 });
+      }
     }
   };
+  
 
   const submitEmail = async (value) => {
     addEmailWaitList(value);

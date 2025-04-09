@@ -91,9 +91,8 @@
         "dedicatedHours": {
           "label": "Horas Dedicadas",
           "inPeriod": "En"
-        }
-        ,
-        "and":"y"
+        },
+        "and": "y"
       }
     },
     "dayPickerFooter": {
@@ -113,6 +112,13 @@
       "weeks": "semanas",
       "month": "mes",
       "months": "meses"
+    },
+    "toast": {
+      "addTask": "Tarea creada con exito",
+      "updatedTask": "Tarea actualizada con éxito",
+      "deletedTask": "Tarea Eliminada",
+      "deletedRecurrence": "Recurrencia Eliminada",
+      "error": "Ocurrió un error inesperado"
     }
   },
   "en": {
@@ -208,7 +214,7 @@
           "label": "Dedicated Hours",
           "inPeriod": "In"
         },
-        "and":"and"
+        "and": "and"
       }
     },
     "dayPickerFooter": {
@@ -228,6 +234,13 @@
       "weeks": "weeks",
       "month": "month",
       "months": "months"
+    },
+    "toast": {
+      "addTask": "Task created successfully",
+      "updatedTask": "Task updated successfully",
+      "deletedTask": "Task deleted",
+      "deletedRecurrence": "Recurrence deleted",
+      "error": "An unexpected error occurred"
     }
   }
 }

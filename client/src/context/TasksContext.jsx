@@ -7,6 +7,7 @@ import {
   updateTasksRequest,
 } from "../api/tasks";
 import { toast } from "sonner";
+import { useTranslation } from "../hooks/UseTranslation.jsx"
 
 const TasksContext = createContext();
 
@@ -22,11 +23,13 @@ export const useTasks = () => {
 
 export function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([]);
-  const [currentTask, setCurrentTask] = useState(null)
+  const [currentTask, setCurrentTask] = useState(null);
   const [parentTasks, setParentTasks] = useState([]);
   const [tasksIsLoading, setTasksIsLoading] = useState(true);
   const [weeklyTasks, setWeeklyTasks] = useState([]);
   const [dailyTasks, setDailyTasks] = useState([]);
+
+  const { t } = useTranslation();
 
   // Filtrar tareas del día actual
   const filterDailyTasks = () => {
@@ -47,7 +50,7 @@ export function TasksProvider({ children }) {
       const session = { token: localStorage.getItem("token") };
       const res = await createTaskRequest(task, session.token);
 
-      toast.success("Tarea creada con exito");
+      toast.success(t("tasks.toast.addTask"));
 
       if (res.data.isRecurring) {
         const recurrences = [];
@@ -71,7 +74,7 @@ export function TasksProvider({ children }) {
         setTasks([...tasks, res.data]);
       }
     } catch (err) {
-      toast.error("Ocurrio un error");
+      toast.error(t("tasks.toast.error"));
       console.log(err);
     }
   };
@@ -159,9 +162,11 @@ export function TasksProvider({ children }) {
         const recurrences = createRecurrences(updatedTask);
         const filteredTasks = filterOldRecurrences(tasks, updatedTask._id);
         setTasks([...filteredTasks, ...recurrences]);
-        console.log(parentTasks)
-        setParentTasks((prev) => (prev.map((rec) => rec._id == updatedTask._id ? updatedTask : rec)))
-        console.log(parentTasks)
+        console.log(parentTasks);
+        setParentTasks((prev) =>
+          prev.map((rec) => (rec._id == updatedTask._id ? updatedTask : rec))
+        );
+        console.log(parentTasks);
       } else {
         const updatedTasks = tasks
           .map((t) => (t._id === task._id ? updatedTask : t))
@@ -172,15 +177,15 @@ export function TasksProvider({ children }) {
 
       // Mostrar toast según el caso
       if (!isStatus && !isRecurrenceDeleted) {
-        toast.success("Tarea actualizada con éxito");
+        toast.success(t("tasks.toast.updatedTask"));
       } else if (isRecurrenceDeleted) {
-        toast.warning("Recurrencia Eliminada");
+        toast.warning(t("tasks.toast.deletedRecurrence"));
       }
 
       return response;
     } catch (error) {
       console.error("Error al actualizar tarea:", error);
-      toast.error("Ocurrió un error inesperado");
+      toast.error(t("tasks.toast.error"));
       throw error; // Propagar error si es necesario
     }
   };
@@ -190,11 +195,11 @@ export function TasksProvider({ children }) {
       const session = { token: localStorage.getItem("token") };
       const res = await deleteTasksRequest(id, session.token);
       setTasks(tasks.filter((taskMap) => taskMap._id !== id));
-      toast.warning("Tarea Eliminada");
+      toast.warning(t("tasks.toast.deletedTask"));
       return res;
     } catch (err) {
       console.log(err);
-      toast.error("Ocurrio un error");
+      toast.error(t("tasks.toast.error"));
     }
   };
 
