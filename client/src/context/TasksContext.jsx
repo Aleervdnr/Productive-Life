@@ -104,7 +104,7 @@ export function TasksProvider({ children }) {
           filteredRecurringTasks[i].recurrences.forEach((task) =>
             recurrences.push({
               title: filteredRecurringTasks[i].title,
-              description: filteredRecurringTasks[i].description,
+              description: task.description,
               recurringDays: filteredRecurringTasks[i].recurringDays,
               taskDate: task.taskDate,
               recurringEndDate: filteredRecurringTasks[i].recurringEndDate,
