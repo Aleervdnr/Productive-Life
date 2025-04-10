@@ -15,17 +15,17 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: false, // Ya no es obligatorio
+      required: false,
     },
     googleId: {
       type: String,
-      unique: true, // Asegura que el ID de Google sea único
-      sparse: true, // Permite valores nulos
+      unique: true,
+      sparse: true,
     },
     provider: {
       type: String,
-      enum: ["email", "google"], // Solo permitir estos valores
-      default: "email", // Valor predeterminado para usuarios tradicionales
+      enum: ["email", "google"],
+      default: "email",
     },
     isVerified: {
       type: Boolean,
@@ -33,6 +33,15 @@ const userSchema = new mongoose.Schema(
     },
     verificationToken: {
       type: String,
+    },
+    isTester: {
+      type: Boolean,
+      default: false,
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
     tourCompleted: {
       taskTour: { type: Boolean, default: false },
@@ -44,12 +53,11 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Transformación para eliminar campos sensibles del objeto JSON
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     delete returnedObject.__v;
-    delete returnedObject.password; // No exponer la contraseña
-    delete returnedObject.googleId; // No exponer el ID de Google
+    delete returnedObject.password;
+    delete returnedObject.googleId;
   },
 });
 
