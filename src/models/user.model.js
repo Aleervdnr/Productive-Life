@@ -34,13 +34,9 @@ const userSchema = new mongoose.Schema(
     verificationToken: {
       type: String,
     },
-    isTester: {
-      type: Boolean,
-      default: false,
-    },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user", "tester", "admin"],
       default: "user",
     },
     tourCompleted: {

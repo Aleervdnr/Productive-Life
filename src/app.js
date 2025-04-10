@@ -7,6 +7,7 @@ import GoogleStrategy from 'passport-google-oauth20';
 import authRoutes from "./routes/auth.routes.js";
 import tasksRoutes from "./routes/tasks.routes.js";
 import waitListRoutes from "./routes/waitList.routes.js"
+import testerRoutes from "./routes/testers.routes.js"
 import cors from "cors";
 import { OAUTH_CLIENT_SECRET,FRONTEND_URL, OAUTH_CLIENTID, TOKEN_SECRET } from "./config.js";
 import User from "./models/user.model.js";
@@ -83,5 +84,6 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api", tasksRoutes);
 app.use("/api", waitListRoutes)
+app.use("/api", testerRoutes)
 
 export default app;

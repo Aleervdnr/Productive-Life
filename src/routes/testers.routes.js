@@ -11,11 +11,13 @@ import {
   deleteFeedbackPost,
   deleteFeedbackComment,
 } from "../controllers/testerFeedback.controllers.js";
+import upload from "../middlewares/upload.js";
 
-import { authRequired, isTester, isAdmin } from "../middlewares/authMiddleware.js";
+import { isTester, isAdmin } from "../middlewares/roleUserValidation.js";
+import { authRequired } from "../middlewares/validateToken.js";
 
 // Crear nuevo post
-router.post("/tester-feedback", authRequired, isTester, createFeedbackPost);
+router.post("/tester-feedback", authRequired, isTester, upload.array("media", 5), createFeedbackPost);
 
 // Obtener mis posts
 router.get("/tester-feedback/mine", authRequired, isTester, getMyFeedbackPosts);

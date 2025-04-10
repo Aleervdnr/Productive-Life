@@ -24,7 +24,7 @@ const testerPostSchema = new mongoose.Schema(
     description: { type: String, required: true },
     urgency: {
       type: String,
-      enum: ["Baja", "Media", "Alta"],
+      enum: ["low", "medium", "high"],
       default: "Media",
     },
     status: {
@@ -32,7 +32,13 @@ const testerPostSchema = new mongoose.Schema(
       enum: ["Enviado", "En Revisión", "Solucionado"],
       default: "Enviado",
     },
-    media: [{ type: String }], // URLs de imágenes o videos
+media: [
+  {
+    url: { type: String, required: true },
+    public_id: { type: String, required: true },
+    type: { type: String, required: true },
+  },
+], // URLs de imágenes o videos
     comments: [commentSchema],
   },
   {
