@@ -14,8 +14,26 @@ import User from "./models/user.model.js";
 import { registerWithGoogle } from "./controllers/auth.controllers.js";
 import { generateVerificationToken } from "./libs/generateVerificationToken.js";
 import { createAccessToken } from "./libs/jwt.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import xssClean from "xss-clean";
+import mongoSanitize from 'express-mongo-sanitize';
 
 const app = express();
+
+app.use(helmet());
+
+app.use(mongoSanitize());
+
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Límite de 100 requests por IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { code: "too_many_requests_global" },
+});
+
+app.use(globalLimiter); // Se aplica a todas las rutas
 
 app.use(
   cors({
@@ -78,6 +96,8 @@ app.get(
     res.redirect(`https://productivelife.site/auth/callback?token=${token}`);
   }
 );
+
+app.use(xssClean());
 
 app.use(morgan("dev"));
 app.use(express.json());
