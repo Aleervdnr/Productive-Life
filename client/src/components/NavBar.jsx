@@ -3,9 +3,10 @@ import { BurgerMenu, CrossMenu } from "./BurgerCrossMenu";
 import logo from "../assets/Logo.png";
 import { AvatarIcon, AvatarIconSkeleton } from "./AvatarIcon";
 import ItemNavBar from "./ItemNavBar";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useTranslation } from "../hooks/UseTranslation";
+import { useLanguage } from "../context/LanguageContext";
 
 //import icons
 import { FaHome } from "react-icons/fa";
@@ -14,17 +15,18 @@ import { FaWallet } from "react-icons/fa";
 import { GrTest } from "react-icons/gr";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
-import { useTranslation } from "../hooks/UseTranslation";
+import { MdLanguage } from "react-icons/md";
 
 function NavBar({ activeItem }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const { isAuthenticated, logout, user, loading } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { language, changeLanguage } = useLanguage();
 
   const handleLogout = () => {
     logout();
-    setMenuIsOpen(false)
+    setMenuIsOpen(false);
     navigate("/");
   };
 
@@ -32,19 +34,54 @@ function NavBar({ activeItem }) {
     setMenuIsOpen(!menuIsOpen);
   };
 
+  // Handle clicking outside to close dropdown
+  const detailsRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (detailsRef.current && !detailsRef.current.contains(event.target)) {
+        detailsRef.current.removeAttribute("open");
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle clicking outside to close Menu
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        menuIsOpen
+      ) {
+        setMenuIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
       className={`fixed top-0 left-0 p-5 lg:p-0 lg:w-52 z-[900] ${
         !isAuthenticated && `hidden`
-      } ${
-        loading && `hidden`
-      }`}
+      } ${loading && `hidden`}`}
     >
       <BurgerMenu setMenu={handleMenuOpenClose} />
       <nav
         className={`max-lg:w-[60vw] p-5 h-dvh absolute top-0 left-0 bg-dark-400  transition-transform duration-300 ease-in-out max-lg:max-w-[375px] lg:static lg:translate-x-0  lg:px-0  ${
           menuIsOpen ? `translate-x-0` : `translate-x-[-100%]`
         } grid lg:pb-8`}
+        ref={menuRef}
       >
         <div>
           <CrossMenu setMenu={handleMenuOpenClose} />
@@ -63,27 +100,55 @@ function NavBar({ activeItem }) {
               <FaHome className="text-[18px]" />
               <span>Inicio</span>
             </ItemNavBar> */}
-            <ItemNavBar name={"tasks"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
+            <ItemNavBar
+              name={"tasks"}
+              activeItem={activeItem}
+              handleCloseMenu={handleMenuOpenClose}
+            >
               <FaTasks className="text-[18px]" />
               <span>{t("nav.navSections.tasks")}</span>
             </ItemNavBar>
-            <ItemNavBar name={"gastos"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
+            <ItemNavBar
+              name={"gastos"}
+              activeItem={activeItem}
+              handleCloseMenu={handleMenuOpenClose}
+            >
               <FaWallet className="text-[18px]" />
               <span>{t("nav.navSections.expenses")}</span>
             </ItemNavBar>
-            {user?.role == "tester" && <ItemNavBar name={"tester-feedback"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
-              <GrTest className="text-[18px]" />
-              <span>Testers</span>
-            </ItemNavBar>}
+            {user?.role == "tester" && (
+              <ItemNavBar
+                name={"tester-feedback"}
+                activeItem={activeItem}
+                handleCloseMenu={handleMenuOpenClose}
+              >
+                <GrTest className="text-[18px]" />
+                <span>Testers</span>
+              </ItemNavBar>
+            )}
             {/* <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaCartShopping className="text-[18px]" />
               <span>Compras</span>
             </ItemNavBar> */}
           </ul>
         </div>
-        <ul className="w-full flex justify-center self-end">
+        <ul className="w-full grid justify-center place-items-center">
+          <details className="dropdown" ref={detailsRef}>
+            <summary className="btn bg-dark-500 border-none py-2 px-4 min-h-9 h-9">
+              <MdLanguage />
+              Lang
+            </summary>
+            <ul className="menu dropdown-content bg-dark-500 rounded-box z-1 w-52 p-2 shadow-sm z-50">
+              <li>
+                <a onClick={() => changeLanguage("en")}>English</a>
+              </li>
+              <li>
+                <a onClick={() => changeLanguage("es")}>Spanish</a>
+              </li>
+            </ul>
+          </details>{" "}
           <li
-            className="cursor-pointer bg-dark-500 rounded-lg w-fit"
+            className="cursor-pointer bg-dark-500 rounded-lg w-fit h-fit"
             onClick={handleLogout}
           >
             <span
