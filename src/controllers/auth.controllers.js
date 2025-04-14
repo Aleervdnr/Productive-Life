@@ -152,7 +152,10 @@ export const login = async (req, res) => {
         .status(400)
         .json(["Email no verificado, revisa tu casilla de mensajes"]);
 
-    const token = await createAccessToken({ id: userFound._id });
+        const token = await createAccessToken({
+          id: userFound._id,
+          role: userFound.role,
+        });
 
     res.json({ ...userFound.toObject(), token: token });
   } catch (error) {

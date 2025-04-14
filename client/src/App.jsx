@@ -17,6 +17,8 @@ import ModalItemTask from "./components/ItemTask/ModalItemTask";
 import { useTasks } from "./context/TasksContext";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
+import TesterRoute from "./TesterRoute";
+import TesterFeedbackPage from "./pages/TesterFeedbackPage";
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
@@ -43,14 +45,13 @@ function App() {
   };
 
   return (
-    <
-    >
+    <>
       {
         /* Verificar primero si currentTask está vacío */
         !currentTask ? null : <ModalItemTask />
       }
       <NavBar activeItem={activeItem} />
-      
+
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<LoginRegisterpage />} />
@@ -70,14 +71,15 @@ function App() {
             path="/gastos"
             element={<GastosPage setActiveItem={setActiveItem} />}
           />
+          <Route element={<TesterRoute />}>
+            <Route path="/tester-feedback" element={<TesterFeedbackPage setActiveItem={setActiveItem}/>} />
+          </Route>
           {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
         </Route>
         {/* Ruta de error para rutas desconocidas */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster theme="dark" richColors expand={true} />
-
-      
     </>
   );
 }
