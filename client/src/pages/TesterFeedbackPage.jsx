@@ -5,10 +5,14 @@ import FeedbackPostList from "../components/FeedbackPage/FeedbackPostList.jsx";
 import { toast } from "sonner";
 import { getMyFeedbackPostsRequest } from "../api/testerFeedback.js";
 
-export default function TesterFeedbackPage() {
+export default function TesterFeedbackPage({ setActiveItem }) {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setActiveItem("tester-feedback");
+  }, []);
 
   useEffect(() => {
     const fetchMyPosts = async () => {
@@ -37,9 +41,15 @@ export default function TesterFeedbackPage() {
 
   return (
     <div className="w-full h-dvh relative max-lg:pt-14 lg:pl-52">
-      <h1 className="text-2xl font-bold mb-4">Tester Feedback</h1>
-      <FeedbackForm onPostCreated={(post) => setPosts((prev) => [post, ...prev])} />
-      <FeedbackPostList posts={posts} setPosts={setPosts} />
+      <div className="p-3">
+        <h1 className="text-2xl font-bold mb-4">Tester Feedback</h1>
+        <div className="grid gap-4">
+          <FeedbackForm
+            onPostCreated={(post) => setPosts((prev) => [post, ...prev])}
+          />
+          <FeedbackPostList posts={posts} setPosts={setPosts} />
+        </div>
+      </div>
     </div>
   );
 }

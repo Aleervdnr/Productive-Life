@@ -24,57 +24,63 @@ const FeedbackPostList = ({ posts, setPosts }) => {
   };
 
   return (
-    <div className="grid gap-4">
-      {posts.length === 0 ? (
-        <p>No hay feedbacks todavía.</p>
-      ) : (
-        <div className="grid grid-cols-3 mx-6 gap-4">
-          {posts.map((post) => (
-            <CardFeedback key={post._id}>
-              <CardFeedbackContent className="p-4 space-y-2 text-black">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-semibold">{post.title}</h2>
-                  <BadgeFeedback variant="secondary">
-                    {post.status}
-                  </BadgeFeedback>
-                </div>
-                <p className="text-sm">{post.description}</p>
-                <p className="text-xs text-muted-foreground">
-                  Urgencia: {post.urgency}
-                </p>
-                {post.media && post.media.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {post.media.map((file, i) =>
-                      file.type === "image" ? (
-                        <img
-                          key={i}
-                          src={file.url}
-                          alt={`media-${i}`}
-                          className="w-24 h-24 object-cover rounded"
-                        />
-                      ) : (
-                        <video
-                          key={i}
-                          src={file.url}
-                          controls
-                          className="w-48 rounded"
-                        />
-                      )
-                    )}
-                  </div>
+    <div className="grid gap-6">
+  {posts.length === 0 ? (
+    <p className="text-center text-lg text-gray-500">No hay feedbacks todavía.</p>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {posts.map((post) => (
+        <div key={post._id} className="card bg-dark-400 shadow-md">
+          <div className="card-body">
+            <div className="flex justify-between items-center">
+              <h2 className="card-title">{post.title}</h2>
+              <div className="badge badge-secondary capitalize">
+                {post.status}
+              </div>
+            </div>
+
+            <p className="text-sm">{post.description}</p>
+            <p className="text-xs text-gray-500">
+              Urgencia: <span className="capitalize">{post.urgency}</span>
+            </p>
+
+            {post.media && post.media.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {post.media.map((file, i) =>
+                  file.type === "image" ? (
+                    <img
+                      key={i}
+                      src={file.url}
+                      alt={`media-${i}`}
+                      className="w-24 h-24 object-cover rounded"
+                    />
+                  ) : (
+                    <video
+                      key={i}
+                      src={file.url}
+                      controls
+                      className="w-full rounded max-h-40"
+                    />
+                  )
                 )}
-                <button
-                  onClick={() => handleDeletePost(post._id)}
-                  className="text-sm text-red-600 hover:underline"
-                >
-                  Eliminar
-                </button>
-              </CardFeedbackContent>
-            </CardFeedback>
-          ))}
+              </div>
+            )}
+
+            <div className="mt-4 text-end">
+              <button
+                onClick={() => handleDeletePost(post._id)}
+                className="btn btn-sm btn-error"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
         </div>
-      )}
+      ))}
     </div>
+  )}
+</div>
+
   );
 };
 

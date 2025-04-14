@@ -72,7 +72,7 @@ function App() {
             element={<GastosPage setActiveItem={setActiveItem} />}
           />
           <Route element={<TesterRoute />}>
-            <Route path="/tester-feedback" element={<TesterFeedbackPage />} />
+            <Route path="/tester-feedback" element={<TesterFeedbackPage setActiveItem={setActiveItem}/>} />
           </Route>
           {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
         </Route>

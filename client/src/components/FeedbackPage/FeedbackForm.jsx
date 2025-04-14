@@ -36,40 +36,45 @@ const FeedbackForm = ({onPostCreated}) => {
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4 p-4 max-w-xl mx-auto"
-    >
-      <input
-        type="text"
-        placeholder="Título del error"
-        {...register("title", { required: true })}
-        className="p-2 border rounded"
-      />
-      <textarea
-        placeholder="Descripción detallada"
-        {...register("description", { required: true })}
-        className="p-2 border rounded"
-      />
-      <select {...register("urgency")} className="p-2 border rounded">
-        <option value="low">Baja</option>
-        <option value="medium">Media</option>
-        <option value="high">Alta</option>
-      </select>
-      <input
-        type="file"
-        {...register("media")}
-        multiple
-        accept="image/*,video/*"
-        className="p-2"
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-violet-700 text-white py-2 px-4 rounded"
-      >
-        {loading ? "Enviando..." : "Enviar Feedback"}
-      </button>
-    </form>
+  onSubmit={handleSubmit(onSubmit)}
+  className="flex flex-col gap-4 p-4 max-w-xl mx-auto bg-dark-400 shadow-md rounded-lg"
+>
+  <input
+    type="text"
+    placeholder="Título del error"
+    {...register("title", { required: true })}
+    className="input input-bordered w-full bg-dark-400"
+  />
+
+  <textarea
+    placeholder="Descripción detallada"
+    {...register("description", { required: true })}
+    className="textarea textarea-bordered w-full bg-dark-400"
+  />
+
+  <select {...register("urgency")} className="select select-bordered w-full bg-dark-400">
+    <option value="low">Baja</option>
+    <option value="medium">Media</option>
+    <option value="high">Alta</option>
+  </select>
+
+  <input
+    type="file"
+    {...register("media")}
+    multiple
+    accept="image/*,video/*"
+    className="file-input file-input-bordered w-full"
+  />
+
+  <button
+    type="submit"
+    disabled={loading}
+    className="btn text-white w-full bg-violet-main"
+  >
+    {loading ? "Enviando..." : "Enviar Feedback"}
+  </button>
+</form>
+
   );
 };
 

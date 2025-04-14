@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import { FaTasks } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
+import { GrTest } from "react-icons/gr";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { useTranslation } from "../hooks/UseTranslation";
@@ -70,6 +71,10 @@ function NavBar({ activeItem }) {
               <FaWallet className="text-[18px]" />
               <span>{t("nav.navSections.expenses")}</span>
             </ItemNavBar>
+            {user?.role == "tester" && <ItemNavBar name={"tester-feedback"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
+              <GrTest className="text-[18px]" />
+              <span>Testers</span>
+            </ItemNavBar>}
             {/* <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>
               <FaCartShopping className="text-[18px]" />
               <span>Compras</span>
