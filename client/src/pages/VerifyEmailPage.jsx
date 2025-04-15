@@ -3,16 +3,19 @@ import logo from "../assets/Logo.png";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "../hooks/UseTranslation";
 
 export default function VerifyEmailPage() {
   const [timer, setTimer] = useState(60);
   const { user, reSendEmailVerification } = useAuth();
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
 
   useEffect(() => {
-    if(!user){navigate("/")}
+    if (!user) {
+      navigate("/");
+    }
 
     const countdown = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
@@ -23,7 +26,7 @@ export default function VerifyEmailPage() {
 
   const handleResend = () => {
     if (timer === 0) {
-      reSendEmailVerification(user, setTimer)
+      reSendEmailVerification(user, setTimer);
     }
   };
 
@@ -32,11 +35,13 @@ export default function VerifyEmailPage() {
       <div className="w-[95vw] max-w-[750px] px-[2vw] lg:px-12  border-dark-100 bg-dark-400  py-8 grid justify-items-center gap-[10px] ">
         <img src={logo} alt="logo productive life" className="max-w-[250px] " />
         <div className="flex flex-col gap-0 items-center">
-          <span className="text-xl font-semibold">¡Gracias por registrarte!</span>
+          <span className="text-xl font-semibold">
+            {t("login.thankYouTitle")}
+          </span>
           <span className="text-dark-100 text-sm text-center mt-2">
-            Hemos enviado un correo de verificación a <span className="font-semibold text-white">{user?.email}</span>. Por
-            favor, revisa tu bandeja de entrada y haz clic en el enlace para
-            activar tu cuenta.
+            {t("login.verificationMessage")}{" "}
+            <span className="font-semibold text-white">{user?.email}</span>. {" "}
+            {t("login.verificationInstruction")}
           </span>
         </div>
 
@@ -46,10 +51,10 @@ export default function VerifyEmailPage() {
             disabled={timer > 0}
             onClick={handleResend}
           >
-            {timer > 0 ? `Reenviar en ${timer}s` : "Reenviar correo"}
+            {timer > 0 ? `${t("login.resendIn")} ${timer}s` : t("login.resendEmail")}
           </button>
           <button className="py-[5px] px-[15px] rounded font-medium">
-            Cambiar Email
+            {t("login.changeEmail")}
           </button>
         </div>
       </div>

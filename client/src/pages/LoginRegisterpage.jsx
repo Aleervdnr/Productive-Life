@@ -2,9 +2,11 @@ import { useState } from "react";
 import RegisterForm from "../components/RegisterForm";
 import LoginForm from "../components/LoginForm";
 import { EmblaCarousel } from "../components/Carousel/EmblaCarousel";
+import { useTranslation } from "../hooks/UseTranslation";
 
 function LoginRegisterpage() {
   const [isLogin, setIsLogin] = useState(true);
+  const { t } = useTranslation();
 
   const handleSetIsLogin = () => {
     setIsLogin(!isLogin);
@@ -17,7 +19,7 @@ function LoginRegisterpage() {
           <h1 className="text-4xl font-semibold">
             Productive<span className="text-violet-main">Life</span>
           </h1>
-          <span className="text-2xl font-semibold">Bienvenido</span>
+          <span className="text-2xl font-semibold">{t("login.welcome")}</span>
         </div>
         <div
           className={`grid grid-cols-[100vw_100vw] lg:grid-cols-[50vw_50vw] justify-items-center transition-transform duration-500 ${
@@ -33,7 +35,7 @@ function LoginRegisterpage() {
             href="https://productive-life-api.onrender.com/auth/google"
             className="login-with-google-btn"
           >
-            Sign in with Google
+            {t("login.signinGoogle")}
           </a>
         </div>
       </div>

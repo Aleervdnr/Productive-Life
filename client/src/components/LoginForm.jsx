@@ -3,6 +3,7 @@ import InputForm from "./InputForm";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import InputFormPassword from "./InputFormPassword";
+import { useTranslation } from "../hooks/UseTranslation";
 
 export default function LoginForm({ handleSetIsLogin }) {
   const {
@@ -10,6 +11,8 @@ export default function LoginForm({ handleSetIsLogin }) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const { t } = useTranslation();
 
   const { signin } = useAuth();
 
@@ -21,46 +24,37 @@ export default function LoginForm({ handleSetIsLogin }) {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-4 text-white w-full px-5 max-w-[350px]"
     >
-      {errors.email && (
-        <p className="text-xs text-red-600 bg-gray-600 p-1 w-fit rounded-md">
-          email is required
-        </p>
-      )}
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-semibold">Email</label>
+        <label className="text-sm font-semibold">{t("login.email.label")}</label>
         <InputForm
           typeInput={"email"}
-          placeholder={"Ingrese su email"}
+          placeholder={t("login.email.placeholder")}
           name={"email"}
           register={register}
         />
       </div>
-      {errors.password && (
-        <p className="text-xs text-red-600 bg-gray-600 p-1 w-fit rounded-md">
-          Password is required
-        </p>
-      )}
+
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-semibold">Contraseña</label>{" "}
+        <label className="text-sm font-semibold">{t("login.password.label")}</label>{" "}
         <InputFormPassword
           typeInput={"password"}
-          placeholder={"Ingrese su contraseña"}
+          placeholder={t("login.password.placeholder")}
           name={"password"}
           register={register}
         />
       </div>
       <div className="flex justify-between items-center">
         <p className="text-xs font-semibold text-dark-100">
-          No tienes cuenta?{" "}
+          {t("login.dontHaveAccount")}{" "}
           <span
             onClick={handleSetIsLogin}
             className="text-violet-main cursor-pointer"
           >
-            Registrate
+            {t("login.signup")}
           </span>
         </p>
         <button className="bg-violet-main text-white text-sm px-4 py-[6px] rounded w-fit font-semibold">
-          Ingresar
+          {t("login.signin")}
         </button>
       </div>
     </form>
