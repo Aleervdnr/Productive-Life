@@ -8,6 +8,7 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { completeTourRequest } from "../api/auth.js";
+import {useTranslation} from "../hooks/UseTranslation.jsx"
 
 export const AuthContext = createContext();
 
@@ -24,6 +25,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const {t} = useTranslation()
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -55,16 +58,37 @@ export const AuthProvider = ({ children }) => {
   const signup = async (user) => {
     try {
       await registerRequest(user);
-      setUser({email : user.email, name:user.name});
+      setUser({ email: user.email, name: user.name });
       navigate("/verify-email");
     } catch (error) {
-      error.response.data.map((error) =>
-        toast.error(error, {
+      const data = error.response?.data;
+  
+      // Zod errors
+      if (Array.isArray(data?.errors)) {
+        data.errors.forEach((err) =>
+          toast.error(t(`login.errors.${err.message}`), {
+            duration: 3000,
+          })
+        );
+        return;
+      }
+  
+      // Errores con código (EMAIL_IN_USE, etc)
+      if (data?.code) {  
+        toast.error(t(`login.errors.${data.code}`), {
           duration: 3000,
-        })
-      );
+        });
+  
+        return;
+      }
+  
+      // Si no tiene estructura conocida
+      toast.error("Ocurrió un error inesperado", {
+        duration: 3000,
+      });
     }
   };
+  
 
   const signin = async (user) => {
     try {
@@ -78,11 +102,31 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }, 500);
     } catch (error) {
-      error.response.data.map((error) =>
-        toast.error(error, {
+      const data = error.response?.data;
+  
+      // Zod errors
+      if (Array.isArray(data?.errors)) {
+        data.errors.forEach((err) =>
+          toast.error(t(`login.errors.${err.message}`), {
+            duration: 3000,
+          })
+        );
+        return;
+      }
+  
+      // Errores con código (EMAIL_IN_USE, etc)
+      if (data?.code) {  
+        toast.error(t(`login.errors.${data.code}`), {
           duration: 3000,
-        })
-      );
+        });
+  
+        return;
+      }
+  
+      // Si no tiene estructura conocida
+      toast.error("Ocurrió un error inesperado", {
+        duration: 3000,
+      });
     }
   };
 

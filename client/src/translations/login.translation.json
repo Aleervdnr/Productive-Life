@@ -19,7 +19,32 @@
     "resendIn": "Reenviar en",
     "changeEmail": "Cambiar Email",
     "expiredLinkTitle": "⏳ ¡Ups! El enlace ha caducado",
-    "expiredLinkMessage": "Parece que tu enlace de verificación ya no es válido. ¡No te preocupes, podemos solucionarlo rápido! Solo necesitas ingresar tu correo electrónico nuevamente y te enviaremos un nuevo enlace de verificación para que puedas continuar."
+    "expiredLinkMessage": "Parece que tu enlace de verificación ya no es válido. ¡No te preocupes, podemos solucionarlo rápido! Solo necesitas ingresar tu correo electrónico nuevamente y te enviaremos un nuevo enlace de verificación para que puedas continuar.",
+    "errors": {
+    "EMAIL_IN_USE": "Este correo ya está en uso.",
+    "EMAIL_NOT_FOUND": "No se encontró una cuenta con este correo.",
+    "INVALID_PASSWORD": "La contraseña es incorrecta.",
+    "EMAIL_NOT_VERIFIED": "Tu correo no está verificado. Por favor, revisá tu bandeja de entrada.",
+    "INTERNAL_SERVER_ERROR": "Ocurrió un error inesperado. Intentá de nuevo más tarde.",
+    "UNAUTHORIZED": "No estás autorizado para realizar esta acción.",
+    "TOKEN_EXPIRED": "El enlace de verificación expiró. Solicitá uno nuevo.",
+    "INVALID_TOKEN": "El enlace de verificación no es válido. Solicitá uno nuevo.",
+    "USER_NOT_FOUND": "Usuario no encontrado.",
+    "TOKEN_REQUIRED": "Falta el token de verificación.",
+    "EMAIL_ALREADY_VERIFIED": "Este correo ya fue verificado.",
+    "EMAIL_VERIFIED_SUCCESS": "Tu correo ha sido verificado correctamente.",
+    "EMAIL_VERIFICATION_ERROR": "Ocurrió un error al verificar tu correo.",
+    "TOUR_UPDATED": "Tour actualizado correctamente.",
+    "TOUR_UPDATE_ERROR": "Ocurrió un error al actualizar el tour.",
+    "EMAIL_NOT_REGISTERED": "Este correo no está registrado.",
+    "EMAIL_RESENT": "Se ha reenviado el correo de verificación.",
+    "GOOGLE_REGISTER_ERROR": "Ocurrió un error al registrarse con Google.",
+    "NAME_REQUIRED": "El nombre es obligatorio.",
+    "EMAIL_REQUIRED": "Por favor, no olvides ingresar tu correo.",
+    "EMAIL_INVALID": "Correo no válido. Inténtalo nuevamente.",
+    "PASSWORD_REQUIRED": "Por favor, no olvides ingresar tu contraseña.",
+    "PASSWORD_TOO_SHORT": "Asegúrate de que la contraseña tenga 6 caracteres o más."
+  }
   },
   "en": {
     "welcome": "Welcome",
@@ -38,6 +63,31 @@
     "resendIn": "Resend in",
     "changeEmail": "Change Email",
     "expiredLinkTitle": "⏳ Oops! The link has expired",
-    "expiredLinkMessage": "It looks like your verification link is no longer valid. Don't worry, we can fix it quickly! Just enter your email again and we'll send you a new verification link so you can continue."
+    "expiredLinkMessage": "It looks like your verification link is no longer valid. Don't worry, we can fix it quickly! Just enter your email again and we'll send you a new verification link so you can continue.",
+    "errors": {
+    "EMAIL_IN_USE": "This email is already in use.",
+    "EMAIL_NOT_FOUND": "No account found with this email.",
+    "INVALID_PASSWORD": "Incorrect password.",
+    "EMAIL_NOT_VERIFIED": "Your email is not verified. Please check your inbox.",
+    "INTERNAL_SERVER_ERROR": "An unexpected error occurred. Please try again later.",
+    "UNAUTHORIZED": "You are not authorized to perform this action.",
+    "TOKEN_EXPIRED": "The verification link has expired. Please request a new one.",
+    "INVALID_TOKEN": "The verification link is invalid. Please request a new one.",
+    "USER_NOT_FOUND": "User not found.",
+    "TOKEN_REQUIRED": "Verification token is required.",
+    "EMAIL_ALREADY_VERIFIED": "This email has already been verified.",
+    "EMAIL_VERIFIED_SUCCESS": "Your email has been successfully verified.",
+    "EMAIL_VERIFICATION_ERROR": "An error occurred while verifying your email.",
+    "TOUR_UPDATED": "Tour updated successfully.",
+    "TOUR_UPDATE_ERROR": "An error occurred while updating the tour.",
+    "EMAIL_NOT_REGISTERED": "This email is not registered.",
+    "EMAIL_RESENT": "The verification email has been resent.",
+    "GOOGLE_REGISTER_ERROR": "An error occurred while signing up with Google.",
+    "NAME_REQUIRED": "Name is required.",
+    "EMAIL_REQUIRED": "Please don't forget to enter your email.",
+    "EMAIL_INVALID": "Invalid email address. Please try again.",
+    "PASSWORD_REQUIRED": "Please don't forget to enter your password.",
+    "PASSWORD_TOO_SHORT": "Make sure your password is 6 characters or more."
+  }
   }
 }

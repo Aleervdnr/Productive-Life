@@ -33,6 +33,7 @@ const handleOnChange = (e) => {
         {...register(name, { required: required })}
         required
         onChange={(e) => handleOnChange(e)}
+        min={6}
       />
       <div
         className={`${inputLength ? "absolute" : "hidden"} top-[50%] translate-y-[-50%]  right-5 cursor-pointer`}

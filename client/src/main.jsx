@@ -12,8 +12,8 @@ import { LanguageProvider } from "./context/LanguageContext.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <LanguageProvider>
+      <LanguageProvider>
+        <AuthProvider>
           <DateProvider>
             <TasksProvider>
               <UiProvider>
@@ -21,8 +21,8 @@ createRoot(document.getElementById("root")).render(
               </UiProvider>
             </TasksProvider>
           </DateProvider>
-        </LanguageProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   </StrictMode>
 );
