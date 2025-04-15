@@ -92,36 +92,31 @@ export const register = async (req, res) => {
     const userFound = await User.findOne({ email });
 
     if (userFound)
-      return res.status(400).json(["El email indicado ya está en uso"]);
+      return res.status(400).json({ code: "EMAIL_IN_USE" });
 
     const passwordHash = await bcrypt.hash(password, 10);
-
     const verificationToken = generateVerificationToken(email);
 
-    // Crear nuevo usuario con estado no verificado
     const newUser = new User({
       name,
       email,
       password: passwordHash,
       isVerified: false,
       verificationToken,
-      role:"tester"
+      role: "tester",
     });
 
     const userSaved = await newUser.save();
 
-    // Crear el enlace de verificación
     const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
-
     const emailText = createEmailText(name, verificationLink, lang);
 
-    // Enviar el correo de verificación
     await sendVerificationEmail(email, emailText.subject, emailText.html);
 
-    res.json(userFound);
+    res.json(userSaved);
   } catch (err) {
-    console.error(err); // Agrega esto para depurar el error
-    res.status(500).json({ error: "Error interno del servidor." });
+    console.error(err);
+    res.status(500).json({ code: "INTERNAL_SERVER_ERROR" });
   }
 };
 
@@ -130,17 +125,14 @@ export const registerWithGoogle = async (profile) => {
     const { id: googleId, displayName: name, emails } = profile;
     const email = emails[0].value;
 
-    // Verificar si el usuario ya existe
     const userFound = await User.findOne({ $or: [{ email }, { googleId }] });
-
     if (userFound) return userFound;
 
-    // Crear nuevo usuario
     const newUser = new User({
       name,
       email,
       googleId,
-      isVerified: true, // Usuarios de Google están verificados automáticamente
+      isVerified: true,
       provider: "google",
     });
 
@@ -148,7 +140,7 @@ export const registerWithGoogle = async (profile) => {
     return userSaved;
   } catch (err) {
     console.error(err);
-    throw new Error("Error al registrar usuario con Google.");
+    throw new Error("GOOGLE_REGISTER_ERROR");
   }
 };
 
@@ -157,25 +149,22 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const userFound = await User.findOne({ email });
 
-    if (!userFound)
-      return res.status(400).json(["El email indicado no existe"]);
+    if (!userFound) return res.status(400).json({ code: "EMAIL_NOT_FOUND" });
 
     const isMatch = await bcrypt.compare(password, userFound.password);
-    if (!isMatch) return res.status(400).json(["Contraseña incorrecta"]);
+    if (!isMatch) return res.status(400).json({ code: "INVALID_PASSWORD" });
 
     if (!userFound.isVerified)
-      return res
-        .status(400)
-        .json(["Email no verificado, revisa tu casilla de mensajes"]);
+      return res.status(400).json({ code: "EMAIL_NOT_VERIFIED" });
 
     const token = await createAccessToken({
       id: userFound._id,
       role: userFound.role,
     });
 
-    res.json({ ...userFound.toObject(), token: token });
+    res.json({ ...userFound.toObject(), token });
   } catch (error) {
-    return res.status(500).json([error.message]);
+    return res.status(500).json({ code: "INTERNAL_SERVER_ERROR" });
   }
 };
 
@@ -183,19 +172,19 @@ export const verifyToken = async (req, res) => {
   const token =
     req.headers.authorization && req.headers.authorization.split(" ")[1];
 
-  if (!token) return res.status(401).json(["No Autorizado"]);
+  if (!token) return res.status(401).json({ code: "UNAUTHORIZED" });
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
     if (err) {
       if (err.name === "TokenExpiredError") {
-        return res.status(401).json({ error: "El token ha expirado." });
+        return res.status(401).json({ code: "TOKEN_EXPIRED" });
       }
-      return res.status(401).json({ error: "Token inválido." });
+      return res.status(401).json({ code: "INVALID_TOKEN" });
     }
-    console.log(user);
+
     const userFound = await User.findById(user.id);
     if (!userFound) {
-      return res.status(401).json({ error: "Usuario no encontrado." });
+      return res.status(401).json({ code: "USER_NOT_FOUND" });
     }
 
     return res.json(userFound);
@@ -205,100 +194,68 @@ export const verifyToken = async (req, res) => {
 export const verifyEmailToken = async (req, res) => {
   const { token } = req.query;
 
-  if (!token) {
-    return res
-      .status(400)
-      .json({ message: "Token de verificación requerido." });
-  }
+  if (!token) return res.status(400).json({ code: "TOKEN_REQUIRED" });
 
   try {
-    // Decodificar y verificar el token
     const decoded = jwt.verify(token, TOKEN_SECRET);
-
     const { email } = decoded;
-
-    // Buscar al usuario por email
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
+    if (!user) return res.status(404).json({ code: "USER_NOT_FOUND" });
+    if (user.isVerified)
+      return res.status(400).json({ code: "EMAIL_ALREADY_VERIFIED" });
 
-    if (user.isVerified) {
-      return res
-        .status(400)
-        .json({ message: "El email ya ha sido verificado." });
-    }
-
-    // Actualizar el estado del usuario a "verificado"
     user.isVerified = true;
     await user.save();
 
-    res.status(200).json({ message: "Email verificado exitosamente." });
+    res.status(200).json({ code: "EMAIL_VERIFIED_SUCCESS" });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return res
-        .status(401)
-        .json({ message: "El token ha expirado. Solicita un nuevo enlace." });
+      return res.status(401).json({ code: "TOKEN_EXPIRED" });
     }
-    res
-      .status(500)
-      .json({ message: "Error al verificar el email.", error: error.message });
+    res.status(500).json({ code: "EMAIL_VERIFICATION_ERROR" });
   }
 };
 
 export const tourCompleted = async (req, res) => {
   try {
-    const { userId, tourType, value } = req.body; // Recibe el ID del usuario, el tipo de tour y el nuevo valor
-
-    // Construimos dinámicamente el campo a actualizar
+    const { userId, tourType, value } = req.body;
     const updateField = { [`tourCompleted.${tourType}`]: value };
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updateField,
-      { new: true } // Retorna el usuario actualizado
-    );
+    const updatedUser = await User.findByIdAndUpdate(userId, updateField, {
+      new: true,
+    });
 
     if (!updatedUser) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ code: "USER_NOT_FOUND" });
     }
 
-    res.status(200).json({ message: "Estado actualizado", user: updatedUser });
+    res.status(200).json({ code: "TOUR_UPDATED", user: updatedUser });
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar el estado", error });
+    res.status(500).json({ code: "TOUR_UPDATE_ERROR" });
   }
 };
 
 export const reSendEmailVerification = async (req, res) => {
   try {
     const { email } = req.body;
-
     const userFound = await User.findOne({ email });
 
     if (!userFound)
-      return res.status(400).json(["El email indicado no está registrado"]);
+      return res.status(400).json({ code: "EMAIL_NOT_REGISTERED" });
 
     if (userFound.isVerified)
-      return res
-        .status(400)
-        .json(["El email indicado ya se encuentra verificado"]);
+      return res.status(400).json({ code: "EMAIL_ALREADY_VERIFIED" });
 
     const verificationToken = generateVerificationToken(email);
-
     const verificationLink = `${FRONTEND_URL}/verify-email-token?token=${verificationToken}`;
-
     const emailText = createEmailText(userFound.name, verificationLink);
 
-    const response = await sendVerificationEmail(
-      email,
-      emailText.subject,
-      emailText.html
-    );
+    await sendVerificationEmail(email, emailText.subject, emailText.html);
 
-    res.status(200).json({ message: "Email Reenviado." });
+    res.status(200).json({ code: "EMAIL_RESENT" });
   } catch (error) {
-    console.error(error); // Agrega esto para depurar el error
-    res.status(500).json({ error: "Error interno del servidor." });
+    console.error(error);
+    res.status(500).json({ code: "INTERNAL_SERVER_ERROR" });
   }
 };
