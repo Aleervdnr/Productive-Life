@@ -105,6 +105,7 @@ export const register = async (req, res) => {
       password: passwordHash,
       isVerified: false,
       verificationToken,
+      role:"tester"
     });
 
     const userSaved = await newUser.save();
