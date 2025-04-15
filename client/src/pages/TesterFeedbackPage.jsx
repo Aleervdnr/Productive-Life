@@ -4,11 +4,14 @@ import FeedbackForm from "../components/FeedbackPage/FeedbackForm.jsx";
 import FeedbackPostList from "../components/FeedbackPage/FeedbackPostList.jsx";
 import { toast } from "sonner";
 import { getMyFeedbackPostsRequest } from "../api/testerFeedback.js";
+import { useTranslation } from "../hooks/UseTranslation.jsx";
 
 export default function TesterFeedbackPage({ setActiveItem }) {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     setActiveItem("tester-feedback");
@@ -42,7 +45,7 @@ export default function TesterFeedbackPage({ setActiveItem }) {
   return (
     <div className="w-full h-dvh relative max-lg:pt-14 lg:pl-52">
       <div className="p-3">
-        <h1 className="text-2xl font-bold mb-4">Tester Feedback</h1>
+        <h1 className="text-2xl font-bold mb-4">{t("testers.title")}</h1>
         <div className="grid gap-4">
           <FeedbackForm
             onPostCreated={(post) => setPosts((prev) => [post, ...prev])}

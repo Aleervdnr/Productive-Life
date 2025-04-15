@@ -1,0 +1,42 @@
+{
+    "es": {
+      "title": "Testers",
+      "form":{
+        "titlePlaceholder":"Asunto",
+        "descriptionPlaceholder":"Descripcion detallada",
+        "urgency":{
+            "low":"Baja",
+            "medium":"Media",
+            "high":"Alta"
+        },
+        "chooseFiles":"Elegir Archivos",
+        "sendButton":"Enviar Feedback",
+        "sending":"Enviando...",
+        "status":{
+            "submitted":"Enviado",
+            "Under Review":"En Revisión",
+            "fixed":"Solucionado"
+        }
+      }
+    },
+    "en": {
+      "title": "Testers Feedback",
+      "form":{
+        "titlePlaceholder":"Title",
+        "descriptionPlaceholder":"Detailed description",
+        "urgency":{
+            "low":"Low",
+            "medium":"Medium",
+            "high":"high"
+        },
+        "chooseFiles":"Choose Files",
+        "sendButton":"Send Feedback",
+        "sending":"Sending...",
+        "status":{
+            "submitted":"Submitted",
+            "Under Review":"Under Review",
+            "fixed":"Fixed"
+        }
+      }
+    }
+  }
