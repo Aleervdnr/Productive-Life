@@ -119,6 +119,24 @@
       "deletedTask": "Tarea Eliminada",
       "deletedRecurrence": "Recurrencia Eliminada",
       "error": "Ocurrió un error inesperado"
+    },
+    "tour": {
+      "welcomeTitle": "Bienvenido a",
+      "welcomeDescription": "Estás en la sección de Tareas, donde podrás organizar tu día a día de forma simple y eficiente. Crea, edita y completa tus actividades mientras avanzas hacia tus objetivos con claridad y motivación.",
+      "step1Title": "Domina tu día",
+      "step1Description": "Revisa, edita y completa tus tareas con facilidad. Cada check te acerca más a tus metas.",
+      "step2Title": "Un calendario para tu progreso",
+      "step2Description": "Visualiza tus avances diarios, navega por el mes y mantente en control de tus objetivos.",
+      "step3Title": "Mide tu éxito",
+      "step3Description": "Analiza tus tareas completadas y pendientes. Cambia la vista y celebra tu progreso diario, semanal o mensual.",
+      "step4Title": "Diseña tu semana ideal",
+      "step4Description": "Organiza tus días y mantén el equilibrio en tus prioridades.",
+      "step5Title": "Transforma tus ideas en acción",
+      "step5Description": "Agrega nuevas tareas y da el primer paso hacia tus metas.",
+      "btnSkip": "Saltar",
+      "btnNext": "Siguiente",
+      "btnBack": "Volver",
+      "btnFinish": "Fin"
     }
   },
   "en": {
@@ -241,6 +259,24 @@
       "deletedTask": "Task deleted",
       "deletedRecurrence": "Recurrence deleted",
       "error": "An unexpected error occurred"
-    }
+    },
+    "tour": {
+    "welcomeTitle": "Welcome to",
+    "welcomeDescription": "You’re in the Tasks section, where you can organize your daily life simply and efficiently. Create, edit, and complete your activities while moving toward your goals with clarity and motivation.",
+    "step1Title": "Master your day",
+    "step1Description": "Review, edit, and complete your tasks with ease. Each check brings you closer to your goals.",
+    "step2Title": "A calendar for your progress",
+    "step2Description": "Track your daily progress, navigate the month, and stay in control of your objectives.",
+    "step3Title": "Measure your success",
+    "step3Description": "Analyze your completed and pending tasks. Switch views and celebrate your daily, weekly, or monthly progress.",
+    "step4Title": "Design your ideal week",
+    "step4Description": "Plan your days and keep your priorities balanced.",
+    "step5Title": "Turn ideas into action",
+    "step5Description": "Add new tasks and take the first step toward your goals.",
+    "btnSkip": "Skip",
+    "btnNext": "Next",
+    "btnBack": "Back",
+    "btnFinish": "Finish"
+  }
   }
 }

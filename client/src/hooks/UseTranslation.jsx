@@ -2,11 +2,15 @@ import { useLanguage } from "../context/LanguageContext";
 import landingTranslations from "../translations/landing.translation.json"
 import navTranslations from "../translations/nav.translation.json"
 import tasksTranslations from "../translations/tasks.translation.json"
+import testersTranslations from "../translations/testers.translations.json"
+import loginTranslations from "../translations/login.translation.json"
 
 const allTranslations = {
   landing: landingTranslations,
   nav: navTranslations,
-  tasks: tasksTranslations
+  tasks: tasksTranslations,
+  testers: testersTranslations,
+  login: loginTranslations
 };
 
 export const useTranslation = () => {

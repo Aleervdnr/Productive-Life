@@ -43,104 +43,90 @@ export default function TasksPage({ setActiveItem }) {
       placement: "center",
       content: (
         <div className="max-[768px]:w-[80vw] grid justify-items-center">
-          <span className="font-semibold">Bienvenido a</span>
+          <span className="font-semibold">{t("tasks.tour.welcomeTitle")}</span>
           <img src={Logo} />
           <p className="max-[768px]:w-full w-[550px] mt-5">
             {" "}
-            Estás en la sección de <strong>Tareas</strong>, donde podrás
-            organizar tu día a día de forma simple y eficiente. Crea, edita y
-            completa tus actividades mientras avanzas hacia tus objetivos con
-            claridad y motivación.
+            {t("tasks.tour.welcomeDescription")}
           </p>
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
       },
     },
     {
       target: "#step-0",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Domina tu día</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step1Title")}</h3>
           <p>
-            Revisa, edita y completa tus tareas con facilidad. Cada check te
-            acerca más a tus metas.
+          {t("tasks.tour.step1Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
       target: "#step-1",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Un calendario para tu progreso</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step2Title")}</h3>
           <p>
-            Visualiza tus avances diarios, navega por el mes y mantente en
-            control de tus objetivos.
+          {t("tasks.tour.step2Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
       target: "#step-2",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Mide tu éxito</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step3Title")}</h3>
           <p>
-            Analiza tus tareas completadas y pendientes. Cambia la vista y
-            celebra tu progreso diario, semanal o mensual.
+          {t("tasks.tour.step3Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
       target: "#step-3",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Diseña tu semana ideal</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step4Title")}</h3>
           <p>
-            Organiza tus días y mantén el equilibrio en tus prioridades.
+          {t("tasks.tour.step4Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
       target: "#step-4",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Transforma tus ideas en acción</h3>
-          <p>Agrega nuevas tareas y da el primer paso hacia tus metas.</p>{" "}
+          <h3 className="font-bold text-lg">{t("tasks.tour.step5Title")}</h3>
+          <p>{t("tasks.tour.step5Description")}</p>{" "}
         </div>
       ),
       controlled: true,
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
-        last: <span aria-label="Last">Fin</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
+        last: <span aria-label="Last">{t("tasks.tour.btnFinish")}</span>,
       },
     },
   ];
@@ -151,71 +137,61 @@ export default function TasksPage({ setActiveItem }) {
       placement: "center",
       content: (
         <div className="max-[768px]:w-[80vw] grid justify-items-center">
-          <span className="font-semibold">Bienvenido a</span>
+          <span className="font-semibold">{t("tasks.tour.welcomeTitle")}</span>
           <img src={Logo} />
           <p className="max-[768px]:w-full w-[550px] mt-5">
             {" "}
-            Estás en la sección de <strong>Tareas</strong>, donde podrás
-            organizar tu día a día de forma simple y eficiente. Crea, edita y
-            completa tus actividades mientras avanzas hacia tus objetivos con
-            claridad y motivación.
+            {t("tasks.tour.welcomeDescription")}
           </p>
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
       },
     },
     {
       target: "#step-0",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Domina tu día</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step1Title")}</h3>
           <p>
-            Revisa, edita y completa tus tareas con facilidad. Cada check te
-            acerca más a tus metas.
+          {t("tasks.tour.step1Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
       target: "#step-1",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Diseña tu semana ideal</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step4Title")}</h3>
           <p>
-            Organiza tus días y mantén el equilibrio en tus prioridades.
+          {t("tasks.tour.step4Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
       target: "#step-2",
       content: (
         <div className="max-[768px]:w-[80vw] ">
-          <h3 className="font-bold text-lg">Un calendario para tu progreso</h3>
+          <h3 className="font-bold text-lg">{t("tasks.tour.step2Title")}</h3>
           <p>
-            Visualiza tus avances diarios, navega por el mes y mantente en
-            control de tus objetivos.
+          {t("tasks.tour.step2Description")}
           </p>{" "}
         </div>
       ),
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
+        next: <span aria-label="next">{t("tasks.tour.btnNext")}</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
       },
     },
     {
@@ -223,8 +199,8 @@ export default function TasksPage({ setActiveItem }) {
       placement: "center",
       content: (
         <div className="max-[768px]:w-[80vw] grid justify-items-center">
-          <h3 className="font-bold text-lg">Transforma tus ideas en acción</h3>
-          <p>Agrega nuevas tareas y da el primer paso hacia tus metas.</p>{" "}
+          <h3 className="font-bold text-lg">{t("tasks.tour.step5Title")}</h3>
+          <p>{t("tasks.tour.step5Description")}</p>{" "}
           <div
             className={`bg-violet-main w-11 h-11 rounded-full text-2xl flex justify-center items-center mt-2`}
           >
@@ -236,10 +212,8 @@ export default function TasksPage({ setActiveItem }) {
       ),
       controlled: true,
       locale: {
-        skip: <strong aria-label="skip">Saltar</strong>,
-        next: <span aria-label="next">Siguiente</span>,
-        back: <span aria-label="back">Volver</span>,
-        last: <span aria-label="Last">Fin</span>,
+        back: <span aria-label="back">{t("tasks.tour.btnBack")}</span>,
+        last: <span aria-label="Last">{t("tasks.tour.btnFinish")}</span>,
       },
     },
   ];

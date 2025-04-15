@@ -6,11 +6,13 @@ import logo from "../assets/Logo.png";
 import InputForm from "../components/InputForm";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "../hooks/UseTranslation";
 
 export default function VerifyEmailToken() {
   const navigate = useNavigate();
   const [status, setStatus] = useState(0);
   const { user, loading } = useAuth();
+
 
   useEffect(() => {
     if (!loading && user) navigate("/");
@@ -55,6 +57,7 @@ const VerifyEmail401Error = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { t } = useTranslation();
 
   const { reSendEmailVerification } = useAuth();
   const [timer, setTimer] = useState(0);
@@ -77,13 +80,10 @@ const VerifyEmail401Error = () => {
       <img src={logo} alt="logo productive life" className="max-w-[250px] " />
       <div className="flex flex-col gap-0 items-center">
         <span className="text-xl font-semibold text-center">
-          ⏳ ¡Ups! El enlace ha caducado
+          {t("login.expiredLinkTitle")}
         </span>
         <span className="text-dark-100 text-sm text-center mt-2">
-          Parece que tu enlace de verificación ya no es válido. ¡No te
-          preocupes, podemos solucionarlo rápido! <br />
-          Solo necesitas ingresar tu correo electrónico nuevamente y te
-          enviaremos un nuevo enlace de verificación para que puedas continuar.
+        {t("login.expiredLinkMessage")}
         </span>
       </div>
 
@@ -93,7 +93,7 @@ const VerifyEmail401Error = () => {
       >
         <InputForm
           typeInput={"email"}
-          placeholder={"Ingrese su email"}
+          placeholder={t("login.email.placeholder")}
           name={"email"}
           register={register}
         />
