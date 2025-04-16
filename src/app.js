@@ -92,7 +92,7 @@ app.get(
   passport.authenticate('google', { failureRedirect: '/' }),
   async (req, res) => {
     // Generar un token JWT para el frontend
-    const token = await createAccessToken({ id: req.user._id }); // Implementa esta función para generar tokens
+    const token = await createAccessToken({ id: req.user._id, role: req.user.role }); // Implementa esta función para generar tokens
     res.redirect(`https://productivelife.site/auth/callback?token=${token}`);
   }
 );

@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import TesterRoute from "./TesterRoute";
 import TesterFeedbackPage from "./pages/TesterFeedbackPage";
+import AdminPage from "./pages/AdminPage"
 
 function App() {
   const [activeItem, setActiveItem] = useState("home");
@@ -73,6 +74,7 @@ function App() {
           />
           <Route element={<TesterRoute />}>
             <Route path="/tester-feedback" element={<TesterFeedbackPage setActiveItem={setActiveItem}/>} />
+            <Route path="/admin-page" element={<AdminPage setActiveItem={setActiveItem}/>} />
           </Route>
           {/* <Route path="/compras" element={<ComprasPage setActiveItem={setActiveItem}/>} /> */}
         </Route>

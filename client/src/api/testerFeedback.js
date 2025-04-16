@@ -13,6 +13,12 @@ export const getMyFeedbackPostsRequest = (token) =>
       Authorization: `Bearer ${token}`,
     },
   });
+export const getAllFeedbackPostsRequest = (token) =>
+  axios.get("/tester-feedback", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 export const getFeedbackPostRequest = (id, token) =>
   axios.get(`/tester-feedback/${id}`, {

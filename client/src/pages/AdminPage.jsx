@@ -1,28 +1,25 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
-import FeedbackForm from "../components/FeedbackPage/FeedbackForm.jsx";
+import { getAllFeedbackPostsRequest } from "../api/testerFeedback.js";
 import FeedbackPostList from "../components/FeedbackPage/FeedbackPostList.jsx";
-import { toast } from "sonner";
-import { getMyFeedbackPostsRequest } from "../api/testerFeedback.js";
 import { useTranslation } from "../hooks/UseTranslation.jsx";
 
-export default function TesterFeedbackPage({ setActiveItem }) {
+export default function AdminPage({setActiveItem}) {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const { t } = useTranslation();
 
   useEffect(() => {
-    setActiveItem("tester-feedback");
+    setActiveItem("admin-page");
   }, []);
 
   useEffect(() => {
     const fetchMyPosts = async () => {
       try {
         const session = { token: localStorage.getItem("token") };
-        const res = await getMyFeedbackPostsRequest(session.token);
-        console.log("Mis feedbacks:", res.data);
+        const res = await getAllFeedbackPostsRequest(session.token);
+        console.log("Feedbacks:", res.data);
         setPosts(res.data.posts);
         setLoading(false);
       } catch (err) {
@@ -34,22 +31,17 @@ export default function TesterFeedbackPage({ setActiveItem }) {
       }
     };
 
-    if (user?.role == "tester" || user?.role == "admin") {
+    if (user?.role == "admin") {
       fetchMyPosts();
     }
   }, [user]);
-
-  if (!user?.role == "tester") return <p>Access denied</p>;
+  if (!user?.role == "admin") return <p>Access denied</p>;
   if (loading) return <p>Loading...</p>;
-
   return (
     <div className="w-full h-dvh relative max-lg:pt-14 lg:pl-52">
       <div className="p-3">
         <h1 className="text-2xl font-bold mb-4">{t("testers.title")}</h1>
         <div className="grid gap-4">
-          <FeedbackForm
-            onPostCreated={(post) => setPosts((prev) => [post, ...prev])}
-          />
           <FeedbackPostList posts={posts} setPosts={setPosts} />
         </div>
       </div>

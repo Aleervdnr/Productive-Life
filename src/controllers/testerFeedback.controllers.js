@@ -30,7 +30,7 @@ export const createFeedbackPost = async (req, res) => {
       title,
       description,
       urgency,
-      createdBy: userId,
+      user: userId,
       media: uploadedMedia,
     });
 
@@ -45,7 +45,7 @@ export const createFeedbackPost = async (req, res) => {
 // Obtener los posts del tester autenticado
 export const getMyFeedbackPosts = async (req, res) => {
   try {
-    const posts = await testersPostModel.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
+    const posts = await testersPostModel.find({ user: req.user.id }).sort({ createdAt: -1 });
     res.json({ code: "feedback_posts_fetched", posts });
   } catch (err) {
     res.status(500).json({ code: "error_fetching_feedback_posts" });
@@ -58,6 +58,7 @@ export const getAllFeedbackPosts = async (req, res) => {
     const posts = await testersPostModel.find().populate("user", "email");
     res.json({ code: "all_feedback_posts_fetched", posts });
   } catch (err) {
+    console.error("Error al obtener posts de feedback:", err); // 👈 clave
     res.status(500).json({ code: "error_fetching_all_feedback_posts" });
   }
 };
@@ -156,7 +157,7 @@ export const deleteFeedbackPost = async (req, res) => {
 
     console.log(id,userId)
 
-    const post = await testersPostModel.findOne({ _id: id, createdBy: userId });
+    const post = await testersPostModel.findOne({ _id: id, user: userId });
     if (!post) return res.status(404).json({ code: "feedback_post_not_found" });
     console.log(post)
 
