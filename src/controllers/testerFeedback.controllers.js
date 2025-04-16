@@ -83,7 +83,7 @@ export const getFeedbackPostById = async (req, res) => {
   try {
     const post = await testersPostModel
       .findById(req.params.id)
-      .populate("comments.user", "email");
+      .populate("comments.user", "name");
 
     if (!post) return res.status(404).json({ code: "feedback_post_not_found" });
 
@@ -110,18 +110,18 @@ export const addFeedbackComment = async (req, res) => {
 
     if (
       req.user.role !== "admin" &&
-      post.user.toString() !== req.user._id.toString()
+      post.user.toString() !== req.user.id.toString()
     ) {
       return res.status(403).json({ code: "unauthorized_comment" });
     }
 
-    post.comments.push({ user: req.user._id, message });
+    post.comments.push({ user: req.user.id, text: message });
     await post.save();
 
     res.json({ code: "feedback_comment_added", post });
   } catch (err) {
-    res.status(500).json({ code: "error_adding_comment" });
-  }
+    res.status(500).json({ code: "error_adding_comment", error: err.message });
+      }
 };
 
 // Actualizar post

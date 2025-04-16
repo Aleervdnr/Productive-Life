@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
       taskTour: { type: Boolean, default: false },
       gastosTour: { type: Boolean, default: false },
     },
+    isWhitelisted: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,

@@ -29,8 +29,8 @@ const testerPostSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Enviado", "En Revisión", "Solucionado"],
-      default: "Enviado",
+      enum: ["sent", "in_review", "resolved"],
+      default: "sent",
     },
 media: [
   {
