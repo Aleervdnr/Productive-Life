@@ -45,7 +45,9 @@ export const createFeedbackPost = async (req, res) => {
 // Obtener los posts del tester autenticado
 export const getMyFeedbackPosts = async (req, res) => {
   try {
-    const posts = await testersPostModel.find({ user: req.user.id }).sort({ createdAt: -1 });
+    const posts = await testersPostModel
+      .find({ user: req.user.id })
+      .sort({ createdAt: -1 });
     res.json({ code: "feedback_posts_fetched", posts });
   } catch (err) {
     res.status(500).json({ code: "error_fetching_feedback_posts" });
@@ -88,8 +90,8 @@ export const getFeedbackPostById = async (req, res) => {
     if (!post) return res.status(404).json({ code: "feedback_post_not_found" });
 
     if (
-      req.user.role !== "admin" &&
-      post.user.toString() !== req.user._id.toString()
+      req.user.role === "tester"  &&
+      !post.user?.equals(req.user.id)
     ) {
       return res.status(403).json({ code: "unauthorized_access" });
     }
@@ -121,7 +123,7 @@ export const addFeedbackComment = async (req, res) => {
     res.json({ code: "feedback_comment_added", post });
   } catch (err) {
     res.status(500).json({ code: "error_adding_comment", error: err.message });
-      }
+  }
 };
 
 // Actualizar post
@@ -155,11 +157,11 @@ export const deleteFeedbackPost = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
 
-    console.log(id,userId)
+    console.log(id, userId);
 
     const post = await testersPostModel.findOne({ _id: id, user: userId });
     if (!post) return res.status(404).json({ code: "feedback_post_not_found" });
-    console.log(post)
+    console.log(post);
 
     // Borrar archivos de Cloudinary
     for (const file of post.media) {
@@ -175,7 +177,6 @@ export const deleteFeedbackPost = async (req, res) => {
     res.status(500).json({ code: "error_deleting_feedback_post" });
   }
 };
-
 
 // Eliminar comentario
 export const deleteFeedbackComment = async (req, res) => {
