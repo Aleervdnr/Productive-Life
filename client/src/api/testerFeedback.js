@@ -50,7 +50,7 @@ export const deleteFeedbackCommentRequest = (postId, commentId, token) =>
 
 export const addFeedbackCommentRequest = (postId, message, token) =>
   axios.post(
-    `/tester-feedback/${postId}/comments`,
+    `/tester-feedback/${postId}/comment`,
     { message },
     {
       headers: {

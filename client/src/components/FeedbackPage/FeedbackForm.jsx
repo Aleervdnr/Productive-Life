@@ -52,6 +52,7 @@ const FeedbackForm = ({ onPostCreated }) => {
         placeholder={t("testers.form.descriptionPlaceholder")}
         {...register("description", { required: true })}
         className="textarea textarea-bordered w-full bg-dark-400"
+        minLength={10}
       />
 
       <select
