@@ -16,6 +16,7 @@ import { GrTest } from "react-icons/gr";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { MdLanguage } from "react-icons/md";
+import { GrUserAdmin } from "react-icons/gr";
 
 function NavBar({ activeItem }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -124,6 +125,16 @@ function NavBar({ activeItem }) {
               >
                 <GrTest className="text-[18px]" />
                 <span>Testers</span>
+              </ItemNavBar>
+            )}
+            {user?.role == "admin" && (
+              <ItemNavBar
+                name={"admin-page"}
+                activeItem={activeItem}
+                handleCloseMenu={handleMenuOpenClose}
+              >
+                <GrUserAdmin className="text-[18px]" />
+                <span>Admin</span>
               </ItemNavBar>
             )}
             {/* <ItemNavBar name={"compras"} activeItem={activeItem} handleCloseMenu={handleMenuOpenClose}>

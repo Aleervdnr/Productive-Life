@@ -15,9 +15,9 @@ const commentSchema = new mongoose.Schema(
 
 const testerPostSchema = new mongoose.Schema(
   {
-    createdBy: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "User", // 👈 importante para que populate funcione
       required: true,
     },
     title: { type: String, required: true },

@@ -7,7 +7,7 @@ const TesterRoute = () => {
   if (loading) return null; // O un loader si preferís
 
   if (!user) return <Navigate to="/login" />;
-  if (!user.role == "tester") return <Navigate to="/tasks" />;
+  if (!user.role == "tester" || !user.role =="admin") return <Navigate to="/tasks" />;
 
   return <Outlet />;
 };
