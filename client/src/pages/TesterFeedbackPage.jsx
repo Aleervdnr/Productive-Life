@@ -34,7 +34,7 @@ export default function TesterFeedbackPage({ setActiveItem }) {
       }
     };
 
-    if (user?.role == "tester") {
+    if (user?.role == "tester" || user?.role == "admin") {
       fetchMyPosts();
     }
   }, [user]);

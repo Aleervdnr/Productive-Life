@@ -157,7 +157,7 @@ export const deleteFeedbackPost = async (req, res) => {
 
     console.log(id,userId)
 
-    const post = await testersPostModel.findOne({ _id: id, createdBy: userId });
+    const post = await testersPostModel.findOne({ _id: id, user: userId });
     if (!post) return res.status(404).json({ code: "feedback_post_not_found" });
     console.log(post)
 
