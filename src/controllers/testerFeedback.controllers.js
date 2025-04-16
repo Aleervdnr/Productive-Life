@@ -30,7 +30,7 @@ export const createFeedbackPost = async (req, res) => {
       title,
       description,
       urgency,
-      createdBy: userId,
+      user: userId,
       media: uploadedMedia,
     });
 
