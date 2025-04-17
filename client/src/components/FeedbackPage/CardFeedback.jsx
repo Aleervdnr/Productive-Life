@@ -26,13 +26,16 @@ export default function CardFeedback({ post, handleDeletePost }) {
     }
   };
 
-  const handleClick = () => {
-    document.getElementById(`modal_feedbackPost_${post._id}`).showModal();
-    fetchComments(); // <-- traemos comentarios al abrir
+  const handleClick = (e) => {
+    if (e.target.id != "deleteBtn") {
+      document.getElementById(`modal_feedbackPost_${post._id}`).showModal();
+      fetchComments(); // <-- traemos comentarios al abrir
+    }
   };
 
   const handleClose = () => {
     document.getElementById(`modal_feedbackPost_${post._id}`).close();
+    setActiveTab(1);
   };
 
   const handleAddComment = async () => {
@@ -62,7 +65,7 @@ export default function CardFeedback({ post, handleDeletePost }) {
     <>
       <div
         className="card bg-dark-400 shadow-md max-h-[350px]"
-        onClick={handleClick}
+        onClick={(e) => handleClick(e)}
       >
         <div className="card-body">
           <div className="flex justify-between items-center">
@@ -103,6 +106,7 @@ export default function CardFeedback({ post, handleDeletePost }) {
             <button
               onClick={() => handleDeletePost(post._id)}
               className="btn btn-sm btn-error"
+              id="deleteBtn"
             >
               Eliminar
             </button>
@@ -181,15 +185,25 @@ export default function CardFeedback({ post, handleDeletePost }) {
             </div>
           )}
 
-          <div className={`grid grid-cols-[100%,100%] justify-items-center transition-transform duration-500  lg:grid-cols-[500px,48px,280px] ${activeTab == 2 && "translate-x-[-100%]"} max-lg:max-w-[calc(100vw-10%)]`}>
-            <div className={`grid gap-2 ${activeTab == 2 && width < 1024 && "mr-6" } max-lg:px-4 max-lg:pb-2 w-full`}>
+          <div
+            className={`grid grid-cols-[100%,100%] justify-items-center transition-transform duration-500  lg:grid-cols-[500px,48px,280px] ${
+              activeTab == 2 && "translate-x-[-100%]"
+            } max-lg:max-w-[calc(100vw-10%)]`}
+          >
+            <div
+              className={`grid gap-2 ${
+                activeTab == 2 && width < 1024 && "mr-6"
+              } max-lg:px-4 max-lg:pb-2 w-full`}
+            >
               <div>
                 <h2 className="font-medium">Subject</h2>
                 <p className="text-sm text-dark-100">{post.title}</p>
               </div>
               <div>
                 <h2 className="font-medium">Description</h2>
-                <p className="text-xs text-dark-100 w-full">{post.description}</p>
+                <p className="text-xs text-dark-100 w-full">
+                  {post.description}
+                </p>
               </div>
               <div className="flex gap-2">
                 <div className="grid gap-1">
@@ -228,7 +242,11 @@ export default function CardFeedback({ post, handleDeletePost }) {
               )}
             </div>
             <div className="hidden lg:flex divider divider-horizontal"></div>
-            <div className={`grid grid-rows-[20px,240px,48px] gap-2  ${activeTab == 1 && width < 1024 && "ml-6" } max-lg:px-4 max-lg:pb-2`}>
+            <div
+              className={`grid grid-rows-[20px,240px,48px] gap-2  ${
+                activeTab == 1 && width < 1024 && "ml-6"
+              } max-lg:px-4 max-lg:pb-2`}
+            >
               <h3 className="text-sm font-medium h-fit">Comments</h3>
 
               <div className="max-h-60 overflow-y-auto grid gap-2 pr-1">
