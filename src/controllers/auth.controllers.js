@@ -134,6 +134,7 @@ export const registerWithGoogle = async (profile) => {
       googleId,
       isVerified: true,
       provider: "google",
+      role:"tester"
     });
 
     const userSaved = await newUser.save();
