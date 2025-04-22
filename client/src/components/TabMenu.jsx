@@ -60,7 +60,7 @@ export function TabMenuItem({ task }) {
       <div className="w-full flex items-center lg:w-full">
         <div
           className={`font-medium text-base lg:text-sm w-full text-center bg-violet-main  rounded-lg py-2 lg:py-1 ${
-            task.status == "completed" && "line-through"
+            task.status == "completed" && "line-through opacity-50"
           } ${isBefore(new Date(`${task.taskDate}T${task.startTime}`), new Date()) && "opacity-50"}`}
         >
           {task.title}{" "}
