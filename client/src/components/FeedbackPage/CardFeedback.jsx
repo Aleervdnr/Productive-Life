@@ -70,8 +70,13 @@ export default function CardFeedback({ post, handleDeletePost }) {
         <div className="card-body">
           <div className="flex justify-between items-center">
             <h2 className="card-title">{post.title}</h2>
-            <div className="badge badge-secondary capitalize">
-              {post.status}
+            <div className="flex gap-2">
+              <div className="badge badge-secondary capitalize">
+                {post.status}
+              </div>
+              <div className="badge badge-primary capitalize">
+                {post.urgency}
+              </div>
             </div>
           </div>
 
@@ -191,15 +196,15 @@ export default function CardFeedback({ post, handleDeletePost }) {
             } max-lg:max-w-[calc(100vw-10%)]`}
           >
             <div
-              className={`grid gap-2 ${
+              className={`flex flex-col gap-4 ${
                 activeTab == 2 && width < 1024 && "mr-6"
               } max-lg:px-4 max-lg:pb-2 w-full`}
             >
-              <div>
+              <div className="h-fit">
                 <h2 className="font-medium">Subject</h2>
                 <p className="text-sm text-dark-100">{post.title}</p>
               </div>
-              <div>
+              <div className="h-fit">
                 <h2 className="font-medium">Description</h2>
                 <p className="text-xs text-dark-100 w-full">
                   {post.description}
