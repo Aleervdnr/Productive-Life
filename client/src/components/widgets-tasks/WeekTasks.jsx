@@ -82,21 +82,51 @@ export default function WeekTasks() {
   }, [tasks, tabActive]);
 
   useEffect(() => {
+    if (language == "es"){
+      setWeek([
+        { name: "Lunes", isoDay: 1, day: "..." },
+        { name: "Martes", isoDay: 2, day: "..." },
+        { name: "Miercoles", isoDay: 3, day: "..." },
+        { name: "Jueves", isoDay: 4, day: "..." },
+        { name: "Viernes", isoDay: 5, day: "..." },
+        { name: "Sabado", isoDay: 6, day: "..." },
+        { name: "Domingo", isoDay: 7, day: "..." },
+      ]);
+    }
+    if (language == "en"){
+      setWeek([
+        { name: "Monday", isoDay: 1, day: "..." },
+        { name: "Tuesday", isoDay: 2, day: "..." },
+        { name: "Wednesday", isoDay: 3, day: "..." },
+        { name: "Thursday", isoDay: 4, day: "..." },
+        { name: "Friday", isoDay: 5, day: "..." },
+        { name: "Saturday", isoDay: 6, day: "..." },
+        { name: "Sunday", isoDay: 7, day: "..." },
+      ]);
+    }
+  }, [language])
+  
+
+
+  useEffect(() => {
     const now = new Date();
     const startOfCurrentWeek = startOfWeek(now, { weekStartsOn: 1 }); // La semana comienza en lunes
 
     const weekDays = Array.from({ length: 7 }, (_, i) => {
       const currentDay = addDays(startOfCurrentWeek, i); // Sumar días desde el inicio de la semana
-      let dayNames = [
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
-        "Sábado",
-        "Domingo",
-      ];
-      if(language == "en"){
+      let dayNames = [];
+      if (language == "es") {
+        dayNames = [
+          "Lunes",
+          "Martes",
+          "Miércoles",
+          "Jueves",
+          "Viernes",
+          "Sábado",
+          "Domingo",
+        ];
+      }
+      if (language == "en") {
         dayNames = [
           "Monday",
           "Tuesday",
@@ -174,7 +204,9 @@ export default function WeekTasks() {
           <span className="text-xs">{t("tasks.cardProgress.completed")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {weeklyTasks.filter((task) => task.status == "completed").length}{" "}
-            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
+            <span className="lg:text-sm xl:text-lg">
+              {t("tasks.cardProgress.of")}
+            </span>{" "}
             {weeklyTasks.length}
           </span>
         </div>
@@ -182,7 +214,9 @@ export default function WeekTasks() {
           <span className="text-xs">{t("tasks.cardProgress.toDo")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {weeklyTasks.filter((task) => task.status == "pending").length}{" "}
-            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
+            <span className="lg:text-sm xl:text-lg">
+              {t("tasks.cardProgress.of")}
+            </span>{" "}
             {weeklyTasks.length}
           </span>
         </div>
@@ -190,12 +224,16 @@ export default function WeekTasks() {
           <span className="text-xs">{t("tasks.cardProgress.overdue")}</span>
           <span className="lg:text-[1.125rem] xl:text-[1.375rem] font-bold leading-7">
             {weeklyTasks.filter((task) => task.status == "overdue").length}{" "}
-            <span className="lg:text-sm xl:text-lg">{t("tasks.cardProgress.of")}</span>{" "}
+            <span className="lg:text-sm xl:text-lg">
+              {t("tasks.cardProgress.of")}
+            </span>{" "}
             {weeklyTasks.length}
           </span>
         </div>
         <div className="py-2 px-2 w-full border-[2px] border-dark-400 grid place-content-center rounded-lg">
-          <span className="text-xs">{t("tasks.cardProgress.weeklyProgress")}</span>
+          <span className="text-xs">
+            {t("tasks.cardProgress.weeklyProgress")}
+          </span>
           <AnimatedCounter
             value={
               weeklyTasks.length > 0
