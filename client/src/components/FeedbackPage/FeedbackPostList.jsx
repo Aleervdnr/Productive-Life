@@ -1,7 +1,5 @@
 import { toast } from "sonner";
 import CardFeedback from "./CardFeedback";
-import CardFeedbackContent from "./CardFeedbackContent";
-import BadgeFeedback from "./BadgeFeedback";
 import { deleteFeedbackPostRequest } from "../../api/testerFeedback";
 
 const FeedbackPostList = ({ posts, setPosts }) => {

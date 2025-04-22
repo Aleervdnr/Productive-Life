@@ -1,4 +1,4 @@
-import { getISODay } from "date-fns";
+import { getISODay, isBefore } from "date-fns";
 import useWindowSize from "../hooks/useWindowSize.jsx";
 import { useTasks } from "../context/TasksContext.jsx";
 import { useUi } from "../context/UiContext.jsx";
@@ -58,7 +58,11 @@ export function TabMenuItem({ task }) {
   return (
     <div className="mt-2 flex gap-1 items-center justify-between relative">
       <div className="w-full flex items-center lg:w-full">
-        <div className="font-medium text-base lg:text-sm w-full text-center bg-violet-main  rounded-lg py-2 lg:py-1">
+        <div
+          className={`font-medium text-base lg:text-sm w-full text-center bg-violet-main  rounded-lg py-2 lg:py-1 ${
+            task.status == "completed" && "line-through opacity-50"
+          } ${isBefore(new Date(`${task.taskDate}T${task.startTime}`), new Date()) && "opacity-50"}`}
+        >
           {task.title}{" "}
         </div>
       </div>
